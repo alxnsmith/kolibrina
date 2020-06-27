@@ -8,7 +8,7 @@ from .managers import CustomUserManager
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     genderChoices = (('Male', 'М'), ('Female', 'Ж'))
-    parrent_account_id = models.CharField(verbose_name='Родительский аккаунт', default='', max_length=20)
+    parrent_account_id = models.CharField(verbose_name='Родительский аккаунт', default='', max_length=20, blank=True)
     username = models.CharField(verbose_name='Никнейм', unique=True, max_length=30)
     email = models.EmailField(verbose_name='Email', unique=True)
     firstName = models.CharField(verbose_name='Имя', max_length=128)
@@ -19,15 +19,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     area = models.CharField(verbose_name='Область', max_length=128)
     city = models.CharField(verbose_name='Город', max_length=128)
     phoneNumber = models.CharField(verbose_name='Телефон', unique=True, max_length=20)
-    studyPlace = models.CharField(verbose_name='Место учебы', max_length=128)
-    schClass = models.CharField(verbose_name='Класс/Курс', max_length=10)
-    workPlace = models.CharField(verbose_name='Место Работы', max_length=128)
+    studyPlace = models.CharField(verbose_name='Место учебы', max_length=128, blank=True)
+    schClass = models.CharField(verbose_name='Класс/Курс', max_length=10, blank=True)
+    workPlace = models.CharField(verbose_name='Место Работы', max_length=128, blank=True)
 
     balance = models.CharField(verbose_name='Баланс', default=0.00, max_length=128)
 
     lvl = models.CharField(verbose_name='Уровень', default=0, max_length=128)
     rating = models.CharField(verbose_name='Рейтинг', default=0, max_length=128)
-    league = models.CharField(verbose_name='Лига', default='', max_length=128)
+    league = models.CharField(verbose_name='Лига', default='', max_length=128, blank=True)
     scoreHistory = models.TextField(verbose_name='История счета', default=[])
 
     countMaster = models.CharField(verbose_name='Счетчик подсказок мастера', default=0, max_length=128)
