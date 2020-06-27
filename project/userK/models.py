@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 from .managers import CustomUserManager
@@ -15,7 +14,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     firstName = models.CharField(verbose_name='Имя', max_length=128)
     lastName = models.CharField(verbose_name='Фамилия', max_length=128)
     gender = models.CharField(verbose_name='Пол', choices=genderChoices, max_length=10)
-    birthday = models.DateField(_('Дата рождения'))
+    birthday = models.DateField(verbose_name='Дата рождения', null=True)
     country = models.CharField(verbose_name='Страна', max_length=128)
     area = models.CharField(verbose_name='Область', max_length=128)
     city = models.CharField(verbose_name='Город', max_length=128)
