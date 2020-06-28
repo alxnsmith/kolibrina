@@ -128,3 +128,9 @@ STATIC_ROOT='/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 AUTH_USER_MODEL = 'userK.CustomUser'
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = '465'
+EMAIL_HOST_USER = 'kotovvsan@ya.ru'
+EMAIL_HOST_PASSWORD = '647012277RosTelecom'
+EMAIL_USE_SSL = True
