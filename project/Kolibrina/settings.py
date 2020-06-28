@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'regK',
     'main',
     'userK',
+    'accountConfirmation',
 ]
 
 MIDDLEWARE = [

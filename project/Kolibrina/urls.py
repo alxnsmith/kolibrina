@@ -6,4 +6,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', include('regK.urls')),
     path('account/', include('userK.urls')),
+    path('accountconfirmation/', include('accountConfirmation.urls'))
 ]
