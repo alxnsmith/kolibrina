@@ -6,5 +6,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', include('regK.urls')),
     path('account/', include('userK.urls')),
-    re_path('accountconfirmation/', include('accountConfirmation.urls'))
+    path('auth/', include('authK.urls')),
+
+    re_path('accountconfirmation/', include('accountConfirmation.urls')),
 ]

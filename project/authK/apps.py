@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class AuthkConfig(AppConfig):
+class LoginkConfig(AppConfig):
     name = 'authK'

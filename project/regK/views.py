@@ -7,7 +7,7 @@ from base64 import b64encode
 
 class Register(FormView):
     form_class = forms.RegForm
-    success_url = "/login/"
+    success_url = "/auth/login/"
     template_name = "regK/register.html"
 
     def form_valid(self, form):

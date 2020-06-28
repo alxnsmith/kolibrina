@@ -49,45 +49,25 @@
 	</head>
 	<body>
 
-					{% include "main/header.html"%}
+					{% include "main/header.html" %}
 
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-8 col-md-8 col-lg-8">
-					<form action="" method="POST">{% csrf_token %}
-{#                        {% for field in form %}#}
-{#                            {{ field }}#}
-{#                        {% endfor %}#}
+                <div class="col-sm-8 col-md-8 col-lg-8">
+                    <div class="bg-danger error {{ hide }}">{{ errTXT }}</div>
+                    <form action="" method="POST">{% csrf_token %}
                         <div class="input-group">
 						    <div class="input-group-text"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
 						    <input id="id_username" name="username" type="text" placeholder="Username" class="string" required>
 						    {{ form.username.errors }}
                         </div>
 						<div class="input-group">
-						    <div class="input-group-text"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
-						    <input id="id_email" name="email" maxlength="200" type="email" placeholder="Электронный адрес" class="string" requireds>
-   						    {{ form.email.errors }}
-                        </div>
-						<div class="input-group">
 						    <div class="input-group-text"><i class="fa fa-key" aria-hidden="true"></i></div>
-						    <input id="id_password1" name="password1" type="password" placeholder="Пароль" class="string" required>
-						    {{ form.password2.errors }}
-                        </div>
-						<div class="input-group">
-						    <div class="input-group-text"><i class="fa fa-key" aria-hidden="true"></i></div>
-						    <input id="id_password2" name="password2" type="password" placeholder="Повторите пароль" class="string" required>
+						    <input id="password" name="password" type="password" placeholder="Повторите пароль" class="string" required>
 						</div>
 						<br>
-						<input type="checkbox" id="cbx1" required>
-						<label for="cbx1"> Ознакомлен и согласен с <a href="#">политикой конфиденциальности</a></label><br>
-						<input type="checkbox" id="cbx2" required>
-						<label for="cbx2"> Даю согласие на обработку персональных данныхr</label><br>
-						<input type="checkbox" id="cbx3" required>
-						<label for="cbx3"> Согласен с условиями авторского соглашения</label><br>
-						<input type="checkbox" id="cbx4" required>
-						<label for="cbx4"> С правилами игр ознакомлен(а), обязуюсь выполнять </label><br>
-						<button href="#" id="reg">Зарегистрироваться</button>
-						<a href="#" id="auth">Войти</a>
+						<button id="reg">Войти</button>
+						<a href="{% url 'register' %}" id="auth">Зарегистрироваться</a>
 					</form>
 				</div>
 				<div class="col-sm-4 col-md-4 col-lg-4"></div>
@@ -95,7 +75,7 @@
 
 		<div class="mt20"></div>
 
-		            {% include "main/footer.html" %}
+            {% include "main/footer.html" %}
 
 		<script>
 			$(document).ready(function() {
