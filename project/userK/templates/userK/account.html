@@ -49,148 +49,164 @@
 	<body>
 
 		{% include "main/header.html"%}
-
+{#        <div class="bg-danger error container">#}
+{#            <p class="al-center">REQUEST</p><br>#}
+{#            <p class="error">{{ req }}</p><br>#}
+{#            <p class="error">{{ r }}</p>#}
+{#        </div>#}
 		<div class="mt20"></div>
-		<div class="row" style="margin: 0;">
+        <div class="row" style="margin: 0;">
 			<div class="col-sm-9 col-md-9 col-lg-9">
 				<div class="row">
 					<div class="col-sm-4 col-md-4 col-lg-4">
 						<div id="avatar" class="flex-row">
-							<h3>ID {{ id }}</h3>
+							<h3>ID {{ userID }}</h3>
 							<div class="clear"></div>
-							<img src="{% static "img/avatars/id000000001/photo.jpg" %}" alt="">
-							<form action="" method="GET">
-								<a href="#">Загрузить новое фото</a>
+							<img src="{{ AvatarImage }}" alt="">
+							<form action="/media/" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+                                {% for field in AvatarForm %}
+                                    {{ field }}
+                                {% endfor %}
+                                <button value="submit">Загрузить новое фото</button>
 							</form>
 						</div>
 						<div id="rating">
 							<strong>Рейтинг игрока</strong>
-							<span>0030 / 0100</span>
+							<span> {{ level.rating }} </span>
 						</div>
 						<div class="mt40"></div>
 						<div id="level">
 							<strong>Уровень игрока</strong>
-							<span style="color: #5752FF;">J (юниор) / 1</span>
+							<span style="color: #5752FF;">{{ level.league }} / {{ level.lvl }}</span>
 							<span>J;L;Z;M;P / 1-10</span>
 						</div>
 					</div>
 					<div class="col-sm-8 col-md-8 col-lg-8" id="data">
-						<form action="" method="POST">
+						<form action="" method="POST"> {% csrf_token %}
 							<div class="row">
-								<div class="col-md-6"><input type="text" name="name" placeholder="Имя игрока"></div>
-								<div class="col-md-6"><input type="text" name="surname" placeholder="Фамилия игрока"></div>
+								<div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока" value="{{ request.user.firstName }}"></div>
+								<div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}"></div>
 							</div>
 							<div>
-								<input type="checkbox" id="nick" style="width: auto;">
+								<input type="checkbox" name="hideMyName" style="width: auto;">
 								<label for="nick"> Не отображать моё имя</label><br>
 							</div>
-							<input type="text" name="nickname" placeholder="Ник / псевдоним, под которым будет играть участник">
-							<label for="country">Страна проживания: </label>
-							<select id="country">
-								<option label="Россия" value="1" selected>Россия</option>
-								<option>Украина</option>
-								<option>Беларусь</option>
-								<option>...</option>
-							</select>
-							<br>
-							<div class="row">
-								<div class="col-md-6">
-									<label for="country">Ваш регион: </label>
-									<select id="region">
-										<option label="Республика Крым" value="1" selected>Республика Крым</option>
-										<option>Алтайский край</option>
-										<option>Архангельская область</option>
-										<option>...</option>
-									</select>
-								</div>
-								<div class="col-md-6">
-									<input type="text" name="city" placeholder="Город">
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес"></div>
-								<div class="col-md-6"><input type="tel" name="tel" placeholder="Номер телефона"></div>
-							</div>
-							
-							<input type="text" placeholder="Место работы / учёбы: ВУЗ / колледж / школа - класс">
-							
-							<div class="row">
-								<div class="col-md-6" id="birth">
-									<span>Дата рождения</span>
-									<br>
-									<select id="day">
-										<option label="1" value="1" selected>1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-										<option value="10">10</option>
-										<option value="11">11</option>
-										<option value="12">12</option>
-										<option value="13">13</option>
-										<option value="14">14</option>
-										<option value="15">15</option>
-										<option value="16">16</option>
-										<option value="17">17</option>
-										<option value="18">18</option>
-										<option value="19">19</option>
-										<option value="20">20</option>
-										<option value="21">21</option>
-										<option value="22">22</option>
-										<option value="23">23</option>
-										<option value="24">24</option>
-										<option value="25">25</option>
-										<option value="26">26</option>
-										<option value="27">27</option>
-										<option value="28">28</option>
-										<option value="29">29</option>
-										<option value="30">30</option>
-										<option value="31">31</option>
-									</select>
-									<select id="month">
-										<option label="Январь" value="Январь" selected>Январь</option>
-										<option value="Февраль">Февраль</option>
-										<option value="Март">Март</option>
-										<option value="Апрель">Апрель</option>
-										<option value="Май">Май</option>
-										<option value="Июнь">Июнь</option>
-										<option value="Июль">Июль</option>
-										<option value="Август">Август</option>
-										<option value="Сентябрь">Сентябрь</option>
-										<option value="Октябрь">Октябрь</option>
-										<option value="Ноябрь">Ноябрь</option>
-										<option value="Декабрь">Декабрь</option>							
-									</select>
-									<select id="year">
-										<option value="2010">2010</option>
-										<option value="2009">2009</option>
-										<option value="2008">2008</option>
-										<option value="2007">2007</option>
-										<option value="2006">2006</option>
-										<option value="2005">2005</option>
-										<option value="2004">2004</option>
-										<option value="2003">2003</option>
-										<option value="2002">2002</option>
-										<option value="2001">2001</option>
-										<option label="2000" value="2000" selected>2000</option>
-									</select>
-								</div>
-								<div class="col-md-6" id="gender">
-									<div class="flex-row">
-										<span>Пол</span>
-										<br>
-										<input id="male" type="radio" name="gender" value="male" checked>
-										<label for="male">Мужской</label>
-										<input id="female" type="radio" name="gender" value="female">
-										<label for="female">Женский</label>
-									</div>
-								</div>
+							<input type="text" name="username" placeholder="Ник / псевдоним, под которым будет играть участник" value="{{ request.user }}">
+                            <div class="row">
+                                <div class="col-md-6" id="birth">
+                                    <span>Дата рождения</span>
+                                    <br>
+{#                                    <select id="day">#}
+{#                                        <option label="1" value="1" selected>1</option>#}
+{#                                        <option value="2">2</option>#}
+{#                                        <option value="3">3</option>#}
+{#                                        <option value="4">4</option>#}
+{#                                        <option value="5">5</option>#}
+{#                                        <option value="6">6</option>#}
+{#                                        <option value="7">7</option>#}
+{#                                        <option value="8">8</option>#}
+{#                                        <option value="9">9</option>#}
+{#                                        <option value="10">10</option>#}
+{#                                        <option value="11">11</option>#}
+{#                                        <option value="12">12</option>#}
+{#                                        <option value="13">13</option>#}
+{#                                        <option value="14">14</option>#}
+{#                                        <option value="15">15</option>#}
+{#                                        <option value="16">16</option>#}
+{#                                        <option value="17">17</option>#}
+{#                                        <option value="18">18</option>#}
+{#                                        <option value="19">19</option>#}
+{#                                        <option value="20">20</option>#}
+{#                                        <option value="21">21</option>#}
+{#                                        <option value="22">22</option>#}
+{#                                        <option value="23">23</option>#}
+{#                                        <option value="24">24</option>#}
+{#                                        <option value="25">25</option>#}
+{#                                        <option value="26">26</option>#}
+{#                                        <option value="27">27</option>#}
+{#                                        <option value="28">28</option>#}
+{#                                        <option value="29">29</option>#}
+{#                                        <option value="30">30</option>#}
+{#                                        <option value="31">31</option>#}
+{#                                    </select>#}
+{#                                    <select id="month">#}
+{#                                        <option label="Январь" value="Январь" selected>Январь</option>#}
+{#                                        <option value="Февраль">Февраль</option>#}
+{#                                        <option value="Март">Март</option>#}
+{#                                        <option value="Апрель">Апрель</option>#}
+{#                                        <option value="Май">Май</option>#}
+{#                                        <option value="Июнь">Июнь</option>#}
+{#                                        <option value="Июль">Июль</option>#}
+{#                                        <option value="Август">Август</option>#}
+{#                                        <option value="Сентябрь">Сентябрь</option>#}
+{#                                        <option value="Октябрь">Октябрь</option>#}
+{#                                        <option value="Ноябрь">Ноябрь</option>#}
+{#                                        <option value="Декабрь">Декабрь</option>#}
+{#                                    </select>#}
+{#                                    <select id="year">#}
+{#                                        <option value="2010">2010</option>#}
+{#                                        <option value="2009">2009</option>#}
+{#                                        <option value="2008">2008</option>#}
+{#                                        <option value="2007">2007</option>#}
+{#                                        <option value="2006">2006</option>#}
+{#                                        <option value="2005">2005</option>#}
+{#                                        <option value="2004">2004</option>#}
+{#                                        <option value="2003">2003</option>#}
+{#                                        <option value="2002">2002</option>#}
+{#                                        <option value="2001">2001</option>#}
+{#                                        <option label="2000" value="2000" selected>2000</option>#}
+{#                                    </select>                                   #}
+                                    {{ form.birthday }}
+                                </div>
+                                <div class="col-md-6" id="gender">
+                                    <div class="flex-row">
+                                        <span>Пол</span>
+                                        <br>
+                                        {% for choice in form.gender %}
+                                            {{ choice }}
+                                        {% endfor %}
+{#                                        {% if gender == 'Male' %}#}
+{#                                            <input id="male" type="radio" name="gender" value="Male" checked>#}
+{#                                            <label for="male">Мужской</label>#}
+{#                                            <input id="female" type="radio" name="gender" value="Female">#}
+{#                                            <label for="female">Женский</label>#}
+{#                                        {% else %}#}
+{#                                            <input id="male" type="radio" name="gender" value="Male">#}
+{#                                            <label for="male">Мужской</label>#}
+{#                                            <input id="female" type="radio" name="gender" value="Female" checked>#}
+{#                                            <label for="female">Женский</label>#}
+{#                                        {% endif %}#}
+                                    </div>
+                                </div>
 
+
+                            </div>
+                            <label for="country">Страна проживания: </label>
+                            {{ form.country }}
+                            <br>
+                            <div class="row">
+								<div class="col-md-6">
+{#									<label for="country">Ваш регион: </label>#}
+{#									<select id="area">#}
+{#										<option label="Республика Крым" value="1" selected>Республика Крым</option>#}
+{#										<option>Алтайский край</option>#}
+{#										<option>Архангельская область</option>#}
+{#										<option>...</option>#}
+{#									</select>#}
+                                    {{ form.area }}
+								</div>
+								<div class="col-md-6">
+{#									<input type="text" name="city" placeholder="Город" value="{{ request.user.city }}">#}
+                                    {{ form.city }}
+								</div>
 							</div>
+
+							<div class="row">
+								<div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email"></div>
+								<div class="col-md-6"><input type="tel" name="phoneNumber" placeholder="Номер телефона" value="{{ request.user.phoneNumber }}"></div>
+							</div>
+
+							<input type="text" name="swPlace" placeholder="Место работы / учёбы: ВУЗ / колледж / школа - класс" value="{{ request.user.swPlace }}">
 							<div class="mt5"></div>
 							<div class="line"></div>
 							<div class="mt5"></div>
@@ -241,11 +257,11 @@
 										
 										<div class="clear"></div>
 										<div>
-											<input id="base1" type="radio" name="player" value="base">
+											<input id="base1" type="radio" value="base">
 											<label for="base1">Базовый</label>					
 										</div>
 										<div>
-											<input id="legionary1" type="radio" name="player" value="legionary">
+											<input id="legionary1" type="radio" value="legionary">
 											<label for="legionary1">Легионер</label>					
 										</div>
 									</div>
@@ -254,47 +270,48 @@
 									<div class="flex-row">
 										<span style="text-align: center;">Ваш статус в команде</span>
 										<div>
-											<input id="captain" type="radio" name="playersel" value="captain" checked>
+											<input id="captain" type="radio" value="captain" checked>
 											<label for="captain">Капитан</label>					
 										</div>
 										<div>
-											<input id="base" type="radio" name="playersel" value="base">
+											<input id="base" type="radio" value="base">
 											<label for="base">Базовый</label>					
 										</div>
 										<div>
-											<input id="legionary" type="radio" name="playersel" value="legionary">
+											<input id="legionary" type="radio" value="legionary">
 											<label for="legionary">Легионер</label>					
 										</div>
 
 
 										<span style="text-align: center;">Ваш номер в команде</span>
 										<div>
-											<input id="num1" type="radio" name="num" value="1" checked>
+											<input id="num1" type="radio" value="1" checked>
 											<label for="num1">1</label>					
 										</div>
 										<div>
-											<input id="num2" type="radio" name="num" value="2">
+											<input id="num2" type="radio" value="2">
 											<label for="num2">2</label>					
 										</div>
 										<div>
-											<input id="num3" type="radio" name="num" value="3">
+											<input id="num3" type="radio" value="3">
 											<label for="num3">3</label>					
 										</div>
 										<div>
-											<input id="num4" type="radio" name="num" value="4">
+											<input id="num4" type="radio" value="4">
 											<label for="num4">4</label>					
 										</div>
 										<div>
-											<input id="num5" type="radio" name="num" value="5">
+											<input id="num5" type="radio" value="5">
 											<label for="num5">5</label>					
 										</div>
 										<div>
-											<input id="num6" type="radio" name="num" value="6">
+											<input id="num6" type="radio" value="6">
 											<label for="num6">6</label>					
 										</div>
 									</div>
 								</div>
 							</div>
+                            <button hidden id="SAVE" value="submit">SAVE</button>
 						</form>
 					</div>
 					<div class="clear"></div>
@@ -416,7 +433,7 @@
 			$(document).ready(function() {
 				$("header nav a:nth-child(1) > span").addClass("select");
 				$(".title > h2 > strong").html("Личный Кабинет");
-				$(".footer__buttons").append('<a href="#">Сохранить изменения</a>');
+				$(".footer__buttons").append('<a onclick="$(\'#SAVE\').click()">Сохранить изменения</a>');
 				$(".footer__buttons").append('<a href="#">Скачать бланк на обработку ПД</a>');
 				$(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');
 			});

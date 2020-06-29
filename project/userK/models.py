@@ -8,6 +8,7 @@ from .managers import CustomUserManager
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     genderChoices = (('Male', 'М'), ('Female', 'Ж'))
+    countryChoices = (('RU', 'Россия'), ('UK', 'Украина'), ('BY', 'Беларусь'), ('KZ', 'Казахстан'))
     parrent_account_id = models.CharField(verbose_name='Родительский аккаунт', default='', max_length=20, blank=True)
     username = models.CharField(verbose_name='Никнейм', unique=True, max_length=30)
     email = models.EmailField(verbose_name='Email', unique=True)
@@ -15,19 +16,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     lastName = models.CharField(verbose_name='Фамилия', max_length=128)
     gender = models.CharField(verbose_name='Пол', choices=genderChoices, max_length=10)
     birthday = models.DateField(verbose_name='Дата рождения', null=True)
-    country = models.CharField(verbose_name='Страна', max_length=128)
+    country = models.CharField(verbose_name='Страна', choices=countryChoices, max_length=128)
     area = models.CharField(verbose_name='Область', max_length=128)
     city = models.CharField(verbose_name='Город', max_length=128)
     phoneNumber = models.CharField(verbose_name='Телефон', unique=True, max_length=20)
-    studyPlace = models.CharField(verbose_name='Место учебы', max_length=128, blank=True)
-    schClass = models.CharField(verbose_name='Класс/Курс', max_length=10, blank=True)
-    workPlace = models.CharField(verbose_name='Место Работы', max_length=128, blank=True)
+    swPlace = models.CharField(
+        verbose_name='Место работы / учёбы: ВУЗ / колледж / школа - класс', max_length=128, blank=True
+    )
 
     balance = models.CharField(verbose_name='Баланс', default=0.00, max_length=128)
 
-    lvl = models.CharField(verbose_name='Уровень', default=0, max_length=128)
-    rating = models.CharField(verbose_name='Рейтинг', default=0, max_length=128)
-    league = models.CharField(verbose_name='Лига', default='', max_length=128, blank=True)
+    opLVL = models.CharField(verbose_name='Опыт(Очки уровня)', default=0, max_length=128)
     scoreHistory = models.TextField(verbose_name='История счета', default=[])
 
     countMaster = models.CharField(verbose_name='Счетчик подсказок мастера', default=0, max_length=128)
@@ -41,6 +40,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     date_joined = models.DateTimeField(verbose_name='Дата регистрации', default=timezone.now)
     child_account = models.BooleanField(default=False)
+    hideMyName = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
 

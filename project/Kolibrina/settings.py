@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'media',
     'authK',
     'regK',
     'main',
@@ -134,3 +135,6 @@ EMAIL_PORT = '465'
 EMAIL_HOST_USER = 'kotovvsan@ya.ru'
 EMAIL_HOST_PASSWORD = '647012277RosTelecom'
 EMAIL_USE_SSL = True
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/mediacontent/')
