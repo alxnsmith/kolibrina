@@ -28,3 +28,12 @@
 <div class="title">
     <h2><strong></strong></h2>
 </div>
+{% if errors %}
+    <br>
+    <div class="bg-danger error container">
+        <p class="al-center">ERROR</p><br>
+        {% for error in errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}

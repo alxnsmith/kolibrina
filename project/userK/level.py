@@ -1,5 +1,4 @@
-def op(u):
-    op = int(u.opLVL)
+def op(op):
 
     def r(op, max, deltamax, league):
         for i in range(0, 981):

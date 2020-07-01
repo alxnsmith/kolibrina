@@ -49,11 +49,6 @@
 	<body>
 
 		{% include "main/header.html"%}
-{#        <div class="bg-danger error container">#}
-{#            <p class="al-center">REQUEST</p><br>#}
-{#            <p class="error">{{ req }}</p><br>#}
-{#            <p class="error">{{ r }}</p>#}
-{#        </div>#}
 		<div class="mt20"></div>
         <div class="row" style="margin: 0;">
 			<div class="col-sm-9 col-md-9 col-lg-9">
@@ -62,7 +57,7 @@
 						<div id="avatar" class="flex-row">
 							<h3>ID {{ userID }}</h3>
 							<div class="clear"></div>
-							<img src="{{ AvatarImage }}" alt="">
+							<img src="{% if AvatarImage != False %}{{ AvatarImage }}{% else %}{% static 'img/default/defaultAvatar.jpg' %}{% endif %}" alt="">
 							<form action="/media/" method="POST" enctype="multipart/form-data"> {% csrf_token %}
                                 {% for field in AvatarForm %}
                                     {{ field }}
@@ -91,7 +86,7 @@
 								<input type="checkbox" name="hideMyName" style="width: auto;">
 								<label for="nick"> Не отображать моё имя</label><br>
 							</div>
-							<input type="text" name="username" placeholder="Ник / псевдоним, под которым будет играть участник" value="{{ request.user }}">
+							<input type="text" name="username" placeholder="Ник / псевдоним, под которым будет играть участник" value="{{ request.user }}" disabled>
                             <div class="row">
                                 <div class="col-md-6" id="birth">
                                     <span>Дата рождения</span>
@@ -202,8 +197,16 @@
 							</div>
 
 							<div class="row">
-								<div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email"></div>
-								<div class="col-md-6"><input type="tel" name="phoneNumber" placeholder="Номер телефона" value="{{ request.user.phoneNumber }}"></div>
+                                {% if request.user.email != ''%}
+    								<div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email" disabled></div>
+        						{% else %}
+                                    <div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email"></div>
+                                {% endif %}
+                                {% if request.user.phoneNumber != '' %}
+                                    <div class="col-md-6"><input value="{{ request.user.phoneNumber }}" disabled></div>
+                                {% else %}
+                                    <div class="col-md-6"><input id="tel" class="{{ error_phone }}" type="tel" name="phoneNumber" placeholder="Номер телефона" value="+7 "></div>
+                                {% endif %}
 							</div>
 
 							<input type="text" name="swPlace" placeholder="Место работы / учёбы: ВУЗ / колледж / школа - класс" value="{{ request.user.swPlace }}">
@@ -429,6 +432,24 @@
 				margin-bottom: 20px;
 			}
 		</style>
+        <script>
+            $.fn.formatPnoneNumber = function(){
+			    return this.each(function(){
+				$(this).bind('keyup', function(){
+					var num = this.value.replace( '+7' , '' ).replace( /\D/g, '' ).split( /(?=.)/ ), i = num.length;
+					if ( 0 <= i ) num.unshift( '+7' );
+					if ( 1 <= i ) num.splice( 1, 0, ' ' );
+					if ( 4 <= i ) num.splice( 5, 0, ' ' );
+					if ( 7 <= i ) num.splice( 9, 0, '-' );
+					if ( 9 <= i ) num.splice( 12, 0, '-' );
+					if ( 11 <= i ) num.splice( 15, num.length - 15 );
+					this.value = num.join( '' );
+		    		});
+		    	});
+		    };
+            $('#tel').formatPnoneNumber()
+        </script>
+
 		<script>
 			$(document).ready(function() {
 				$("header nav a:nth-child(1) > span").addClass("select");

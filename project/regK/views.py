@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.core.mail import send_mail
@@ -10,11 +10,16 @@ class Register(FormView):
     success_url = "/auth/login/"
     template_name = "regK/register.html"
 
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect('account')
+        return super(Register, self).get(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.save()
         email = form.cleaned_data.get('email')
-        DOMAIN = 'http://127.0.0.1:8000/'
-        confirmUrl = DOMAIN + r'accountconfirmation/account/email?c=' + b64encode(email.encode('utf-8')).decode("utf-8")
+        DOMAIN = self.request.META['HTTP_HOST']
+        confirmUrl = 'http://' + DOMAIN + r'/accountconfirmation/account/email?c=' + b64encode(email.encode('utf-8')).decode("utf-8")
         messageText = f'Ваша ссылка для активации аккаунта: \n %s' % confirmUrl
         send_mail('Активация аккаунта', messageText, 'kotovvsan@ya.ru',
                   [email], fail_silently=False)

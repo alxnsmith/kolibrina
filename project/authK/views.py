@@ -19,16 +19,16 @@ def loginK(request):
                     return render(request, 'loginK/login.html',
                                   {'errTXT': 'Введите имя пользователя'})
             else:
-                if not str(User.objects.filter(username=username)) == '<QuerySet []>':
+                if request.user == 'AnonymousUser':
                     if not User.objects.filter(username=username)[0].is_active:
                         return render(request, 'loginK/login.html',
-                                      {'errTXT': 'Ваш аккаунт не активирован, проверьте почту.\n'
-                                                 'После регистрации вам была выслана ссылка на активацию аккаунта'})
+                                      {'errors': ['Ваш аккаунт не активирован, проверьте почту.',
+                                                 'После регистрации вам на почту была выслана ссылка на активацию аккаунта']})
                     else:
-                        return render(request, 'loginK/login.html', {'errTXT': 'С вашим аккаунтом чьл-то не так,'
-                                                                               'обратитесь в техподдержку.'})
+                        return render(request, 'loginK/login.html', {'errors': ['С вашим аккаунтом что-то не так,'
+                                                                               'обратитесь в техподдержку.']})
                 else:
-                    return render(request, 'loginK/login.html', {'errTXT': 'Неверный логин или пароль'})
+                    return render(request, 'loginK/login.html', {'errors': ['Неверный логин или пароль']})
         else:
             return render(request, 'loginK/login.html', {'hide': 'hide'})
     else:

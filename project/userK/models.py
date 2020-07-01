@@ -10,10 +10,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     genderChoices = (('Male', 'М'), ('Female', 'Ж'))
     countryChoices = (('RU', 'Россия'), ('UK', 'Украина'), ('BY', 'Беларусь'), ('KZ', 'Казахстан'))
     parrent_account_id = models.CharField(verbose_name='Родительский аккаунт', default='', max_length=20, blank=True)
+    child_account = models.BooleanField(default=False)
     username = models.CharField(verbose_name='Никнейм', unique=True, max_length=30)
+    is_active = models.BooleanField(default=False)
     email = models.EmailField(verbose_name='Email', unique=True)
     firstName = models.CharField(verbose_name='Имя', max_length=128)
     lastName = models.CharField(verbose_name='Фамилия', max_length=128)
+    hideMyName = models.BooleanField(default=False)
+    balance = models.CharField(verbose_name='Баланс', default=0.00, max_length=128)
+
     gender = models.CharField(verbose_name='Пол', choices=genderChoices, max_length=10)
     birthday = models.DateField(verbose_name='Дата рождения', null=True)
     country = models.CharField(verbose_name='Страна', choices=countryChoices, max_length=128)
@@ -23,8 +28,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     swPlace = models.CharField(
         verbose_name='Место работы / учёбы: ВУЗ / колледж / школа - класс', max_length=128, blank=True
     )
-
-    balance = models.CharField(verbose_name='Баланс', default=0.00, max_length=128)
 
     opLVL = models.CharField(verbose_name='Опыт(Очки уровня)', default=0, max_length=128)
     scoreHistory = models.TextField(verbose_name='История счета', default=[])
@@ -39,10 +42,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     countTotalGames = models.CharField(verbose_name='Счетчик игр', default=0, max_length=128)
 
     date_joined = models.DateTimeField(verbose_name='Дата регистрации', default=timezone.now)
-    child_account = models.BooleanField(default=False)
-    hideMyName = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
