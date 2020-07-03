@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, re_path, include
+from django.urls import path, include
 
 
 urlpatterns = [
@@ -8,6 +8,8 @@ urlpatterns = [
     path('account/', include('userK.urls')),
     path('auth/', include('authK.urls')),
     path('media/', include('media.urls')),
+    path('media/', include('media.urls')),
+    path('accountconfirmation/', include('accountConfirmation.urls')),
+    path('questions/', include('questions.urls')),
 
-    re_path('accountconfirmation/', include('accountConfirmation.urls')),
 ]

@@ -19,7 +19,7 @@
 		<a href="#"><span>Правила</span></a>
 		<a href="#"><span>Чат</span></a>
 		{% if not request.user.is_authenticated %}
-            <a href="{% url 'login' %}"><span>Вход/Решистрация</span></a>
+            <a href="{% url 'login' %}"><span>Вход/Регистрация</span></a>
             {% else %}
                 <a href="{% url 'logout' %}"><span>Выход</span></a>
         {% endif %}

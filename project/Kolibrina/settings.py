@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'main',
     'userK',
     'accountConfirmation',
+    'questions',
 ]
 
 MIDDLEWARE = [
