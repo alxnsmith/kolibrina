@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from . import forms, level
 from .phone_isValid import phone_isValid
 from userK.models import CustomUser as User
-from media import forms as media
+from media import forms as media, models
 from django.conf import settings
 import os
 
@@ -18,10 +18,9 @@ import os
 
 def account(request):
     if request.user.is_authenticated:
-        uDir = [str(settings.MEDIA_ROOT).replace('\\', '/'), 'user_' + str(request.user)]
+        uDir = [str(settings.MEDIA_ROOT).replace('\\', '/') + 'users/', 'user_' + str(request.user)]
         if os.listdir(uDir[0]).__contains__(uDir[1]):
-            uDir += 'user_' + str(request.user)
-            ava = '/' + uDir[0].split('/')[-3] + '/' + uDir[0].split('/')[-2] + '/' + uDir[1] + '/' + \
+            ava = '/' + uDir[0].split('/')[-4] + '/' + uDir[0].split('/')[-3] + '/' + uDir[0].split('/')[-2] + '/' + uDir[1] + '/' + \
                   os.listdir(uDir[0] + uDir[1])[0]
         else:
             ava = False
@@ -36,10 +35,14 @@ def account(request):
                 'birthday': '', 'gender': u['gender'], 'country': u['country'],
                 'area': u['area'], 'city': u['city'],
             })
+        if models.Banner.objects.filter(name='MainBanner').exists():
+            mainBanner = str(models.Banner.objects.filter(name='MainBanner')[0].image)
+        else:
+            mainBanner = 'img/banner.png'
         data = {'userID': str(request.user.id).rjust(7, '0'), 'gender': u['gender'],
                 'form': form, 'errors': [], 'error_phone': '', 'r': request.user,
                 'level': level.op(int(u['opLVL'])), 'AvatarForm': media.AvatarForm(initial={'user': request.user, }),
-                'AvatarImage': ava,
+                'AvatarImage': ava, 'mainBanner': mainBanner
                 }
         if request.POST:
             if request._post.__contains__('phoneNumber'):

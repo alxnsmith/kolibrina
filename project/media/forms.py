@@ -1,9 +1,9 @@
 from django import forms
-from .models import Image
+from .models import Avatar
 
 
 class AvatarForm(forms.ModelForm):
     class Meta:
-        model = Image
+        model = Avatar
         fields = ('image', 'user')
         widgets = {'user': forms.HiddenInput()}
