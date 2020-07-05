@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% load static %}
+	<meta charset="UTF-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="robots" content="index,follow">
+
+    <title>КОЛИБРИНА - Добавить вопрос</title>
+
+    {% include 'main/headPiece.html' %}
+    <link rel="stylesheet" href="{% static 'css/pages/add-question.css' %}">
+
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+</head>
+<body>
+    {% include "main/header.html" %}
+    <div class="al-center mg-t-10"><span>Внимание авторам!<a class="red" href="#"> Обязательно к прочтению!</a></span></div>
+    <div class="al-center user-info">{% if request.user.hideMyName == 0 %}{{ USER }}{% else %}{{ request.user }}{% endif %}</div>
+    <div class="flex-between container">
+        <div>Тема вопроса</div>
+        <div>Категория темы</div>
+    </div>
+
+
+    {% include "main/footer.html" %}
+</body>
+</html>

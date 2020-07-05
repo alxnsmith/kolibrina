@@ -30,7 +30,7 @@ class Avatar(models.Model):
 
 
 class Banner(models.Model):
-    name = models.CharField(max_length=128, default='Banner', unique=True)
+    name = models.CharField(max_length=128, default='MainBanner', unique=True)
     image = models.ImageField(upload_to=settings.MEDIA_ROOT + 'banners')
 
     def __str__(self):

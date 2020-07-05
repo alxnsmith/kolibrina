@@ -11,5 +11,6 @@ urlpatterns = [
     path('media/', include('media.urls')),
     path('accountconfirmation/', include('accountConfirmation.urls')),
     path('questions/', include('questions.urls')),
+    path('add-question/', include('addquestion.urls')),
 
 ]

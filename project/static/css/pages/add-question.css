@@ -1,0 +1,16 @@
+.user-info{
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 15px;
+
+}
+.mg-t-10{
+    margin-top: 10px;
+}
+.red{
+    color: #ff4d37;
+}
+.flex-between{
+    display: flex;
+    justify-content: space-between;
+}

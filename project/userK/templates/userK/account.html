@@ -13,8 +13,6 @@
 
 		<meta name="description" content="">
 		
-		<link rel="apple-touch-icon" sizes="57x57" href="{% static "img/favicon/apple-icon-57x57.png" %}">
-
         {% include 'main/headPiece.html' %}
 
 		<link rel="stylesheet" href="{% static "css/pages/account.css" %}">
@@ -67,7 +65,7 @@
 								<div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}"></div>
 							</div>
 							<div>
-								<input type="checkbox" name="hideMyName" style="width: auto;">
+								<input type="checkbox" name="hideMyName" style="width: auto;" {% if request.user.hideMyName == 1 %}checked{% endif %}>
 								<label for="nick"> Не отображать моё имя</label><br>
 							</div>
 							<input type="text" name="username" placeholder="Ник / псевдоним, под которым будет играть участник" value="{{ request.user }}" disabled>
