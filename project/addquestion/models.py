@@ -15,7 +15,7 @@ class Category(models.Model):
 
 
 class Theme(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, default='0', db_column='category')
     theme = models.CharField(max_length=50)
 
     def __str__(self):
@@ -26,10 +26,11 @@ class Questions(models.Model):
     diffChoices = (('10', '10'), ('20', '20'), ('30', '30'), ('40', '40'), ('50', '50'))
 
     premoderate = models.BooleanField(default=True)
-    author = models.ForeignKey(CustomUser, on_delete=models.SET(get_user_model()))
-    theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING)
+    author = models.ForeignKey(CustomUser, on_delete=models.SET(get_user_model()), db_column='username')
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, default='0', db_column='category')
+    theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING, default='0', db_column='theme')
     difficulty = models.CharField(choices=diffChoices, max_length=2, default='30')
-    question = models.TextField(max_length=256)
+    question = models.TextField(max_length=350)
     corectAnsw = models.CharField(max_length=64)
     answer2 = models.CharField(max_length=64)
     answer3 = models.CharField(max_length=64)

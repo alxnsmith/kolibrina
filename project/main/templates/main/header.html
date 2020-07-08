@@ -32,8 +32,13 @@
     <br>
     <div class="bg-danger error container">
         <p class="al-center">ERROR</p><br>
-        {% for error in errors %}
-            <p class="error">{{ error }}</p>
+        {% for err in errors %}
+            <p class="error"><a href="{{ err.link }}">{{ err.tlink }}</a>{{ err.error }}</p>
         {% endfor %}
+{#        {% for error in errors %}#}
+{#            {% for error, link, text_link in error %}#}
+{#                <p class="error"><a href="{{ link }}">{{ text_link }}</a>{{ error }}</p>#}
+{#            {% endfor %}#}
+{#        {% endfor %}#}
     </div>
 {% endif %}

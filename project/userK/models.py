@@ -24,7 +24,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     country = models.CharField(verbose_name='Страна', choices=countryChoices, max_length=128)
     area = models.CharField(verbose_name='Область', max_length=128)
     city = models.CharField(verbose_name='Город', max_length=128)
-    phoneNumber = models.CharField(verbose_name='Телефон', unique=True, max_length=20)
+    phoneNumber = models.CharField(verbose_name='Телефон', unique=True, max_length=20, null=True)
     swPlace = models.CharField(
         verbose_name='Место работы / учёбы: ВУЗ / колледж / школа - класс', max_length=128, blank=True
     )

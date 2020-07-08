@@ -184,7 +184,7 @@
         						{% else %}
                                     <div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email"></div>
                                 {% endif %}
-                                {% if request.user.phoneNumber != '' %}
+                                {% if request.user.phoneNumber != '' and request.user.phoneNumber != Null %}
                                     <div class="col-md-6"><input value="{{ request.user.phoneNumber }}" disabled></div>
                                 {% else %}
                                     <div class="col-md-6"><input id="tel" class="{{ error_phone }}" type="tel" name="phoneNumber" placeholder="Номер телефона" value="+7 "></div>
