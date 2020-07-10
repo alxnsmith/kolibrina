@@ -1,0 +1,9 @@
+.idea/*
+KolibrinaVENV/*
+project/.idea/*
+project/__pycache__/*
+project/*.sqlite3
+project/static/mediacontent/users/*
+!project/static/mediacontent/users/user_admin/
+project/static/mediacontent/banners/*
+!project/static/mediacontent/banners/banner.png
