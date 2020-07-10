@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'accountConfirmation',
     'questions',
     'addquestion',
+    'rules',
+    'chat',
 ]
 
 MIDDLEWARE = [

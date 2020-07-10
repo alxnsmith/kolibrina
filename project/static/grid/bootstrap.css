@@ -210,22 +210,3 @@
 .hidden-xs, .hidden-sm {
   display: none;
 }
-.bg-danger{
-  background-color: #F8D7DA !important;
-  color: #721C24 !important;
-}
-.error{
-  padding: 10px!important;
-  border-radius: 5px!important;
-  border: 2px solid #F5C6CB;
-}
-.hide{
-  display: none!important;
-}
-.al-center{
-  text-align: center;
-  align-content: center;
-}
-.border-red{
-  border-color: red;
-}
