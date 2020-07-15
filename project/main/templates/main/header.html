@@ -2,7 +2,7 @@
 <header>
 	<div class="header-gradient">
 		<div class="container flex-column">
-            <a href="{% url 'account' %}" id="brand-name" style="display: flex;">
+            <a href="{% url 'train' %}" id="brand-name" style="display: flex;">
                 <div class="logo">
                     <img src="{% static "img/logo.png" %}" alt="КОЛИБРИНА - Логотип">
                 </div>
@@ -15,7 +15,7 @@
 	</div>
 	<nav>
 		<a href="{% url 'account' %}"><span>Личный кабинет</span></a>
-		<a href="#"><span>Турниры</span></a>
+		<a href="{% url 'tournaments' %}"><span>Турниры</span></a>
 		<a href="#"><span>Рейтинги</span></a>
 		<a href="{% url 'questions' %}"><span>Добавить вопрос в базу</span></a>
 		<a href="{% url 'rules' %}"><span>Правила</span></a>
@@ -32,7 +32,7 @@
 </div>
 {% if errors %}
     <br>
-    <div class="bg-danger error container">
+    <div class="error container">
         <p class="al-center">ERROR</p><br>
         {% for err in errors %}
             <p class="error"><a href="{{ err.link }}">{{ err.tlink }}</a>{{ err.error }}</p>

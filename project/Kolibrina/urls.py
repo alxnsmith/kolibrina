@@ -14,5 +14,5 @@ urlpatterns = [
     path('add-question/', include('addquestion.urls')),
     path('rules/', include('rules.urls')),
     path('chat/', include('chat.urls')),
-
+    path('', include('game.urls')),
 ]

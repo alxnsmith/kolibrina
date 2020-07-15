@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'addquestion',
     'rules',
     'chat',
+    'game',
 ]
 
 MIDDLEWARE = [

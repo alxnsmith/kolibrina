@@ -10,7 +10,7 @@ def op(op):
     if op < 1000:
         max = 100
         deltamax = 100
-        league = 'J (юниор)'
+        league = 'J'
         return r(op, max, deltamax, league)
     elif op < 3000:
         max = 1000
