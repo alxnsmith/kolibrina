@@ -38,12 +38,20 @@ def train(request):
     quest_l(questions, 'q30')
     quest_l(questions, 'q40')
     quest_l(questions, 'q50')
-    return render(request, 'game/train.html', {'quest_list': quest_list})
+    return render(request, 'game/train.html', {'quest_list': quest_list, 'league': league})
 
 
 def win_lose(request):
-    status = request.path.strip('/')
-    if status == 'lose':
-        return render(request, 'game/win-lose/wrong.html')
-    elif status == 'win':
-        return render(request, 'game/win-lose/win.html')
+    if request.GET.__contains__('status'):
+        status = request.GET['status']
+        if status == 'lose':
+            author = '{0}'.format(request.GET['author'])
+            question = '{0}'.format(request.GET['question'])
+            correctAnswer = '{0}'.format(request.GET['correctAnswer'])
+            score = '<span>{0} баллов</span>'.format(request.GET['score'])
+            newGame = '{0}'.format(request.GET['newGame'])
+            return render(request, 'game/win-lose/wrong.html', {'question': question, 'correctAnswer': correctAnswer,
+                                                                'score': score, 'author': author, 'newGame': newGame})
+        elif status == 'win':
+            score = '<span>Вы набрали {0} баллов</span>'.format(request.GET['score'])
+            return render(request, 'game/win-lose/win.html', {'score': score})

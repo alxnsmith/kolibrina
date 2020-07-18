@@ -38,7 +38,7 @@
 			
 			<img src="{% static 'img/salute.jpg' %}" alt="" id="salute">
 			
-			<div href="#" class="status_red flex-row"><span>Вы набрали 57 баллов</span></div>
+			<div href="#" class="status_red flex-row">{{ score|safe }}</div>
 			
 			<div class="row">
 				<div class="col-sm-8 col-md-8 col-lg-8">

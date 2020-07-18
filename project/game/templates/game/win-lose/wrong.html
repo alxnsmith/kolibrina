@@ -2,6 +2,7 @@
 
 <html lang="ru">
 	<head>
+        {% load static %}
 		<meta charset="UTF-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,28 +13,10 @@
 
 		<meta name="description" content="">
 		
-		<link rel="apple-touch-icon" sizes="57x57" href="static/img/favicon/apple-icon-57x57.png">
-		<link rel="apple-touch-icon" sizes="60x60" href="static/img/favicon/apple-icon-60x60.png">
-		<link rel="apple-touch-icon" sizes="72x72" href="static/img/favicon/apple-icon-72x72.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="static/img/favicon/apple-icon-76x76.png">
-		<link rel="apple-touch-icon" sizes="114x114" href="static/img/favicon/apple-icon-114x114.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="static/img/favicon/apple-icon-120x120.png">
-		<link rel="apple-touch-icon" sizes="144x144" href="static/img/favicon/apple-icon-144x144.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="static/img/favicon/apple-icon-152x152.png">
-		<link rel="apple-touch-icon" sizes="180x180" href="static/img/favicon/apple-icon-180x180.png">
-		<link rel="icon" type="image/png" sizes="192x192"  href="static/img/favicon/android-icon-192x192.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="static/img/favicon/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="96x96" href="static/img/favicon/favicon-96x96.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="static/img/favicon/favicon-16x16.png">
-		<link rel="manifest" href="static/img/favicon/manifest.json">
-		<meta name="msapplication-TileColor" content="#ffffff">
-		<meta name="msapplication-TileImage" content="static/img/favicon/ms-icon-144x144.png">
-		<meta name="theme-color" content="#ffffff">
+		{% include 'main/headPiece.html' %}
 
-		<link rel="stylesheet" href="static/css/header/header.css">
-		<link rel="stylesheet" href="static/css/footer/footer.css">
-		<link rel="stylesheet" href="static/grid/bootstrap.css">
-		<link rel="stylesheet" href="static/css/pages/wrong.css">
+
+		<link rel="stylesheet" href="{% static 'css/pages/wrong.css'%}">
 
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
@@ -47,9 +30,8 @@
 	</head>
 	<body>
 
-		<?php 
-			include $_SERVER['DOCUMENT_ROOT']."/templates/header/header.php"; 
-		?>
+						{% include "main/header.html"%}
+
 		
 		<div class="mt20"></div>
 		<div class="container">
@@ -57,25 +39,23 @@
 			<div class="row">
 				<div class="col-sm-8 col-md-8 col-lg-8">			
 					<div class="text-author">
-						<span>Автор вопроса: Сергей Задорожный, г. Москва</span>
+						<span>Автор вопроса: {{ author }}</span>
 					</div>
 
 					<p id="info-question">Правильный ответ на вопрос: </p>
-					<p id="question">"Сколько медведей на картине И. Шишкина «Утро в сосновом лесу»?"</p>
+					<p id="question">"{{ question }}"</p>
 					<p id="answer">
-						<i class="fa fa-caret-right" aria-hidden="true"></i> <span>Четыре</span>
+						<i class="fa fa-caret-right" aria-hidden="true"></i> <span>{{ correctAnswer }}</span>
 					</p>
 					<div class="mt40"></div>
 
-					<div id="points">Вы набрали: <span>55,37 баллов</span></div>
+					<div id="points">Вы набрали: {{ score|safe }}</div>
 					<div class="new-game flex-row">
-						<a href="#">Новая игра</a>
+						<a href="{{ newGame }}">Новая игра</a>
 					</div>
 				</div>
 				<div class="col-sm-4 col-md-4 col-lg-4">
-					<?php 
-						include $_SERVER['DOCUMENT_ROOT']."/templates/banner/banner.php"; 
-					?>
+					{% include "main/banner.html"%}
 				</div>
 			</div>
 			
@@ -118,9 +98,8 @@
 			</div>
 		</form>
 
-		<?php 
-			include $_SERVER['DOCUMENT_ROOT']."/templates/footer/footer.php"; 
-		?>
+						{% include "main/footer.html"%}
+
 		
 		<script>
 			$(document).ready(function() {

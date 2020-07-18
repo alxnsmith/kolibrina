@@ -40,18 +40,18 @@
 
 			<div class="game_nav">
 				<div class="game_nav-btns j-c-Center">
-					<a href="" id="q_num" class="act">01</a>
-					<a href="" id="q_num">02</a>
-					<a href="" id="q_num">03</a>
-					<a href="" id="q_num">04</a>
-					<a href="" id="q_num">05</a>
-					<a href="" id="q_num">06</a>
-					<a href="" id="q_num">07</a>
-					<a href="" id="q_num">08</a>
-					<a href="" id="q_num">09</a>
-					<a href="" id="q_num">10</a>
-					<a href="" id="q_num">11</a>
-					<a href="" id="q_num">12</a>
+					<a href="javascript:void(0)" id="q_num" class="act">01</a>
+					<a href="javascript:void(0)" id="q_num">02</a>
+					<a href="javascript:void(0)" id="q_num">03</a>
+					<a href="javascript:void(0)" id="q_num">04</a>
+					<a href="javascript:void(0)" id="q_num">05</a>
+					<a href="javascript:void(0)" id="q_num">06</a>
+					<a href="javascript:void(0)" id="q_num">07</a>
+					<a href="javascript:void(0)" id="q_num">08</a>
+					<a href="javascript:void(0)" id="q_num">09</a>
+					<a href="javascript:void(0)" id="q_num">10</a>
+					<a href="javascript:void(0)" id="q_num">11</a>
+					<a href="javascript:void(0)" id="q_num">12</a>
 				</div>
 			</div>
 			<div class="text-author"></div>
@@ -121,33 +121,88 @@
 			});
 		</script>
         <script>
-            let quest_list = {{ quest_list|safe }};
             q_nums = document.querySelectorAll('a#q_num')
             let q_act = 0
+            let score = 0
+            let deltaScore
+            let currentQuest
+            let quest_list = {{ quest_list|safe }};
+
             function initGameField(a = 2) {
                 if (q_act>0) {
                     q_nums[q_act - 1].classList.remove('act')
                 }
+                currentQuest = quest_list[q_act]
                 q_nums[q_act].classList.add('act')
-                document.querySelector('.text-author').innerHTML = `<span>Автор вопроса: ${quest_list[q_act]['author']}</span>`
-                document.querySelector('.game__question').innerHTML = `${quest_list[q_act]['question']}`
+                document.querySelector('.text-author').innerHTML = `<span>Автор вопроса: ${currentQuest['author']}</span>`
+                document.querySelector('.game__question').innerHTML = `${currentQuest['question']}`
                 let answers = document.querySelectorAll('label#answer')
                 let c = Math.floor(Math.random()*4)
-                answers[c].innerHTML = `<input type="radio" name="answer" value="${quest_list[q_act['corectAnsw']]}">${quest_list[q_act]['corectAnsw']}<span></span>`
+                answers[c].innerHTML = `<input type="radio" name="answer" value="${quest_list[q_act]['corectAnsw']}">${currentQuest['corectAnsw']}<span></span>`
                 for(let i = 0; i < 4; i++) {
                     if (i !== c) {
-                        answers[i].innerHTML = `<input type="radio" name="answer" value="${quest_list[q_act][`answer${a}`]}">${quest_list[q_act][`answer${a}`]}<span></span>`
+                        answers[i].innerHTML = `<input type="radio" name="answer" value="${currentQuest[`answer${a}`]}">${currentQuest[`answer${a}`]}<span></span>`
                         a++
                     }}
                 q_act++
                 console.log(q_act)
+                console.log(currentQuest)
+
                 }
+
+            let league = '{{ league }}'
+            function startDeltaScore(){
+                if (league === 'J'){
+                    deltaScore = [3, 5, 7, 9, 15, 18, 21, 24, 32, 37, 41, 45]
+                } else if (league === 'L'){
+                    deltaScore = [5, 7, 9, 18, 21, 24, 37, 41, 45, 65, 70, 100]
+                } else if (league === 'Z'){
+                    deltaScore = [7, 9, 18, 21, 24, 37, 41, 45, 65, 70, 91, 100]
+                } else if (league === 'M'){
+                    deltaScore = [18, 21, 24, 32, 37, 41, 45, 60, 65, 70, 91, 100]
+                } else if (league === 'P'){
+                    deltaScore = [32, 37, 41, 45, 55, 60, 65, 70, 77, 84, 91, 100]
+                }
+                console.log(`Score delta: ${deltaScore}`)
+            }
+            function check() {
+                    let inp = document.getElementsByName('answer');
+                    for (let i = 0; i < inp.length; i++) {
+                        if (inp[i].type === "radio" && inp[i].checked) {
+                            return inp[i].value;
+                        }
+                    }
+                }
+
+            startDeltaScore()
             initGameField()
             document.querySelector('.game__button').onclick = function() {
+            if(check() === undefined){
+               alert('!!!')
+            }
+            else {
+
+                console.log(`Score delta: ${deltaScore}`)
+                console.log(deltaScore)
+
+
+                if(check() === quest_list[q_act-1]['corectAnsw']){score+=deltaScore[q_act-1]}
+                else {
+                    window.location.replace(`{% url 'result-game' %}?status=lose&`+
+                    `question=${encodeURIComponent(quest_list[q_act-1]['question'])}&`+
+                    `correctAnswer=${encodeURIComponent(quest_list[q_act-1]['corectAnsw'])}&`+
+                    `score=${score}&`+`author=${encodeURIComponent(quest_list[1]['author'])}&`+
+                    `newGame=${window.location.href}`)
+                }
+
+
+                console.log(`Score: ${score}`)
                 if (q_act<12){
                     initGameField()}
-                else {window.location.replace({% url 'win' %})}
+                else {window.location.replace(`{% url 'result-game' %}?status=win&score=${score}`)}
             }
+            }
+
         </script>
 
 	</body>
