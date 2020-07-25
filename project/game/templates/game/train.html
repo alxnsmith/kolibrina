@@ -62,7 +62,7 @@
 						<div class="game__question">
 							Сколько медведей на картине И. Шишкина "Утро в сосновом лесу"?
 						</div>
-						<div class="game__options">
+						<div class="game__options" style="transition: all 2s cubic-bezier(0.22, 1.15, 0.25, 0.96) 0s; height: 114px;">
 							<label id="answer">
 								<input type="radio" name="answer" value="Два">
 								Два
@@ -89,11 +89,11 @@
 						</div>
 					</div>
 					<div class="col-sm-4 col-md-4 col-lg-4 game__functional">
-						<a href="#">Спросить у мастера</a>
-						<a href="#">Убрать 2 ответа</a>
-						<a href="#">Пропустить вопрос</a>
-						<a href="#">Ответ со второй попытки</a>
-						<a href="#">Добавить баллы на счёт</a>
+						<a href="javascript:void(0)" class="hint1">Спросить у мастера</a>
+						<a href="javascript:void(0)" class="hint2">Убрать 2 ответа</a>
+						<a href="javascript:void(0)" class="hint3">Пропустить вопрос</a>
+						<a href="javascript:void(0)" class="hint4">Ответ со второй попытки</a>
+						<a href="javascript:void(0)">Добавить баллы на счёт</a>
 					</div>
 				</div>
 			</form>
@@ -113,7 +113,6 @@
 				<a href="#">10</a>
 			</div>
 		</div>
-
 		{% include "main/footer.html"%}
 		<script>
 			$(document).ready(function() {
@@ -121,36 +120,173 @@
 			});
 		</script>
         <script>
+
+            let league = '{{ league }}'
+            let result_game = '{% url 'result-game' %}'
+            let quest_list = {{ quest_list|safe }};
+            let quest_template = '{{ quest_template|safe }}'.replace('(', '').replace(')', '').split(', ')
+
             q_nums = document.querySelectorAll('a#q_num')
             let q_act = 0
             let score = 0
             let deltaScore
+
+            let bonus = 0
+            let dif_combo = 0
+            let combo = 0
+            let attempts
+            let bf_cor = false
+            let bf_dif
+            let beforeQuest
+            let count_dif = 5
+            let hintsCounter = {askMaster: 1, twoAnswers: 1, skipQuest: 1, secondAttempt: 1}
+            let inp
+            let hintsBonus
+            let hintSum
+
             let currentQuest
-            let quest_list = {{ quest_list|safe }};
+
+            function shuffle(array) {
+                array.sort(() => Math.random() - 0.5);
+            }
+
+            function getInp() {
+                let inputs = document.getElementsByName('answer');
+                for (let i = 0; i < inputs.length; i++) {
+                    if (inputs[i].type === "radio" && inputs[i].checked) {
+                        inp = inputs[i];
+                    }
+                }
+            }
+
+            function aVoidConstructor(value) {
+                return `<a href="javascript:void(0)">${value}</a>`
+            }
+
+            function divHintConstructor(value, cls) {
+                return `<div class="${cls}" style="background: #86859e; font-size: 18px; text-shadow: 3px -3px 3px #000;` +
+                    `color: #ffffff; width: 100%; box-shadow: inset 8px -8px 20px -10px black;` +
+                    'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +
+                    `">${value}</div>`
+            }
+
+            function checkAnswer() {
+                if(check() === undefined){
+                    alert('Выберите один из предложенных вариантов ответа.')
+                } else if(check() === quest_list[q_act-1]['corectAnsw']){
+                    attempts = 1
+                    if (bf_dif === currentQuest['difficulty']) {
+                        count_dif++
+                    }else if (bf_dif !== undefined) {
+                        count_dif = 5-quest_template.filter( item => item === bf_dif ).length+1
+                    }else {
+                        bf_dif = currentQuest['difficulty']
+                        count_dif = 5-quest_template.filter( item => item === bf_dif ).length+1
+                    }
+                    bonus = (combo - 1) * (currentQuest['difficulty'] + count_dif) / (70 - currentQuest['difficulty'])
+                    score+=Math.round(deltaScore[q_act-1]+bonus+hintsBonus)
+
+                    bf_dif = currentQuest['difficulty']
+                    bf_cor = true
+                    if (bf_cor){combo++}
+                    if (q_act < 12) {
+                        initGameField()
+                    } else {
+                        score += 290
+                        score = score / 10
+                        window.location.replace(`${result_game}?status=win&score=${score}`)
+                    }
+                } else if (attempts > 1){
+                    attempts = 1
+                    getInp()
+                    inp.nextSibling.nextSibling.style['backgroundColor'] = 'red'
+                    inp.remove()
+                } else {
+                    bf_cor = false
+                    combo = 0
+                    window.location.replace(`${result_game}?status=lose&`+
+                    `question=${encodeURIComponent(quest_list[q_act-1]['question'])}&`+
+                    `correctAnswer=${encodeURIComponent(quest_list[q_act-1]['corectAnsw'])}&`+
+                    `score=${score}&`+`author=${encodeURIComponent(quest_list[1]['author'])}&`+
+                    `newGame=${window.location.href}`)
+                }
+
+                log()
+            }
+
+            function initHints() {
+                if (hintsCounter['askMaster'] === 0){
+                    document.querySelector('.hint1').outerHTML = divHintConstructor('Спросить у мастера', 'hint1')
+                }
+                if (hintsCounter['twoAnswers'] === 0){
+                    document.querySelector('.hint2').outerHTML = divHintConstructor('Убрать 2 ответа', 'hint2')
+                }
+                if (hintsCounter['skipQuest'] === 0){
+                    document.querySelector('.hint3').outerHTML = divHintConstructor('Пропустить вопрос', 'hint3')
+                }
+                if (hintsCounter['secondAttempt'] === 0) {
+                    document.querySelector('.hint4').outerHTML = divHintConstructor('Ответ со второй попытки', 'hint4')
+                }
+            }
+
+            function log() {
+                console.log('---------------------------------------------------------------')
+                console.log(`Score delta: ${deltaScore}`)
+                console.log(`Before score: ${Math.round(score)}`)
+                console.log('Template difficulty: ', quest_template)
+                console.log('Hints bonus: ', hintsBonus)
+                console.log('Counter difficulty: ', count_dif)
+                console.log('Before difficulty: ', bf_dif)
+                console.log('Current difficulty: ', currentQuest['difficulty'])
+                console.log('Current question: ', q_act)
+                console.log('Combo: ', combo)
+                console.log('B0nus: ', Math.round(bonus))
+                console.log('+ Score: ', Math.round(deltaScore[q_act-1]+bonus))
+                console.log(`Score: ${score}`)
+            }
 
             function initGameField(a = 2) {
+                initHints()
+                attempts = 1
+                document.querySelector('.game__options').style['height']= '114px'
+                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
                 if (q_act>0) {
                     q_nums[q_act - 1].classList.remove('act')
                 }
                 currentQuest = quest_list[q_act]
+                if (quest_list[q_act-1]){
+                    beforeQuest = quest_list[q_act-1]
+                }else{
+                    beforeQuest = {'difficulty': 0}
+                }
                 q_nums[q_act].classList.add('act')
                 document.querySelector('.text-author').innerHTML = `<span>Автор вопроса: ${currentQuest['author']}</span>`
                 document.querySelector('.game__question').innerHTML = `${currentQuest['question']}`
                 let answers = document.querySelectorAll('label#answer')
-                let c = Math.floor(Math.random()*4)
-                answers[c].innerHTML = `<input type="radio" name="answer" value="${quest_list[q_act]['corectAnsw']}">${currentQuest['corectAnsw']}<span></span>`
+                for (let i = 0; i<answers['length']; i++){
+                    answers[i].remove()
+                }
+                answers = document.querySelector('.game__options')
+                let answersArray = []
                 for(let i = 0; i < 4; i++) {
-                    if (i !== c) {
-                        answers[i].innerHTML = `<input type="radio" name="answer" value="${currentQuest[`answer${a}`]}">${currentQuest[`answer${a}`]}<span></span>`
+                    if (i !== 0) {
+                        answersArray.splice(3, 1, `<label id="answer"><input type="radio" name="answer" value="${currentQuest[`answer${a}`]}">${currentQuest[`answer${a}`]}<span></span></label>`)
                         a++
-                    }}
+                    }else {
+                        answersArray.splice(3, 1, `<label id="answer"><input type="radio" name="answer" value="${quest_list[q_act]['corectAnsw']}">${currentQuest['corectAnsw']}<span></span></label>`)
+                    }
+                }
+                shuffle(answersArray)
+                for(let i = 0; i < 4; i++) {
+                    answers.innerHTML += answersArray[i]
+                    a++
+                }
                 q_act++
-                console.log(q_act)
+                console.log('Current question: ', q_act)
                 console.log(currentQuest)
 
                 }
 
-            let league = '{{ league }}'
             function startDeltaScore(){
                 if (league === 'J'){
                     deltaScore = [3, 5, 7, 9, 15, 18, 21, 24, 32, 37, 41, 45]
@@ -163,46 +299,73 @@
                 } else if (league === 'P'){
                     deltaScore = [32, 37, 41, 45, 55, 60, 65, 70, 77, 84, 91, 100]
                 }
-                console.log(`Score delta: ${deltaScore}`)
             }
+
             function check() {
-                    let inp = document.getElementsByName('answer');
-                    for (let i = 0; i < inp.length; i++) {
-                        if (inp[i].type === "radio" && inp[i].checked) {
-                            return inp[i].value;
-                        }
-                    }
+                getInp()
+                if (inp !== undefined){
+                    return inp.value
+                }else{
+                    return undefined
                 }
+
+            }
+
 
             startDeltaScore()
             initGameField()
+
             document.querySelector('.game__button').onclick = function() {
-            if(check() === undefined){
-               alert('!!!')
-            }
-            else {
-
-                console.log(`Score delta: ${deltaScore}`)
-                console.log(deltaScore)
-
-
-                if(check() === quest_list[q_act-1]['corectAnsw']){score+=deltaScore[q_act-1]}
-                else {
-                    window.location.replace(`{% url 'result-game' %}?status=lose&`+
-                    `question=${encodeURIComponent(quest_list[q_act-1]['question'])}&`+
-                    `correctAnswer=${encodeURIComponent(quest_list[q_act-1]['corectAnsw'])}&`+
-                    `score=${score}&`+`author=${encodeURIComponent(quest_list[1]['author'])}&`+
-                    `newGame=${window.location.href}`)
+                if (attempts === 1){
+                    checkAnswer()
+                }else if(attempts > 1){
+                    checkAnswer()
                 }
-
-
-                console.log(`Score: ${score}`)
-                if (q_act<12){
-                    initGameField()}
-                else {window.location.replace(`{% url 'result-game' %}?status=win&score=${score}`)}
             }
+            document.querySelector('.hint1').onclick = function () {
+                document.querySelector('.hint1').outerHTML =
+                    '<div class="hint1" style="background: #d2d2d2; font-size: 18px;' +
+                    'color: #6b6b6b; text-shadow: 1px 1px 1px black; width: 100%;' +
+                    'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +
+                    `">Мастер: Я считаю, что правильный ответ - "<span style="text-transform: none">${currentQuest['corectAnsw']}</span>"</div>`
+                hintsCounter['askMaster'] = 0
+                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
+                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
             }
-
+            document.querySelector('.hint2').onclick = function () {
+                hintsCounter['twoAnswers'] = 0
+                initHints()
+                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
+                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
+                let c = 0
+                let currentAnswers = document.getElementsByName('answer')
+                for (let i=0; i<4; i++){
+                    if (c<2){
+                        if (currentAnswers[i].value !== currentQuest['corectAnsw']) {
+                            currentAnswers[i].parentElement.remove()
+                            c++
+                        }
+                    }
+                }
+                document.querySelector('.game__options').style['height']= '52px'
+            }
+            document.querySelector('.hint3').onclick = function () {
+                hintsCounter['skipQuest'] = 0
+                initHints()
+                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
+                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
+                initGameField()
+            }
+            document.querySelector('.hint4').onclick = function () {
+                hintsCounter['secondAttempt'] = 0
+                initHints()
+                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
+                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
+                attempts = 2
+            }
+            document.querySelector('.game__functional a:nth-child(5)').onclick = function () {
+                alert('Очки сохранены!')
+            }
         </script>
 
 	</body>

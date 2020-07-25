@@ -27,7 +27,7 @@ def train(request):
                 quest_list.append(d)
 
     league = level.op(int(request.user.opLVL))['league']
-    print(league)
+    quest_template = defs.q_template(league)
     # u = defs.q_questions(defs.q_template(u), Questions.objects.all())
     questions = defs.q_questions(league, Questions)
     questions = {'q10': questions['10'], 'q20': questions['20'], 'q30': questions['30'],
@@ -38,7 +38,7 @@ def train(request):
     quest_l(questions, 'q30')
     quest_l(questions, 'q40')
     quest_l(questions, 'q50')
-    return render(request, 'game/train.html', {'quest_list': quest_list, 'league': league})
+    return render(request, 'game/train.html', {'quest_list': quest_list, 'quest_template': quest_template, 'league': league})
 
 
 def win_lose(request):
