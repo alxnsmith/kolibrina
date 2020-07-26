@@ -66,7 +66,7 @@
 							</div>
 							<div>
 								<input type="checkbox" name="hideMyName" style="width: auto;" {% if request.user.hideMyName == 1 %}checked{% endif %}>
-								<label for="nick"> Не отображать моё имя</label><br>
+								<label for="nick">Не отображать моё имя и фамилию</label><br>
 							</div>
 							<input type="text" name="username" placeholder="Ник / псевдоним, под которым будет играть участник" value="{{ request.user }}" disabled>
                             <div class="row">
@@ -133,7 +133,11 @@
 {#                                        <option value="2001">2001</option>#}
 {#                                        <option label="2000" value="2000" selected>2000</option>#}
 {#                                    </select>                                   #}
-                                    {{ form.birthday }}
+                                    {% if request.user.birthday != None %}
+                                        <input type="date" name="birthday" value="" required="" id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}" disabled>
+                                    {% else %}
+                                        <input type="date" name="birthday" value="" required="" id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}">
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-6" id="gender">
                                     <div class="flex-row">
@@ -197,34 +201,37 @@
 							<div class="mt5"></div>
 							<div id="leagues" class="flex-row">
 								<span>Принадлежность к лиге</span>
-								<div>
-									<input id="child" type="radio" name="league" value="child">
-									<label for="child">Детская лига</label>						
-								</div>
-								<div>
-									<input id="school" type="radio" name="league" value="school">
-									<label for="school">Школьная лига</label>						
-								</div>
-								<div>
-									<input id="college" type="radio" name="league" value="college">
-									<label for="college">Лига колледжей</label>						
-								</div>
-								<div>
-									<input id="student" type="radio" name="league" value="student">
-									<label for="student">Студенческая лига</label>					
-								</div>
-								<div>
-									<input id="major" type="radio" name="league" value="major" checked>
-									<label for="major">Высшая лига</label>			
-								</div>
-								<div>
-									<input id="premier" type="radio" name="league" value="premier">
-									<label for="premier">Премьер-лига</label>					
-								</div>
-								<div>
-									<input id="super" type="radio" name="league" value="super">
-									<label for="super">Супер лига</label>					
-								</div>
+                                {% for i in form.league %}
+                                    <div style="margin: 2px">{{ i }}</div>
+                                {% endfor %}
+{#								<div>#}
+{#									<input id="child" type="radio" name="league" value="child">#}
+{#									<label for="child">Детская лига</label>						#}
+{#								</div>#}
+{#								<div>#}
+{#									<input id="school" type="radio" name="league" value="school">#}
+{#									<label for="school">Школьная лига</label>						#}
+{#								</div>#}
+{#								<div>#}
+{#									<input id="college" type="radio" name="league" value="college">#}
+{#									<label for="college">Лига колледжей</label>						#}
+{#								</div>#}
+{#								<div>#}
+{#									<input id="student" type="radio" name="league" value="student">#}
+{#									<label for="student">Студенческая лига</label>					#}
+{#								</div>#}
+{#								<div>#}
+{#									<input id="major" type="radio" name="league" value="major" checked>#}
+{#									<label for="major">Высшая лига</label>			#}
+{#								</div>#}
+{#								<div>#}
+{#									<input id="premier" type="radio" name="league" value="premier">#}
+{#									<label for="premier">Премьер-лига</label>					#}
+{#								</div>#}
+{#								<div>#}
+{#									<input id="super" type="radio" name="league" value="super">#}
+{#									<label for="super">Супер лига</label>					#}
+{#								</div>#}
 							</div>
 							<div class="mt10"></div>
 							<div class="line"></div>
@@ -420,12 +427,12 @@
 				$(this).bind('keyup', function(){
 					var num = this.value.replace( '+7' , '' ).replace( /\D/g, '' ).split( /(?=.)/ ), i = num.length;
 					if ( 0 <= i ) num.unshift( '+7' );
-					if ( 1 <= i ) num.splice( 1, 0, ' ' );
-					if ( 4 <= i ) num.splice( 5, 0, ' ' );
-					if ( 7 <= i ) num.splice( 9, 0, '-' );
-					if ( 9 <= i ) num.splice( 12, 0, '-' );
-					if ( 11 <= i ) num.splice( 15, num.length - 15 );
-					this.value = num.join( '' );
+					if ( 1 <= i ) num.splice(1, 0, ' ');
+					if ( 4 <= i ) num.splice(5, 0, ' ');
+					if ( 7 <= i ) num.splice(9, 0, '-');
+					if ( 9 <= i ) num.splice(12, 0, '-');
+					if ( 11 <= i ) num.splice(15, num.length - 15 );
+					this.value = num.join('');
 		    		});
 		    	});
 		    };
@@ -441,5 +448,71 @@
 				$(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');
 			});
 		</script>
+        <script>
+            console.log()
+            let birthday = '{{ request.user.birthday }}'
+            if (birthday !== 'None') {
+                birthday = birthday.split(' ')
+                function monthToD() {
+                    if (birthday[1] === 'января') {
+                        return '01'
+                    } else if (birthday[1] === 'февраля') {
+                        return '02'
+                    } else if (birthday[1] === 'марта') {
+                        return '03'
+                    } else if (birthday[1] === 'апреля') {
+                        return '04'
+                    } else if (birthday[1] === 'мая') {
+                        return '05'
+                    } else if (birthday[1] === 'июня') {
+                        return '06'
+                    } else if (birthday[1] === 'июля') {
+                        return '07'
+                    } else if (birthday[1] === 'августа') {
+                        return '08'
+                    } else if (birthday[1] === 'сентября') {
+                        return '09'
+                    } else if (birthday[1] === 'октября') {
+                        return '10'
+                    } else if (birthday[1] === 'ноября') {
+                        return '11'
+                    } else if (birthday[1] === 'декабря') {
+                        return '12'
+                    }
+                }
+
+                document.querySelector('#id_birthday').value = `${birthday[2]}-${monthToD()}-${birthday[0]}`
+            }
+        </script>
+        <script>
+            function initLeagues(){
+                let yearBirthday = document.querySelector('#id_birthday').value.split('-')[0]
+                let date = new Date()
+                let currentYear = date.getFullYear()
+                let age = currentYear - yearBirthday
+                console.log(age)
+                if (age > 0 && age < 100) {
+                    if (age > 0 && age < 18) {
+                        document.querySelector('#id_league_0').disabled = ''
+                        document.querySelector('#id_league_1').disabled = ''
+                        document.querySelector('#id_league_2').disabled = ''
+                    } else if (age < 22) {
+                        document.querySelector('#id_league_0').disabled = ' '
+                        document.querySelector('#id_league_1').disabled = ''
+                        document.querySelector('#id_league_2').disabled = ''
+                    } else if (age < 25) {
+                        document.querySelector('#id_league_0').disabled = ' '
+                        document.querySelector('#id_league_1').disabled = ' '
+                        document.querySelector('#id_league_2').disabled = ''
+                    } else if (age > 25) {
+                        document.querySelector('#id_league_0').disabled = ' '
+                        document.querySelector('#id_league_1').disabled = ' '
+                        document.querySelector('#id_league_2').disabled = ' '
+                    }
+                }
+            }
+            initLeagues()
+            document.querySelector('#id_birthday').oninput = function() {initLeagues()}
+        </script>
 	</body>
 </html>

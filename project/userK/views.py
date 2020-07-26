@@ -5,6 +5,7 @@ from userK.models import CustomUser as User
 from media import forms as media, models
 from django.conf import settings
 import os
+import datetime
 
 
 # class account(FormView):
@@ -39,10 +40,12 @@ def account(request):
             mainBanner = str(models.Banner.objects.filter(name='MainBanner')[0].image)
         else:
             mainBanner = 'img/banner.png'
+        maxDateField = '-'.join((str(datetime.date.today().year), datetime.date.today().strftime('%m-%d')))
+        minDateField = '-'.join((str(datetime.date.today().year - 100), datetime.date.today().strftime('%m-%d')))
         data = {'userID': str(request.user.id).rjust(7, '0'), 'gender': u['gender'],
                 'form': form, 'errors': [], 'error_phone': '', 'r': request.user,
                 'level': level.op(int(u['opLVL'])), 'AvatarForm': media.AvatarForm(initial={'user': request.user, }),
-                'AvatarImage': ava, 'mainBanner': mainBanner
+                'AvatarImage': ava, 'mainBanner': mainBanner, 'maxDateField': maxDateField, 'minDateField': minDateField,
                 }
         if request.POST:
             if request._post.__contains__('phoneNumber'):

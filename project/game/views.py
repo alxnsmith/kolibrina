@@ -25,8 +25,10 @@ def train(request):
                 d['theme'] = str(Theme.objects.get(id=d['theme_id']))
                 del d['_state'], d['id'], d['premoderate'], d['author_id'], d['category_id'], d['theme_id'],
                 quest_list.append(d)
-
-    league = level.op(int(request.user.opLVL))['league']
+    if str(request.user) != 'AnonymousUser':
+        league = level.op(int(request.user.opLVL))['league']
+    else:
+        league = 'Z'
     quest_template = defs.q_template(league)
     # u = defs.q_questions(defs.q_template(u), Questions.objects.all())
     questions = defs.q_questions(league, Questions)
