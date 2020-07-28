@@ -1,34 +1,34 @@
 def op(op):
 
-    def r(op, max, deltamax, league):
+    def r(op, max, deltamax, dif):
         for i in range(0, 981):
             if op < max:
-                return {'rating': str(op) + '/' + str(max), 'lvl': i + 1, 'league': league}
+                return {'rating': str(op) + '/' + str(max), 'lvl': i, 'dif': dif}
             else:
                 max += deltamax
 
     if op < 1000:
         max = 100
         deltamax = 100
-        league = 'J'
-        return r(op, max, deltamax, league)
+        dif = 'J'
+        return r(op, max, deltamax, dif)
     elif op < 3000:
         max = 1000
         deltamax = 200
-        league = 'L'
-        return r(op, max, deltamax, league)
+        dif = 'L'
+        return r(op, max, deltamax, dif)
     elif op < 6000:
         max = 3000
         deltamax = 300
-        league = 'Z'
-        return r(op, max, deltamax, league)
+        dif = 'Z'
+        return r(op, max, deltamax, dif)
     elif op < 10000:
         max = 6000
         deltamax = 400
-        league = 'M'
-        return r(op, max, deltamax, league)
+        dif = 'M'
+        return r(op, max, deltamax, dif)
     else:
         max = 10000
         deltamax = 500
-        league = 'P'
-        return r(op, max, deltamax, league)
+        dif = 'P'
+        return r(op, max, deltamax, dif)

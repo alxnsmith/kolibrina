@@ -54,7 +54,7 @@
 						<div class="mt40"></div>
 						<div id="level">
 							<strong>Уровень игрока</strong>
-							<span style="color: #5752FF;">{{ level.league }} / {{ level.lvl }}</span>
+							<span style="color: #5752FF;">{{ level.dif }} / {{ level.lvl }}</span>
 							<span>J;L;Z;M;P / 1-10</span>
 						</div>
 					</div>
@@ -167,17 +167,9 @@
                             <br>
                             <div class="row">
 								<div class="col-md-6">
-{#									<label for="country">Ваш регион: </label>#}
-{#									<select id="area">#}
-{#										<option label="Республика Крым" value="1" selected>Республика Крым</option>#}
-{#										<option>Алтайский край</option>#}
-{#										<option>Архангельская область</option>#}
-{#										<option>...</option>#}
-{#									</select>#}
                                     {{ form.area }}
 								</div>
 								<div class="col-md-6">
-{#									<input type="text" name="city" placeholder="Город" value="{{ request.user.city }}">#}
                                     {{ form.city }}
 								</div>
 							</div>
@@ -201,41 +193,13 @@
 							<div class="mt5"></div>
 							<div id="leagues" class="flex-row">
 								<span>Принадлежность к лиге</span>
-                                {% for i in form.league %}
-                                    <div style="margin: 2px">{{ i }}</div>
+                                {% for choice in form.league %}
+                                    <div class="league" style="margin: 2px">{{ choice }}</div>
                                 {% endfor %}
-{#								<div>#}
-{#									<input id="child" type="radio" name="league" value="child">#}
-{#									<label for="child">Детская лига</label>						#}
-{#								</div>#}
-{#								<div>#}
-{#									<input id="school" type="radio" name="league" value="school">#}
-{#									<label for="school">Школьная лига</label>						#}
-{#								</div>#}
-{#								<div>#}
-{#									<input id="college" type="radio" name="league" value="college">#}
-{#									<label for="college">Лига колледжей</label>						#}
-{#								</div>#}
-{#								<div>#}
-{#									<input id="student" type="radio" name="league" value="student">#}
-{#									<label for="student">Студенческая лига</label>					#}
-{#								</div>#}
-{#								<div>#}
-{#									<input id="major" type="radio" name="league" value="major" checked>#}
-{#									<label for="major">Высшая лига</label>			#}
-{#								</div>#}
-{#								<div>#}
-{#									<input id="premier" type="radio" name="league" value="premier">#}
-{#									<label for="premier">Премьер-лига</label>					#}
-{#								</div>#}
-{#								<div>#}
-{#									<input id="super" type="radio" name="league" value="super">#}
-{#									<label for="super">Супер лига</label>					#}
-{#								</div>#}
 							</div>
 							<div class="mt10"></div>
 							<div class="line"></div>
-							<div class="mt5"></div>
+                            <div class="mt5"></div>
 							<div class="row" id="panel-captain">
 								<div class="col-md-6">
 									<div class="flex-row">
@@ -246,15 +210,15 @@
 										<div>
 											<input type="text" placeholder="Добавить игрока" style="min-width: 210px;"> <a href="#">Удалить</a>
 										</div>
-										
+
 										<div class="clear"></div>
 										<div>
 											<input id="base1" type="radio" value="base">
-											<label for="base1">Базовый</label>					
+											<label for="base1">Базовый</label>
 										</div>
 										<div>
 											<input id="legionary1" type="radio" value="legionary">
-											<label for="legionary1">Легионер</label>					
+											<label for="legionary1">Легионер</label>
 										</div>
 									</div>
 								</div>
@@ -263,42 +227,42 @@
 										<span style="text-align: center;">Ваш статус в команде</span>
 										<div>
 											<input id="captain" type="radio" value="captain" checked>
-											<label for="captain">Капитан</label>					
+											<label for="captain">Капитан</label>
 										</div>
 										<div>
 											<input id="base" type="radio" value="base">
-											<label for="base">Базовый</label>					
+											<label for="base">Базовый</label>
 										</div>
 										<div>
 											<input id="legionary" type="radio" value="legionary">
-											<label for="legionary">Легионер</label>					
+											<label for="legionary">Легионер</label>
 										</div>
 
 
 										<span style="text-align: center;">Ваш номер в команде</span>
 										<div>
 											<input id="num1" type="radio" value="1" checked>
-											<label for="num1">1</label>					
+											<label for="num1">1</label>
 										</div>
 										<div>
 											<input id="num2" type="radio" value="2">
-											<label for="num2">2</label>					
+											<label for="num2">2</label>
 										</div>
 										<div>
 											<input id="num3" type="radio" value="3">
-											<label for="num3">3</label>					
+											<label for="num3">3</label>
 										</div>
 										<div>
 											<input id="num4" type="radio" value="4">
-											<label for="num4">4</label>					
+											<label for="num4">4</label>
 										</div>
 										<div>
 											<input id="num5" type="radio" value="5">
-											<label for="num5">5</label>					
+											<label for="num5">5</label>
 										</div>
 										<div>
 											<input id="num6" type="radio" value="6">
-											<label for="num6">6</label>					
+											<label for="num6">6</label>
 										</div>
 									</div>
 								</div>
@@ -508,6 +472,12 @@
                         document.querySelector('#id_league_0').disabled = ' '
                         document.querySelector('#id_league_1').disabled = ' '
                         document.querySelector('#id_league_2').disabled = ' '
+                    }
+                }
+                let leagues = document.querySelectorAll('.league')
+                for (let i=0; i<leagues.length; i++){
+                    if (leagues[i].querySelector('input').value === '{{ league }}') {
+                        leagues[i].querySelector('input').checked = true
                     }
                 }
             }

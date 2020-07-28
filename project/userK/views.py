@@ -45,7 +45,8 @@ def account(request):
         data = {'userID': str(request.user.id).rjust(7, '0'), 'gender': u['gender'],
                 'form': form, 'errors': [], 'error_phone': '', 'r': request.user,
                 'level': level.op(int(u['opLVL'])), 'AvatarForm': media.AvatarForm(initial={'user': request.user, }),
-                'AvatarImage': ava, 'mainBanner': mainBanner, 'maxDateField': maxDateField, 'minDateField': minDateField,
+                'AvatarImage': ava, 'mainBanner': mainBanner, 'league': str(request.user.league),
+                'maxDateField': maxDateField, 'minDateField': minDateField,
                 }
         if request.POST:
             if request._post.__contains__('phoneNumber'):

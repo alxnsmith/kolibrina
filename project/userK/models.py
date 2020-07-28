@@ -30,6 +30,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
     opLVL = models.CharField(verbose_name='Опыт(Очки уровня)', default=0, max_length=128)
+    league = models.CharField(verbose_name='Лига', choices=(
+        ('l1', 'Школьная лига'), ('l2', 'Лига колледжей'), ('l3', 'Студенческая лига'),
+        ('l4', 'Высшая лига'), ('l5', 'Премьер-лига'), ('l6', 'Супер-лига')),
+        blank=True, max_length=128)
     scoreHistory = models.TextField(verbose_name='История счета', default=[])
 
     countMaster = models.CharField(verbose_name='Счетчик подсказок мастера', default=0, max_length=128)
