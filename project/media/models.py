@@ -2,16 +2,18 @@ from django.db import models
 from os import remove, path, listdir
 from django.conf import settings
 from re import match
+from django.shortcuts import redirect
 
 
 def user_directory_path(instance, filename):
-    user_directory_path = 'users/' + 'user_{0}/'.format(instance.user)
-    if path.exists(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\')):
-        avatarFile = match(r'Avatar\.(jpg|png|jpeg)',
-                           ' '.join(listdir(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path)))
-        if avatarFile is not None:
-            remove(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\') + avatarFile.group())
-    return user_directory_path + 'Avatar.' + filename.split('.')[-1]
+    if ['png', 'jpg', 'jpeg', 'bmp', 'webp', ].__contains__(filename.split('.')[-1]):
+        user_directory_path = 'users/' + 'user_{0}/'.format(instance.user)
+        if path.exists(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\')):
+            avatarFile = match(r'Avatar\.(jpg|png|jpeg|bmp|webp)',
+                               ' '.join(listdir(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path)))
+            if avatarFile is not None:
+                remove(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\') + avatarFile.group())
+        return user_directory_path + 'Avatar.' + filename.split('.')[-1]
 
 
 # def user_directory_path(instance, filename):

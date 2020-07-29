@@ -40,11 +40,14 @@
 							<h3>ID {{ userID }}</h3>
 							<div class="clear"></div>
 							<img src="{% if AvatarImage != False %}{{ AvatarImage }}{% else %}{% static 'img/default/defaultAvatar.jpg' %}{% endif %}" alt="">
-							<form action="/media/" method="POST" enctype="multipart/form-data"> {% csrf_token %}
-                                {% for field in AvatarForm %}
-                                    {{ field }}
-                                {% endfor %}
-                                <button value="submit">Загрузить новое фото</button>
+                            <div class="clear"></div>
+                            <div style="margin-top: 10px"><button class="set-av" style="background-color: #9089ff; border: none; padding: 5px; color: #ffffff;">Сменить аватар</button></div>
+							<form action="/media/" method="POST" enctype="multipart/form-data" style="display: none"> {% csrf_token %}
+                                    <input type="file" name="image" accept=".jpg, .jpeg, .png, .bmp, .webp" required="" id="id_image">
+
+                                    <input type="hidden" name="user" value="admin" id="id_user">
+
+                                <button class="av-btn" value="submit">Загрузить новое фото</button>
 							</form>
 						</div>
 						<div id="rating">
@@ -61,8 +64,19 @@
 					<div class="col-sm-8 col-md-8 col-lg-8" id="data">
 						<form action="" method="POST"> {% csrf_token %}
 							<div class="row">
-								<div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока" value="{{ request.user.firstName }}"></div>
-								<div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}"></div>
+
+                                {% if request.user.firstName != '' %}
+								    <div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока" value="{{ request.user.firstName }}" disabled></div>
+								{% else %}
+								    <div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока" value="{{ request.user.firstName }}"></div>
+                                {% endif %}
+
+                                {% if request.user.lastName != '' %}
+                                    <div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}" disabled></div>
+                                {% else %}
+								    <div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}"></div>
+                                {% endif %}
+
 							</div>
 							<div>
 								<input type="checkbox" name="hideMyName" style="width: auto;" {% if request.user.hideMyName == 1 %}checked{% endif %}>
@@ -143,20 +157,25 @@
                                     <div class="flex-row">
                                         <span>Пол</span>
                                         <br>
-                                        {% for choice in form.gender %}
-                                            {{ choice }}
-                                        {% endfor %}
-{#                                        {% if gender == 'Male' %}#}
-{#                                            <input id="male" type="radio" name="gender" value="Male" checked>#}
-{#                                            <label for="male">Мужской</label>#}
-{#                                            <input id="female" type="radio" name="gender" value="Female">#}
-{#                                            <label for="female">Женский</label>#}
-{#                                        {% else %}#}
-{#                                            <input id="male" type="radio" name="gender" value="Male">#}
-{#                                            <label for="male">Мужской</label>#}
-{#                                            <input id="female" type="radio" name="gender" value="Female" checked>#}
-{#                                            <label for="female">Женский</label>#}
-{#                                        {% endif %}#}
+{#                                        {% for choice in form.gender %}#}
+{#                                            {{ choice }}#}
+{#                                        {% endfor %}#}
+                                        {% if gender == 'Male' %}
+                                            <input id="male" type="radio" name="gender" value="Male" checked disabled>
+                                            <label for="male">Мужской</label>
+                                            <input id="female" type="radio" name="gender" value="Female" disabled>
+                                            <label for="female">Женский</label>
+                                        {% elif gender == 'Male' %}
+                                            <input id="male" type="radio" name="gender" value="Male" disabled>
+                                            <label for="male">Мужской</label>
+                                            <input id="female" type="radio" name="gender" value="Female" checked disabled>
+                                            <label for="female">Женский</label>
+                                        {% else %}
+                                            <input id="male" type="radio" name="gender" value="Male">
+                                            <label for="male">Мужской</label>
+                                            <input id="female" type="radio" name="gender" value="Female">
+                                            <label for="female">Женский</label>
+                                        {% endif %}
                                     </div>
                                 </div>
 
@@ -445,7 +464,7 @@
                     }
                 }
 
-                document.querySelector('#id_birthday').value = `${birthday[2]}-${monthToD()}-${birthday[0]}`
+                document.querySelector('#id_birthday').value = `${birthday[2]}-${monthToD()}-${birthday[0].padStart(2, '0')}`
             }
         </script>
         <script>
@@ -454,7 +473,6 @@
                 let date = new Date()
                 let currentYear = date.getFullYear()
                 let age = currentYear - yearBirthday
-                console.log(age)
                 if (age > 0 && age < 100) {
                     if (age > 0 && age < 18) {
                         document.querySelector('#id_league_0').disabled = ''
@@ -483,6 +501,12 @@
             }
             initLeagues()
             document.querySelector('#id_birthday').oninput = function() {initLeagues()}
+        </script>
+        <script>
+            let inpAvatar = document.querySelector('#id_image')
+            let btn = document.querySelector('button.av-btn')
+            inpAvatar.oninput = function() {btn.click()}
+            document.querySelector('.set-av').onclick = function () {inpAvatar.click()}
         </script>
 	</body>
 </html>
