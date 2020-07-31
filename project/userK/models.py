@@ -10,13 +10,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     genderChoices = (('Male', 'М'), ('Female', 'Ж'))
     countryChoices = (('RU', 'Россия'), ('UK', 'Украина'), ('BY', 'Беларусь'), ('KZ', 'Казахстан'))
     parrent_account_id = models.CharField(verbose_name='Родительский аккаунт', default='', max_length=20, blank=True)
-    child_account = models.BooleanField(default=False)
+    child_account = models.BooleanField(verbose_name='Детский аккаунт', default=False)
     username = models.CharField(verbose_name='Никнейм', unique=True, max_length=30)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(verbose_name='Активация аккаунта', default=False)
     email = models.EmailField(verbose_name='Email', unique=True)
     firstName = models.CharField(verbose_name='Имя', max_length=128)
     lastName = models.CharField(verbose_name='Фамилия', max_length=128)
-    hideMyName = models.BooleanField(default=False)
+    hideMyName = models.BooleanField(verbose_name='Скрыть имя и фамилию', default=False)
     balance = models.CharField(verbose_name='Баланс', default=0.00, max_length=128)
 
     gender = models.CharField(verbose_name='Пол', choices=genderChoices, max_length=10)
@@ -46,7 +46,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     countTotalGames = models.CharField(verbose_name='Счетчик игр', default=0, max_length=128)
 
     date_joined = models.DateTimeField(verbose_name='Дата регистрации', default=timezone.now)
-    is_staff = models.BooleanField(default=False)
+    last_game = models.DateTimeField(verbose_name='Дата последней игры', default=timezone.now)
+    is_staff = models.BooleanField(verbose_name='Администратор', default=False)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']

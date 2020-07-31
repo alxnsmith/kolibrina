@@ -129,6 +129,7 @@
             q_nums = document.querySelectorAll('a#q_num')
             let q_act = 0
             let score = 0
+            let tmpScore = 0
             let deltaScore
 
             let bonus = 0
@@ -139,6 +140,7 @@
             let bf_dif
             let beforeQuest
             let count_dif = 5
+            let scoreSaveCounter = 3
             let hintsCounter = {askMaster: 1, twoAnswers: 1, skipQuest: 1, secondAttempt: 1}
             let inp
             let hintsBonus
@@ -146,8 +148,21 @@
 
             let currentQuest
 
+            function hintsBonusCalc() {
+                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
+                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
+            }
+
             function shuffle(array) {
                 array.sort(() => Math.random() - 0.5);
+            }
+
+            function losePage() {
+            window.location.replace(`${result_game}?status=lose&`+
+                    `question=${encodeURIComponent(quest_list[q_act-1]['question'])}&`+
+                    `correctAnswer=${encodeURIComponent(quest_list[q_act-1]['corectAnsw'])}&`+
+                    `score=${score}&`+`author=${encodeURIComponent(quest_list[1]['author'])}&`+
+                    `newGame=${window.location.href}`)
             }
 
             function getInp() {
@@ -171,6 +186,7 @@
             }
 
             function checkAnswer() {
+
                 if(check() === undefined){
                     alert('Выберите один из предложенных вариантов ответа.')
                 } else if(check() === quest_list[q_act-1]['corectAnsw']){
@@ -184,16 +200,16 @@
                         count_dif = 5-quest_template.filter( item => item === bf_dif ).length+1
                     }
                     bonus = (combo - 1) * (currentQuest['difficulty'] + count_dif) / (70 - currentQuest['difficulty'])
-                    score+=Math.round(deltaScore[q_act-1]+bonus+hintsBonus)
-
+                    hintsBonusCalc()
+                    tmpScore+=Math.round(deltaScore[q_act-1]+bonus+hintsBonus)
                     bf_dif = currentQuest['difficulty']
                     bf_cor = true
                     if (bf_cor){combo++}
                     if (q_act < 12) {
                         initGameField()
                     } else {
-                        score += 290
-                        score = score / 10
+                        tmpScore += 290
+                        tmpScore = tmpScore / 10
                         window.location.replace(`${result_game}?status=win&score=${score}`)
                     }
                 } else if (attempts > 1){
@@ -204,13 +220,9 @@
                 } else {
                     bf_cor = false
                     combo = 0
-                    window.location.replace(`${result_game}?status=lose&`+
-                    `question=${encodeURIComponent(quest_list[q_act-1]['question'])}&`+
-                    `correctAnswer=${encodeURIComponent(quest_list[q_act-1]['corectAnsw'])}&`+
-                    `score=${score}&`+`author=${encodeURIComponent(quest_list[1]['author'])}&`+
-                    `newGame=${window.location.href}`)
+                    losePage()
                 }
-
+                inp = undefined
                 log()
             }
 
@@ -232,7 +244,7 @@
             function log() {
                 console.log('---------------------------------------------------------------')
                 console.log(`Score delta: ${deltaScore}`)
-                console.log(`Before score: ${Math.round(score)}`)
+                console.log(`Before score: ${Math.round(tmpScore)}`)
                 console.log('Template difficulty: ', quest_template)
                 console.log('Hints bonus: ', hintsBonus)
                 console.log('Counter difficulty: ', count_dif)
@@ -242,6 +254,7 @@
                 console.log('Combo: ', combo)
                 console.log('B0nus: ', Math.round(bonus))
                 console.log('+ Score: ', Math.round(deltaScore[q_act-1]+bonus))
+                console.log(`tmpScore: ${tmpScore}`)
                 console.log(`Score: ${score}`)
             }
 
@@ -329,14 +342,12 @@
                     'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +
                     `">Мастер: Я считаю, что правильный ответ - "<span style="text-transform: none">${currentQuest['corectAnsw']}</span>"</div>`
                 hintsCounter['askMaster'] = 0
-                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
-                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
+                hintsBonusCalc()
             }
             document.querySelector('.hint2').onclick = function () {
                 hintsCounter['twoAnswers'] = 0
                 initHints()
-                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
-                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
+                hintsBonusCalc()
                 let c = 0
                 let currentAnswers = document.getElementsByName('answer')
                 for (let i=0; i<4; i++){
@@ -352,19 +363,26 @@
             document.querySelector('.hint3').onclick = function () {
                 hintsCounter['skipQuest'] = 0
                 initHints()
-                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
-                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
+                hintsBonusCalc()
                 initGameField()
             }
             document.querySelector('.hint4').onclick = function () {
                 hintsCounter['secondAttempt'] = 0
                 initHints()
-                hintSum = hintsCounter["askMaster"]+hintsCounter['twoAnswers']+hintsCounter['skipQuest']+hintsCounter['secondAttempt']
-                hintsBonus = 0.2*beforeQuest['difficulty']*hintSum
+                hintsBonusCalc()
                 attempts = 2
             }
             document.querySelector('.game__functional a:nth-child(5)').onclick = function () {
-                alert('Очки сохранены!')
+                if (scoreSaveCounter > 1) {
+                    score = tmpScore
+                    alert('Очки сохранены!')
+                    scoreSaveCounter--
+                } else {
+                    score = tmpScore
+                    alert('Очки сохранены!')
+                    scoreSaveCounter--
+                    losePage()
+                }
             }
         </script>
 
