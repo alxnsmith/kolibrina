@@ -13,6 +13,7 @@ urlpatterns = [
     path('questions/', include('questions.urls')),
     path('add-question/', include('addquestion.urls')),
     path('rules/', include('rules.urls')),
+    path('ratings/', include('rating.urls')),
     path('chat/', include('chat.urls')),
     path('', include('game.urls')),
 ]

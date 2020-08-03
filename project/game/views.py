@@ -1,7 +1,9 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from addquestion.models import Questions, Category, Theme
 from userK import level, models
 from . import defs
+from main.sendmail import sendmail
+from django.conf import settings
 
 
 def tournaments(request):
@@ -9,6 +11,8 @@ def tournaments(request):
 
 
 def train(request):
+    p = 1
+
     def quest_l(questions, index):
         if questions[index]:
             for i in questions[index]:
@@ -23,15 +27,16 @@ def train(request):
                     )
                 d['category'] = str(Category.objects.get(id=d['category_id']))
                 d['theme'] = str(Theme.objects.get(id=d['theme_id']))
-                del d['_state'], d['id'], d['premoderate'], d['author_id'], d['category_id'], d['theme_id'],
+                del d['_state'], d['purpose_id'], d['premoderate'], d['author_id'], d['category_id'], d['theme_id'],
                 quest_list.append(d)
+
     if str(request.user) != 'AnonymousUser':
         league = level.op(int(request.user.opLVL))['dif']
     else:
         league = 'Z'
     quest_template = defs.q_template(league)
     # u = defs.q_questions(defs.q_template(u), Questions.objects.all())
-    questions = defs.q_questions(league, Questions)
+    questions = defs.q_questions(league, Questions, p)
     questions = {'q10': questions['10'], 'q20': questions['20'], 'q30': questions['30'],
                  'q40': questions['40'], 'q50': questions['50']}
     quest_list = []
@@ -52,8 +57,20 @@ def win_lose(request):
             correctAnswer = '{0}'.format(request.GET['correctAnswer'])
             score = '<span>{0} баллов</span>'.format(request.GET['score'])
             newGame = '{0}'.format(request.GET['newGame'])
+            questID = '{0}'.format(request.GET['questID'])
             return render(request, 'game/win-lose/wrong.html', {'question': question, 'correctAnswer': correctAnswer,
-                                                                'score': score, 'author': author, 'newGame': newGame})
+                                                                'score': score, 'author': author, 'newGame': newGame,
+                                                                'questID': questID})
         elif status == 'win':
             score = '<span>Вы набрали {0} баллов</span>'.format(request.GET['score'])
             return render(request, 'game/win-lose/win.html', {'score': score})
+
+
+def clarify_question(request):
+    if request.POST:
+        post = request.POST
+        message = 'Пользователь: {2} \nID вопроса: {0}\nВопрос: {1}\nСообщение: {3}'.format(
+            post['questID'], post['question'], post['user'], post['message'])
+
+        sendmail('Уточнение по вопросу', message, settings.EMAIL_ADMIN_USERS)
+        return redirect('account')

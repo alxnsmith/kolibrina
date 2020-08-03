@@ -81,15 +81,19 @@
 		</div>
 		<div class="mt20"></div>
 
-		<form action="" method="POST" class="modal" id="ask-question">
+		<form action="{% url 'clarify-question' %}" method="POST" class="modal" id="ask-question">{% csrf_token %}
 			<div class="modal__ask-question">
 				<div class="modal__ask-question__head">
 					<p>УТОЧНЕНИЕ ПО ВОПРОСУ</p>
 				</div>
 				<div class="modal__ask-question__body">
 					<p>Если Вы считаете, что в вопросе присутствует фактическая ошибка, или он содержит дуальность ответа, напишите нам об этом с обязательной ссылкой на источник, на который Вы опираетесь. Мы также будем Вам благодарны за устранение неточностей, иные замечания и предложения. </p>
-					<textarea cols="60" rows="5"></textarea>
-					<a href="#">Отправить</a>
+                    <input type="text" name="user" value="{{ request.user }}" hidden>
+                    <input type="text" name="questID" value="{{ questID }}" hidden>
+                    <input type="text" name="question" value="{{ question }}" hidden>
+                    <textarea cols="60" rows="5" name="message"></textarea>
+                    <button type="submit" id="submit-btn" hidden></button>
+					<a href="javascript:void(0)" onclick="document.querySelector('#submit-btn').click()">Отправить</a>
 					<a href="#" class="close">Отменить</a>
 				</div>				
 				<div class="modal__ask-question__close">

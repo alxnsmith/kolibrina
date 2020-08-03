@@ -45,7 +45,7 @@ class Theme(models.Model):
 class Questions(models.Model):
     diffChoices = (('10', '10'), ('20', '20'), ('30', '30'), ('40', '40'), ('50', '50'))
 
-    purpose = models.ForeignKey(Purpose, on_delete=models.SET(get_user_model()), db_column='purpose', verbose_name='Назначение')
+    purpose = models.ForeignKey(Purpose, on_delete=models.SET(get_user_model()), db_column='purpose', default=1, verbose_name='Назначение')
     premoderate = models.BooleanField(default=True, verbose_name='На модерации')
     author = models.ForeignKey(CustomUser, on_delete=models.SET(get_user_model()), db_column='author', verbose_name='Автор')
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, default='0', db_column='category', verbose_name='Категория')
@@ -58,7 +58,8 @@ class Questions(models.Model):
     answer4 = models.CharField(max_length=64, verbose_name='Ответ4')
 
     def __str__(self):
-        return 'Вопрос: {0}..., Ответ: {1}, Сложность: {2}'.format(self.question[:50], self.corectAnsw, self.difficulty)
+        return 'ID: {0}, Q: {1}..., A: {2}, D: {3}, C: {4}, T: {5}'.format(
+            self.id, self.question[:50], self.corectAnsw, self.difficulty, self.category, self.theme)
 
     class Meta:
         verbose_name = _('Вопрос')

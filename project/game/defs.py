@@ -18,18 +18,18 @@ def counter(template, diff):
     return template.count(diff)
 
 
-def dif_q(q):
+def dif_q(q, p):
     dif = []
     for i in 10, 20, 30, 40, 50:
-        dif.append(q.objects.filter(difficulty=i))
+        dif.append(q.objects.filter(difficulty=i, purpose=p))
     return dif
 
 
-def q_questions(league, q):
+def q_questions(league, q, p):
     t = q_template(league)
     template = {'10': counter(t, 10), '20': counter(t, 20), '30': counter(t, 30),
                 '40': counter(t, 40), '50': counter(t, 50)}
-    q1 = dif_q(q)
+    q1 = dif_q(q, p)
     d = 10
     for s in range(0, 5):
         a = []

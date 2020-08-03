@@ -162,7 +162,7 @@
                     `question=${encodeURIComponent(quest_list[q_act-1]['question'])}&`+
                     `correctAnswer=${encodeURIComponent(quest_list[q_act-1]['corectAnsw'])}&`+
                     `score=${score}&`+`author=${encodeURIComponent(quest_list[1]['author'])}&`+
-                    `newGame=${window.location.href}`)
+                    `newGame=${window.location.href}&` + `questID=${encodeURIComponent(quest_list[1]['id'])}`)
             }
 
             function getInp() {

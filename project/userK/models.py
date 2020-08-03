@@ -48,6 +48,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(verbose_name='Дата регистрации', default=timezone.now)
     last_game = models.DateTimeField(verbose_name='Дата последней игры', default=timezone.now)
     is_staff = models.BooleanField(verbose_name='Администратор', default=False)
+    is_free_member = models.BooleanField(verbose_name='Льготник', default=False)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']

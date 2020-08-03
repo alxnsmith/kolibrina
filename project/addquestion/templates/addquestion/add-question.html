@@ -106,7 +106,7 @@
 			</div>
 			<div class="addquest_btns">
 				<button class="addquest_btn">Добавить вопрос</button>
-				<div class="addquest_btn">Добавить вопрос и продолжить добавление</div>
+				<a class="addquest_btn">Добавить вопрос и продолжить добавление</a>
 			</div>
 		</form>
         {% endif %}
@@ -119,21 +119,26 @@
                     $('#theme').prepend('<option value="">Тема вопроса</option>')
                 }
                 else {
-                $.ajax({
-                type:'POST', url:'http://127.0.0.1:8000/add-question/get-themes',
-                data:'csrfmiddlewaretoken={{ csrf_token }}&x=' + category,
-                success: function(msg){
-                    var themes = msg.split('\\|/')
-                    $('#theme option').remove()
-                    $('#theme').prepend('<option value="">Тема вопроса</option>')
-                    for (index = 0; index < themes.length; ++index) {
-                        if (themes[index]!==''){
-                            let theme = themes[index].split('/|\\')
-                        $('#theme').prepend('<option value="'+ theme[1] +'">' + theme[0] + '</option>')}
+                    console.log('csrfmiddlewaretoken={{ csrf_token }}&cat=' + category)
+                    $.ajax({
+                    type:'POST', url:`${window.location.origin}/add-question/get-themes/`,
+                    data:'csrfmiddlewaretoken={{ csrf_token }}&cat=' + category,
+                    success: function(msg){
+                        {#alert(msg)#}
+                        let themes = msg.split('\\|/')
+                        $('#theme option').remove()
+                        $('#theme').prepend('<option value="">Тема вопроса</option>')
+                        for (let index = 0; index < themes.length; ++index) {
+                            if (themes[index]!==''){
+                                let theme = themes[index].split('/|\\')
+                            $('#theme').prepend('<option value="'+ theme[1] +'">' + theme[0] + '</option>')}
+                        }
+                    },
+                    {#error: function (msg){console.log(msg.responseText)}#}
                     }
-                }})}
+                    )
+                }
             }
-
 			$(document).ready(function() {
 				$("header nav a:nth-child(4) > span").addClass("select");
 				$(".title > h2 > strong").html("Добавить вопрос | Добавить авторский турнир");

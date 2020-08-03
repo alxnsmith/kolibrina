@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rules',
     'chat',
     'game',
+    'rating',
 ]
 
 MIDDLEWARE = [
@@ -140,6 +141,7 @@ EMAIL_PORT = '465'
 EMAIL_HOST_USER = 'kotovvsan@ya.ru'
 EMAIL_HOST_PASSWORD = '647012277RosTelecom'
 EMAIL_USE_SSL = True
+EMAIL_ADMIN_USERS = 'kotovvsan@ya.ru'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = 'static/mediacontent/'

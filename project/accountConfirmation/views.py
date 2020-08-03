@@ -1,6 +1,8 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import HttpResponse, redirect
 from base64 import b64decode
 from userK.models import CustomUser as User
+from django.conf import settings
+from main.sendmail import sendmail
 
 
 def confirmAccount(request):
@@ -11,8 +13,11 @@ def confirmAccount(request):
         if not u.is_active:
             u.is_active = True
             u.save()
-            return HttpResponse("Good, lucky game!")
+            message = 'Новый пользователь прошел активацию!\n' \
+                      '(id: {0}, username: {1}, email: {2})'.format(u.id, u.username, p)
+            sendmail('Новая регистрация', message, settings.EMAIL_ADMIN_USERS)
+            return redirect('login')
         else:
-            return HttpResponse('Ссылка не действительна!')
+            return Exception
     except:
         return HttpResponse('Ссылка не действительна!')

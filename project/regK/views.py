@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
-from django.core.mail import send_mail
 from base64 import b64encode
+from main.sendmail import sendmail
 
 
 class Register(FormView):
@@ -21,8 +21,7 @@ class Register(FormView):
         DOMAIN = self.request.META['HTTP_HOST']
         confirmUrl = 'http://' + DOMAIN + r'/accountconfirmation/account/email?c=' + b64encode(email.encode('utf-8')).decode("utf-8")
         messageText = f'Ваша ссылка для активации аккаунта: \n %s' % confirmUrl
-        send_mail('Активация аккаунта', messageText, 'kotovvsan@ya.ru',
-                  [email], fail_silently=False)
+        sendmail('Активация аккаунта', messageText, email)
         return super(Register, self).form_valid(form)
 
     def form_invalid(self, form):
