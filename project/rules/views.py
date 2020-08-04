@@ -1,10 +1,8 @@
 from django.shortcuts import render
-from media.models import Banner
+from .models import Rule
 
 
 def rules(request):
-    if Banner.objects.filter(name='MainBanner').exists():
-        mainBanner = str(Banner.objects.filter(name='MainBanner')[0].image)
-    else:
-        mainBanner = 'img/banner.png'
-    return render(request, 'rules/rules.html', {'mainBanner': mainBanner})
+    rulesList = Rule.objects.extra(select={'order': 'CAST(orderRules AS INTEGER)'}).order_by('order')
+
+    return render(request, 'rules/rules.html', {'rules': rulesList})

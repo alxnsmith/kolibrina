@@ -113,37 +113,32 @@
 		{% include "main/footer.html" %}
 
 		<script>
-            function get_themes(category){
-                if (category === ''){
-                    $('#theme option').remove()
-                    $('#theme').prepend('<option value="">Тема вопроса</option>')
-                }
-                else {
-                    console.log('csrfmiddlewaretoken={{ csrf_token }}&cat=' + category)
-                    $.ajax({
-                    type:'POST', url:`${window.location.origin}/add-question/get-themes/`,
-                    data:'csrfmiddlewaretoken={{ csrf_token }}&cat=' + category,
-                    success: function(msg){
-                        {#alert(msg)#}
-                        let themes = msg.split('\\|/')
-                        $('#theme option').remove()
-                        $('#theme').prepend('<option value="">Тема вопроса</option>')
-                        for (let index = 0; index < themes.length; ++index) {
-                            if (themes[index]!==''){
-                                let theme = themes[index].split('/|\\')
-                            $('#theme').prepend('<option value="'+ theme[1] +'">' + theme[0] + '</option>')}
-                        }
-                    },
-                    {#error: function (msg){console.log(msg.responseText)}#}
-                    }
-                    )
-                }
-            }
 			$(document).ready(function() {
 				$("header nav a:nth-child(4) > span").addClass("select");
 				$(".title > h2 > strong").html("Добавить вопрос | Добавить авторский турнир");
 			});
 		</script>
+        <script src="{% static 'js/fetch.js' %}"></script>
+        <script>
+            function get_themes(cat) {
+                let themes_field = document.querySelector('#theme')
+                let themes = document.querySelectorAll('#theme option')
+                if (cat !== ''){
+                    let requestURL = `{% url 'getTheme' %}?cat=${cat}`
+                    sendRequest('get', requestURL)
+                        .then(themes => {
+                            for (let theme in themes) {
+                                themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
+                            }
+                        })
+                        .catch(err => {console.error(err)})
+
+                } else {
+                    for (let i = 0; i < themes.length; i++) {themes[i].remove()}
+                    themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+                }
+            }
+        </script>
 
 
 	</body>

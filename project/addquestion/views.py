@@ -1,15 +1,14 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 from . import forms
 from .models import Category, Theme
+from django.http import JsonResponse
+import json
 
 
 def getThemes(request):
-    cat = Theme.objects.filter(category=request.POST['cat'])
-    themes = []
-    for i in cat:
-        themes.append(str(i) + '/|\\' + str(i.id) + '\\|/')
-    if request.POST:
-        return HttpResponse(themes)
+    cat = Theme.objects.filter(category=request.GET['cat'])
+    themes = [[str(i), str(i.id)] for i in cat]
+    return JsonResponse(themes, safe=False)
 
 
 def addQuestion(request):

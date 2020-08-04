@@ -4,14 +4,13 @@ from userK import level, models
 from . import defs
 from main.sendmail import sendmail
 from django.conf import settings
+from django.http import JsonResponse
+import json
 
 
-def tournaments(request):
-    return render(request, 'game/tournaments.html')
-
-
-def train(request):
+def apiGame(request):
     p = 1
+    quest_list = []
 
     def quest_l(questions, index):
         if questions[index]:
@@ -29,23 +28,32 @@ def train(request):
                 d['theme'] = str(Theme.objects.get(id=d['theme_id']))
                 del d['_state'], d['purpose_id'], d['premoderate'], d['author_id'], d['category_id'], d['theme_id'],
                 quest_list.append(d)
+    if request.GET['game'] == 'train':
 
-    if str(request.user) != 'AnonymousUser':
-        league = level.op(int(request.user.opLVL))['dif']
-    else:
-        league = 'Z'
-    quest_template = defs.q_template(league)
-    # u = defs.q_questions(defs.q_template(u), Questions.objects.all())
-    questions = defs.q_questions(league, Questions, p)
-    questions = {'q10': questions['10'], 'q20': questions['20'], 'q30': questions['30'],
-                 'q40': questions['40'], 'q50': questions['50']}
-    quest_list = []
-    quest_l(questions, 'q10')
-    quest_l(questions, 'q20')
-    quest_l(questions, 'q30')
-    quest_l(questions, 'q40')
-    quest_l(questions, 'q50')
-    return render(request, 'game/train.html', {'quest_list': quest_list, 'quest_template': quest_template, 'league': league})
+        if str(request.user) != 'AnonymousUser':
+            league = level.op(int(request.user.opLVL))['dif']
+        else:
+            league = 'Z'
+        quest_template = defs.q_template(league)
+        questions = defs.q_questions(league, Questions, p)
+        questions = {'q10': questions['10'], 'q20': questions['20'], 'q30': questions['30'],
+                     'q40': questions['40'], 'q50': questions['50']}
+        quest_l(questions, 'q10')
+        quest_l(questions, 'q20')
+        quest_l(questions, 'q30')
+        quest_l(questions, 'q40')
+        quest_l(questions, 'q50')
+
+        response = {'quest_list': quest_list, 'league': league, 'quest_template': quest_template}
+        return JsonResponse(response, safe=False)
+
+
+def tournaments(request):
+    return render(request, 'game/tournaments.html')
+
+
+def train(request):
+    return render(request, 'game/train.html')
 
 
 def win_lose(request):

@@ -4,9 +4,7 @@ from userK.level import op
 
 
 def ratings(request):
-    opLVL_users = User.objects.extra(
-    select={'opLVL': 'CAST(opLVL AS INTEGER)'}
-).order_by('-opLVL')
+    opLVL_users = User.objects.extra(select={'opLVL': 'CAST(opLVL AS INTEGER)'}).order_by('-opLVL')
     league_count = {'l1': User.objects.filter(league='l1').__len__(), 'l2': User.objects.filter(league='l2').__len__(),
                     'l3': User.objects.filter(league='l3').__len__(), 'l4': User.objects.filter(league='l4').__len__(),
                     'l5': User.objects.filter(league='l5').__len__(), 'l6': User.objects.filter(league='l6').__len__()}
