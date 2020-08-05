@@ -27,7 +27,30 @@
 	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
 	</head>
-	<body>
+    <style>
+        .game{
+            position: relative;
+        }
+        .game .loading{
+            transition: all 1s;
+            background-image: url("https://media.giphy.com/media/y1ZBcOGOOtlpC/giphy.gif");
+            background-repeat: no-repeat;
+            background-position: center;
+            position: absolute;
+            z-index: 2;
+            background-color: #fff;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        .text-author span{
+            transition: all 2s;
+            opacity: 0;
+        }
+    </style>
+    <body>
+
 
 		        {% include "main/header.html"%}
 
@@ -54,9 +77,10 @@
 					<a href="javascript:void(0)" id="q_num">12</a>
 				</div>
 			</div>
-			<div class="text-author"></div>
+			<div class="text-author"><span> </span></div>
 
 			<form action="" method="POST" class="game">
+                <div class="loading"></div>
 				<div class="row">
 					<div class="col-sm-8 col-md-8 col-lg-8">
 						<div class="game__question">
@@ -275,7 +299,7 @@
                         beforeQuest = {'difficulty': 0}
                     }
                     q_nums[q_act].classList.add('act')
-                    document.querySelector('.text-author').innerHTML = `<span>Автор вопроса: ${currentQuest['author']}</span>`
+                    document.querySelector('.text-author span').innerHTML = `Автор вопроса: ${currentQuest['author']}`
                     document.querySelector('.game__question').innerHTML = `${currentQuest['question']}`
                     let answers = document.querySelectorAll('label#answer')
                     for (let i = 0; i<answers['length']; i++){
@@ -386,6 +410,10 @@
                         losePage()
                     }
                 }
+            })
+            .finally(() => {
+                document.querySelector('.game .loading').style.opacity = 0
+                document.querySelector('.text-author span').style.opacity = 1
             })
         </script>
 
