@@ -17,7 +17,6 @@
 
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -138,11 +137,6 @@
 			</div>
 		</div>
 		{% include "main/footer.html"%}
-		<script>
-			$(document).ready(function() {
-				$(".title > h2 > strong").html("Тренировка Эрудит-Лото");
-			});
-		</script>
                 <script src="{% static 'js/fetch.js' %}"></script>
         <script>
             let result_game = '{% url 'result-game' %}'
@@ -235,7 +229,7 @@
                         } else {
                             tmpScore += 290
                             tmpScore = tmpScore / 10
-                            window.location.replace(`${result_game}?status=win&score=${score}`)
+                            window.location.replace(`${result_game}?status=win&score=${score}&newGame=${window.location.href}`)
                         }
                     } else if (attempts > 1){
                         attempts = 1
@@ -248,7 +242,7 @@
                         losePage()
                     }
                     inp = undefined
-                    log()
+                    {#log()#}
                 }
 
                 function initHints() {
@@ -266,22 +260,21 @@
                     }
                 }
 
-                function log() {
-                    console.log('---------------------------------------------------------------')
-                    console.log(`Score delta: ${deltaScore}`)
-                    console.log(`Before score: ${Math.round(tmpScore)}`)
-                    console.log('Template difficulty: ', quest_template)
-                    console.log('Hints bonus: ', hintsBonus)
-                    console.log('Counter difficulty: ', count_dif)
-                    console.log('Before difficulty: ', bf_dif)
-                    console.log('Current difficulty: ', currentQuest['difficulty'])
-                    console.log('Current question: ', q_act)
-                    console.log('Combo: ', combo)
-                    console.log('B0nus: ', Math.round(bonus))
-                    console.log('+ Score: ', Math.round(deltaScore[q_act-1]+bonus))
-                    console.log(`tmpScore: ${tmpScore}`)
-                    console.log(`Score: ${score}`)
-                }
+                {#function log() {#}
+                {#    console.log('---------------------------------------------------------------')#}
+                {#    console.log(`Score delta: ${deltaScore}`)#}
+                {#    console.log(`Before score: ${Math.round(tmpScore)}`)#}
+                {#    console.log('Template difficulty: ', quest_template)#}
+                {#    console.log('Hints bonus: ', hintsBonus)#}
+                {#    console.log('Counter difficulty: ', count_dif)#}
+                {#    console.log('Before difficulty: ', bf_dif)#}
+                {#    console.log('Current difficulty: ', currentQuest['difficulty'])#}
+                {#    console.log('Current question: ', q_act)#}
+                {#    console.log('Combo: ', combo)#}
+                {#    console.log('B0nus: ', Math.round(bonus))#}
+                {#    console.log('+ Score: ', Math.round(deltaScore[q_act-1]+bonus))#}
+                {#    console.log(`tmpScore: ${tmpScore}`)#}
+                {#    console.log(`Score: ${score}`)}#}
 
                 function initGameField(a = 2) {
 
@@ -362,11 +355,12 @@
                     }
                 }
                 document.querySelector('.hint1').onclick = function () {
-                    document.querySelector('.hint1').outerHTML =
-                        '<div class="hint1" style="background: #d2d2d2; font-size: 18px;' +
-                        'color: #6b6b6b; text-shadow: 1px 1px 1px black; width: 100%;' +
-                        'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +
-                        `">Мастер: Я считаю, что правильный ответ - "<span style="text-transform: none">${currentQuest['corectAnsw']}</span>"</div>`
+                    document.querySelector('.hint1').outerHTML = divHintConstructor('спросить у мастера', 'hint1')
+                        {#'<div class="hint1" style="background: #d2d2d2; font-size: 18px;' +#}
+                        {#'color: #6b6b6b; text-shadow: 1px 1px 1px black; width: 100%;' +#}
+                        {#'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +#}
+                        {#`">Мастер: Я считаю, что правильный ответ - "<span style="text-transform: none">${currentQuest['corectAnsw']}</span>"</div>`#}
+                    alert(`Мастер: Я считаю, что правильный ответ - ${currentQuest['corectAnsw']}`)
                     hintsCounter['askMaster'] = 0
                     hintsBonusCalc()
                 }
@@ -413,6 +407,7 @@
             })
             .finally(() => {
                 document.querySelector('.game .loading').style.opacity = 0
+                document.querySelector('.game .loading').style.zIndex = 0
                 document.querySelector('.text-author span').style.opacity = 1
             })
         </script>

@@ -15,7 +15,13 @@
 	</div>
 	<nav>
 		<a href="{% url 'account' %}"><span>Личный кабинет</span></a>
-		<a href="{% url 'tournaments' %}"><span>Турниры</span></a>
+		<a href="{% url 'tournaments' %}">
+            {% if request.resolver_match.url_name == 'train' or request.resolver_match.url_name == 'result-game' %}
+                <span class="select">Турниры</span>
+            {% else %}
+                <span>Турниры</span>
+            {% endif %}
+        </a>
 		<a href="{% url 'ratings' %}"><span>Рейтинги</span></a>
 		<a href="{% url 'questions' %}"><span>Добавить вопрос в базу</span></a>
 		<a href="{% url 'rules' %}"><span>Правила</span></a>
@@ -28,7 +34,7 @@
 	</nav>
 </header>
 <div class="title">
-    <h2><strong></strong></h2>
+    <h2><strong>{{ title }}</strong></h2>
 </div>
 {% if errors %}
     <br>

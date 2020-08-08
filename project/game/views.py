@@ -53,7 +53,7 @@ def tournaments(request):
 
 
 def train(request):
-    return render(request, 'game/train.html')
+    return render(request, 'game/train.html', {'title': 'ТРЕНИРОВКА ЭРУДИТ-ЛОТО'})
 
 
 def win_lose(request):
