@@ -14,7 +14,7 @@ def confirmAccount(request):
             u.is_active = True
             u.save()
             message = 'Новый пользователь прошел активацию!\n' \
-                      '(id: {0}, username: {1}, email: {2})'.format(u.id, u.username, p)
+                      f'(id: {u.id}, username: {u.username}, email: {p})'
             sendmail('Новая регистрация', message, settings.EMAIL_ADMIN_USERS)
             return redirect('login')
         else:

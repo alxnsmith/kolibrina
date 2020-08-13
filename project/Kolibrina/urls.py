@@ -16,4 +16,5 @@ urlpatterns = [
     path('ratings/', include('rating.urls')),
     path('chat/', include('chat.urls')),
     path('', include('game.urls')),
+    path('api/', include('API.urls')),
 ]

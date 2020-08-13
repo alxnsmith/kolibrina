@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 
 def user_directory_path(instance, filename):
     if ['png', 'jpg', 'jpeg', 'bmp', 'webp', ].__contains__(filename.split('.')[-1]):
-        user_directory_path = 'users/' + 'user_{0}/'.format(instance.user)
+        user_directory_path = 'users/' + f'user_{instance.user}/'
         if path.exists(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\')):
             avatarFile = match(r'Avatar\.(jpg|png|jpeg|bmp|webp)',
                                ' '.join(listdir(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path)))

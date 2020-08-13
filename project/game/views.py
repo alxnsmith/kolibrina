@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, redirect
 from addquestion.models import Questions, Category, Theme
 from userK import level, models
 from . import defs
@@ -59,26 +59,26 @@ def train(request):
 def win_lose(request):
     if request.GET.__contains__('status'):
         status = request.GET['status']
+        score = request.GET["score"]
         if status == 'lose':
-            author = '{0}'.format(request.GET['author'])
-            question = '{0}'.format(request.GET['question'])
-            correctAnswer = '{0}'.format(request.GET['correctAnswer'])
-            score = '<span>{0} баллов</span>'.format(request.GET['score'])
-            newGame = '{0}'.format(request.GET['newGame'])
-            questID = '{0}'.format(request.GET['questID'])
+            author = f'{request.GET["author"]}'
+            question = f'{request.GET["question"]}'
+            correctAnswer = f'{request.GET["correctAnswer"]}'
+            score = f'<span>{score} баллов</span>'
+            newGame = f'{request.GET["newGame"]}'
+            questID = f'{request.GET["questID"]}'
             return render(request, 'game/win-lose/wrong.html', {'question': question, 'correctAnswer': correctAnswer,
                                                                 'score': score, 'author': author, 'newGame': newGame,
                                                                 'questID': questID})
         elif status == 'win':
-            score = '<span>Вы набрали {0} баллов</span>'.format(request.GET['score'])
+            score = f'<span>Вы набрали {score} баллов</span>'
             return render(request, 'game/win-lose/win.html', {'score': score})
 
 
 def clarify_question(request):
     if request.POST:
         post = request.POST
-        message = 'Пользователь: {2} \nID вопроса: {0}\nВопрос: {1}\nСообщение: {3}'.format(
-            post['questID'], post['question'], post['user'], post['message'])
+        message = f'Пользователь: {post["user"]} \nID вопроса: {post["questID"]}\nВопрос: {post["question"]}\nСообщение: {post["message"]}'
 
         sendmail('Уточнение по вопросу', message, settings.EMAIL_ADMIN_USERS)
         return redirect('account')

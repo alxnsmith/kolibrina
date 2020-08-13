@@ -29,6 +29,8 @@ ALLOWED_HOSTS = ['kolibrina.noproblempc32.ru', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     'chat',
     'game',
     'rating',
+    'API',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +141,14 @@ EMAIL_ADMIN_USERS = 'kotovvsan@ya.ru'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = 'static/mediacontent/'
+
+
+ASGI_APPLICATION = 'Kolibrina.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}

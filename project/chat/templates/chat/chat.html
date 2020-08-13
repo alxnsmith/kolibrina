@@ -18,7 +18,6 @@
         <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
 		<link rel="stylesheet" href="{% static 'css/pages/chat.css' %}">
 
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -52,157 +51,71 @@
 			</div>
 		</div>
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" ></script>
-    <script type="text/javascript" src="https://comet-server.ru/CometServerApi.js" ></script>
-    <link rel="stylesheet" type="text/css" href="https://comet-server.ru/doc/html_chat.css"></link>
+    <script src="{% static 'js/fetch.js' %}"></script>
         <script>
-            var htmljs_Chat_timer = new Date();
-            var htmljs_Chat_masgArray = {};
-
-            function web_send_msg()
-            {
-                // Получение значений из элементов ввода.
-                var text = $("#mes").val();
-                var name = '{{ request.user }}'
-
-                // Очистка формы
-                $("#mes").val("");
-
-                // Зпишем время в момент отправки сообщения
-                htmljs_Chat_timer = new Date();
+            let userdata
+        sendRequest('GET', `${window.location.origin}/api/?userstatus&username`).then(data => {
+            userdata = data
+        })
 
 
-                // Добавление отправленного сообщения к списку сообщений.
-                $(".wrapper-messages").append('<div class="wrapper-messages__item my-message"><div class="message">'+htmljs_Chat_HtmlEncode(text)+'</div><div class="date">'+String(htmljs_Chat_timer.getDate()).padStart(2, '0')+'.'+String(htmljs_Chat_timer.getMonth()).padStart(2, '0')+'.'+htmljs_Chat_timer.getFullYear()+'</div></div>');
+        {#const roomName = JSON.parse(document.getElementById('room-name').textContent); //get room name#}
+        const roomName = 'mainROOM'; // get room name
 
-                // Прокрутка списка сообщений в низ
-                $("#wrapper-chat").animate({ scrollTop: $("#wrapper-chat")[0].scrollHeight}, "slow");
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
 
-                // Используем случайное число чтоб нечайно не всавить два раза одно и тоже сообщение
-                var randomId = ""+Math.floor(Math.random()*10) + "" + (Math.random()*10) + "" + (Math.random()*10) + "" + (Math.random()*10);
-                randomId = randomId.replace(/[^0-9]/img, "");
-
-                htmljs_Chat_masgArray[randomId] = true;
-
-                // Отправка сообщения в канал чата
-                CometServer().web_pipe_send("web_chat_pipe.msg", {"text":text, "name":name, "randomId":randomId});
-
-                // Уведомим остальные вкладки о том что мы добавили сообщение в чат
-                comet_server_signal().send_emit("AddToChat", {"text":text, "name":name, "randomId":randomId});
+        chatSocket.onmessage = function(e) {
+            const options = { year: "2-digit", month: "2-digit", day: "2-digit"};
+            let date = new Intl.DateTimeFormat("ru", options).format;
+            const data = JSON.parse(e.data);
+            console.log(data) // loggin incoming messages
+            if (data.username === userdata.username) {
+                document.querySelector('.wrapper-messages').innerHTML +=
+                    '<div class="wrapper-messages__item my-message"><div class="message">'
+                    + data.message
+                    + '</div><div class="date">'
+                    + date()
+                    + '</div></div>'
+            }else {
+                document.querySelector('.wrapper-messages').innerHTML +=
+                    '<div class="wrapper-messages__item friend-message"><div class="name">'
+                    + data.username
+                    + '</div><div class="message">'
+                    + data.message
+                    + '</div><div class="date">'
+                    + date()
+                    + '</div></div>'
             }
+        };
 
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
 
-            // Функция выполнится в после загрузки страницы
-            function htmljs_Chat_Init( holder )
-            {
-                // Подписываемся на канал в который и будут отпавлятся сообщения чата.
-                CometServer().subscription("web_chat_pipe.msg", function(msg){
-                    console.log(["msg", msg]);
-
-                    if(!msg.data.randomId)
-                    {
-                        // Сообщение какоето не правильное, не имеющие randomId
-                        return;
-                    }
-
-                    msg.data.randomId = ""+msg.data.randomId;
-                    msg.data.randomId.replace(/[^0-9]/img, "");
-
-                    if(htmljs_Chat_masgArray[msg.data.randomId] && !msg.data.history)
-                    {
-                        // Сообщение уже вставлено
-                        return;
-                    }
-
-                    if(!msg.data.history)
-                    {
-                        htmljs_Chat_masgArray[msg.data.randomId] = true;
-                    }
-
-                    // Добавление полученого сообщения к списку сообщений.
-                    $(".wrapper-messages").append('<div class="wrapper-messages__item friend-message"><div class="name">'+htmljs_Chat_HtmlEncode(msg.data.name)+'</div><div class="message">'+htmljs_Chat_HtmlEncode(msg.data.text)+'</div><div class="date">'+String(htmljs_Chat_timer.getDate()).padStart(2, '0')+'.'+String(htmljs_Chat_timer.getMonth()).padStart(2, '0')+'.'+htmljs_Chat_timer.getFullYear()+'</div></div>');
-
-                    // Прокрутка списка сообщений в низ
-                    $("#wrapper-chat").animate({ scrollTop: $("#wrapper-chat")[0].scrollHeight}, "slow");
-                });
-
-                // Подписываемся на событие добавления сообщения в чат нами, для того чтобы если чат открыт в нескольких вкладках
-                // наше сообщение добавленое на одной вкладке отобразилось на всех остальных без перезагрузки страницы
-                comet_server_signal().connect("AddToChat", function(msg){
-                    console.log(["msg", msg]);
-
-                    if(htmljs_Chat_masgArray[msg.randomId])
-                    {
-                        // Сообщение уже вставлено
-                        return;
-                    }
-
-                    htmljs_Chat_masgArray[msg.randomId] = true;
-
-                    // Добавление полученого сообщения к списку сообщений.
-                    $("#wrapper-chat").append("<p><b>"+htmljs_Chat_HtmlEncode(msg.name)+": </b>"+htmljs_Chat_HtmlEncode(msg.text)+"</p>");
-
-                    // Прокрутка списка сообщений в низ
-                    $("#wrapper-chat").animate({ scrollTop: $("#wrapper-chat")[0].scrollHeight}, "slow");
-                });
-
-                // Подписываемся на канал в который и будут отпавлятся уведомления о доставке отправленых сообщений.
-                CometServer().subscription("#web_chat_pipe", function(p)
-                {
-                    // Зпишем время в момент получения отчёта о доставке сообщения
-                    var etime = new Date();
-
-                    console.log(["answer_to_web_chat_pipe", p]);
-                    $("#answer").html("Сообщение доставлено "+p.data.number_messages+" получателям за "+ (etime.getTime() - htmljs_Chat_timer.getTime() )+"ms");
-                    if(p.data.error!= "") $("#answer").html(" "+p.data.error);
-
-                    // Прокрутка списка сообщений в низ
-                    $("#wrapper-chat").animate({ scrollTop: $("#wrapper-chat")[0].scrollHeight}, "slow");
-                });
-
-                CometServer().subscription("chatControl.clean", function(event){
-                    console.log("Мы получили команду очистить чат");
-                    $("#wrapper-chat").html( '' );
-
-                    // Прокрутка списка сообщений в низ
-                    $("#wrapper-chat").animate({ scrollTop: $("#wrapper-chat")[0].scrollHeight}, "slow");
-                });
-
-                // Просим отправить последние сообщения которые были отправлены в канал. Это позволит загрузить историю сообщений в чат.
-                CometServer().get_pipe_log('web_chat_pipe');
+        document.querySelector('#mes').focus();
+        document.querySelector('#mes').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#mes').value = document.querySelector('#mes').value.replace(/\r?\n/g, "")
+                document.querySelector('#tosend').click();
             }
+        };
 
-
-            function htmljs_Chat_HtmlEncode(s)
-            {
-              var el = document.createElement("div");
-              el.innerText = el.textContent = s;
-              s = el.innerHTML;
-              return s;
-            }
-
-        </script>
-    <div id="html-chat"></div>
-    <style>
-        .holder-html-chat{ border: 1px solid #ccc;padding:10px;background-color: #fff;width: 600px;}
-        .html-chat-history{ max-width: 600px; overflow: auto;max-height: 900px; border: 1px solid #ccc;padding: 5px;}
-        .html-chat-js-name{ margin-top:10px; }
-        .html-chat-js-input{ max-width: 600px;max-height: 100px;width: 600px;margin-top:10px; }
-        .html-chat-js-button-holder{ margin-bottom: 0px;margin-top: 10px; }
-        .html-chat-js-button-holder input{ width: 220px; }
-        .html-chat-js-answer{ float:right; }
-        .html-chat-js-answer a{ color: #777;font-size: 12px; font-family: cursive;}
-        .html-chat-js-answer a:hover{ color: #338;font-size: 12px; font-family: cursive;}
-        .html-chat-msg{ margin: 0px; }
-    </style>
-
-<script>
-    $(document).ready(function() {
-        CometServer().start({dev_id: 3139 })
-        htmljs_Chat_Init( $("#html-chat") )
-    });
-</script>
-
+        document.querySelector('#tosend').onclick = function(e) {
+            const messageInputDom = document.querySelector('#mes');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'username': userdata.username
+            }));
+            messageInputDom.value = '';
+        };
+    </script>
 
 
 
@@ -211,9 +124,9 @@
 		{% include "main/footer.html"%}
 
 		<script>
-			$(document).ready(function() {
-				$("header nav a:nth-child(6) > span").addClass("select");
-				$(".title > h2 > strong").html("ЧАТ | Общение");
+			document.addEventListener('DOMContentLoaded', () => {
+				document.querySelector("header nav a:nth-child(6) > span").classList.add("select");
+				document.querySelector(".title > h2 > strong").innerHTML = ("ЧАТ | Общение");
 			});
 		</script>
 	</body>
