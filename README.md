@@ -8,6 +8,7 @@
   <li>python3 -m venv kolibrinaMAIN/koliVENV && source ./kolibrinaMAIN/koliVENV/bin/activate</li> #create&activate venv
   <li>pip3 install -r kolibrinaMAIN/project/requirements.txt</li> #install moules
   <li>python3 kolibrinaMAIN/project/manage.py makemigrations && python3 kolibrinaMAIN/project/manage.py migrate</li> #makemigrations&migrate
+  <li>python3 kolibrinaMAIN/project/manage.py createsuperuser</li> #create superuser
   <li>python3 kolibrinaMAIN/project/manage.py runserver</li> #run local server
   <li></li>
 </ul>
