@@ -19,12 +19,12 @@ import datetime
 
 def account(request):
     if request.user.is_authenticated:
-        uDir = [str(settings.MEDIA_ROOT).replace('\\', '/') + 'users/', 'user_' + str(request.user)]
-        if os.listdir(uDir[0]).__contains__(uDir[1]):
+        uDir = [os.path.join(os.getcwd(), str(settings.MEDIA_ROOT).replace('\\', '/') + 'users/'), 'user_' + str(request.user)]
+        if os.getcwd().__contains__(settings.MEDIA_ROOT) and os.listdir(uDir[0]).__contains__(uDir[1]):
             ava = '/' + uDir[0].split('/')[-4] + '/' + uDir[0].split('/')[-3] + '/' + uDir[0].split('/')[-2] + '/' + uDir[1] + '/' + \
                   os.listdir(uDir[0] + uDir[1])[0]
         else:
-            ava = False
+                ava = False
         u = User.objects.get(id=request.user.id).__dict__
         try:
             form = forms.EditUser(initial={

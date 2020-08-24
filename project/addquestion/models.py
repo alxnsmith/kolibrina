@@ -47,7 +47,7 @@ class Questions(models.Model):
 
     purpose = models.ForeignKey(Purpose, on_delete=models.SET(get_user_model()), db_column='purpose', default=1, verbose_name='Назначение')
     premoderate = models.BooleanField(default=True, verbose_name='На модерации')
-    author = models.ForeignKey(CustomUser, on_delete=models.SET(get_user_model()), db_column='author', verbose_name='Автор')
+    author = models.ForeignKey(CustomUser, on_delete=models.SET(get_user_model()), db_column='author', verbose_name='Автор', default='0')
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, default='0', db_column='category', verbose_name='Категория')
     theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING, default='0', db_column='theme', verbose_name='Тема')
     difficulty = models.CharField(choices=diffChoices, max_length=2, default='30', verbose_name='Сложность')
