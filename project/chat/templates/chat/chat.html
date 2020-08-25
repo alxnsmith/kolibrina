@@ -52,6 +52,7 @@
 		</div>
 
     <script src="{% static 'js/fetch.js' %}"></script>
+
         <script>
             let userdata
         sendRequest('GET', `${window.location.origin}/api/?userstatus&username`).then(data => {
@@ -62,6 +63,8 @@
         {#const roomName = JSON.parse(document.getElementById('room-name').textContent); //get room name#}
         const roomName = 'mainROOM'; // get room name
 
+
+
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
@@ -70,11 +73,11 @@
             + '/'
         );
 
-        chatSocket.onmessage = function(e) {
+        chatSocket.onmessage = (e) => {
             const options = { year: "2-digit", month: "2-digit", day: "2-digit"};
             let date = new Intl.DateTimeFormat("ru", options).format;
             const data = JSON.parse(e.data);
-            console.log(data) // loggin incoming messages
+            {#console.log(data) // loggin incoming messages#}
             if (data.username === userdata.username) {
                 document.querySelector('.wrapper-messages').innerHTML +=
                     '<div class="wrapper-messages__item my-message"><div class="message">'

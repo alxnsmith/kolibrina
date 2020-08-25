@@ -10,6 +10,7 @@
                     <h1>Колибрина</h1>
                     <h2>Интеллектуальные игры для знатоков</h2>
                 </div>
+                <div id="online">ONLINE: <span></span></div>
             </a>
 		</div>
 	</div>
@@ -50,3 +51,16 @@
 {#        {% endfor %}#}
     </div>
 {% endif %}
+    <script>
+        const onlineSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/online/'
+        );
+
+        onlineSocket.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            console.log(e.data)
+            document.querySelector('#online span').textContent = data}
+        onlineSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+            };
+        </script>
