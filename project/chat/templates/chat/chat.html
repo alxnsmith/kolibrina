@@ -41,8 +41,11 @@
 					</div>
 					<form action="" method="POST" id="chat-userPanel">
 						<textarea name="" id="mes" placeholder="Введите сообщение..."></textarea>
-						<a onclick="web_send_msg()" id="tosend">Отправить</a>
-						<div class="clear"></div>
+						<div class="space-between flex">
+                            <div>В чате: <span id="chat-online">{{ ChatOnline }}</span></div>
+                            <a onclick="web_send_msg()" id="tosend">Отправить</a>
+                        </div>
+
 					</form>
 				</div>
 				<div class="col-sm-3 col-md-3 col-lg-3">
@@ -77,6 +80,7 @@
             const options = { year: "2-digit", month: "2-digit", day: "2-digit"};
             let date = new Intl.DateTimeFormat("ru", options).format;
             const data = JSON.parse(e.data);
+            document.querySelector('#chat-online').textContent = data.online
             {#console.log(data) // loggin incoming messages#}
             if (data.username === userdata.username) {
                 document.querySelector('.wrapper-messages').innerHTML +=
@@ -119,9 +123,6 @@
             messageInputDom.value = '';
         };
     </script>
-
-
-
 
 		<div class="mt20"></div>
 		{% include "main/footer.html"%}

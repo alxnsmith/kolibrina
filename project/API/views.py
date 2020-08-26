@@ -4,8 +4,10 @@ from userK.models import CustomUser as User
 
 
 def api(request):
+
     sender_name = str(request.user)
     user = get_object_or_404(User, username=sender_name)
+
     def value(req):
        return request.GET.__contains__(req)
 

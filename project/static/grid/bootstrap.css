@@ -1,17 +1,27 @@
+header > .header-gradient > .container {display: flex}
+#online {
+  margin-left: auto;
+  margin-top: 35px;
+}
+.caption{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 .container {
   margin-right: auto;
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
 }
-.container:before,
-.container:after {
-  content: " ";
-  display: table;
-}
-.container:after {
-  clear: both;
-}
+/*.container:before,*/
+/*.container:after {*/
+/*  content: " ";*/
+/*  display: table;*/
+/*}*/
+/*.container:after {*/
+/*  clear: both;*/
+/*}*/
 @media (min-width: 768px) {
   .container {
     width: 750px;
@@ -209,4 +219,11 @@
 }
 .hidden-xs, .hidden-sm {
   display: none;
+}
+
+.flex{
+  display: flex;
+}
+.space-between{
+  justify-content: space-between;
 }

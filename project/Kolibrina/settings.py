@@ -50,7 +50,10 @@ INSTALLED_APPS = [
     'chat',
     'game',
     'rating',
+
     'API',
+
+    'channel_common',
 ]
 
 MIDDLEWARE = [
