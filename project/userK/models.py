@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 
+from media.models import Avatar
+
 from .managers import CustomUserManager
 
 

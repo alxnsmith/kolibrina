@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'userK',
     'accountConfirmation',
     'questions',
-    'addquestion',
     'rules',
     'chat',
     'game',
@@ -133,6 +132,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
 
+MEDIA_URL = '/mediacontent/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "mediacontent")
+
+
 AUTH_USER_MODEL = 'userK.CustomUser'
 
 EMAIL_HOST = 'smtp.yandex.ru'
@@ -141,10 +144,6 @@ EMAIL_HOST_USER = 'kotovvsan@ya.ru'
 EMAIL_HOST_PASSWORD = '647012277RosTelecom'
 EMAIL_USE_SSL = True
 EMAIL_ADMIN_USERS = 'kotovvsan@ya.ru'
-
-MEDIA_URL = 'media/'
-MEDIA_ROOT = 'static/mediacontent/'
-
 
 ASGI_APPLICATION = 'Kolibrina.routing.application'
 CHANNEL_LAYERS = {

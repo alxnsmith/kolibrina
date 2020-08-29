@@ -1,7 +1,8 @@
 import re
+from userK.models import CustomUser as User
 
 
-def phone_isValid(number, User, data):
+def phone_isValid(number, data):
     phoneNumbers = []
     regexNum = re.match(r'\+\d (\d{3}) (\d{3})-(\d{2})-(\d{2})', number)
     for user in User.objects.all():

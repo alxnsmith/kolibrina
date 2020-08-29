@@ -15,3 +15,4 @@ class Rule(models.Model):
     class Meta:
         verbose_name = _('Правило')
         verbose_name_plural = _('Правила')
+        ordering = ('orderRules',)

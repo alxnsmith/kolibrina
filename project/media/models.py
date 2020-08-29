@@ -1,31 +1,10 @@
 from django.db import models
-from os import remove, path, listdir
-from django.conf import settings
-from re import match
-from django.shortcuts import redirect
-
-
-def user_directory_path(instance, filename):
-    if ['png', 'jpg', 'jpeg', 'bmp', 'webp', ].__contains__(filename.split('.')[-1]):
-        user_directory_path = 'users/' + f'user_{instance.user}/'
-        if path.exists(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\')):
-            avatarFile = match(r'Avatar\.(jpg|png|jpeg|bmp|webp)',
-                               ' '.join(listdir(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path)))
-            if avatarFile is not None:
-                remove(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\') + avatarFile.group())
-        return user_directory_path + 'Avatar.' + filename.split('.')[-1]
-
-
-# def user_directory_path(instance, filename):
-#     user_directory_path = 'users/' + 'user_{0}/{1}'.format(instance.user, 'Avatar.')
-#     if path.exists(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\')):
-#         remove(settings.MEDIA_ROOT.replace('/', '\\') + user_directory_path.replace('/', '\\'))
-#     return user_directory_path + filename.split('.')[-1]
+from . import services
 
 
 class Avatar(models.Model):
     user = models.CharField(max_length=128, default='NullUserName')
-    image = models.ImageField(upload_to=user_directory_path)
+    image = models.ImageField(upload_to=services.get_user_avatar_path)
 
     def __str__(self):
         return self.user
@@ -33,7 +12,7 @@ class Avatar(models.Model):
 
 class Banner(models.Model):
     name = models.CharField(max_length=128, default='MainBanner', unique=True)
-    image = models.ImageField(upload_to=settings.MEDIA_ROOT + 'banners')
+    image = models.ImageField(upload_to='banners')
 
     def __str__(self):
         return self.name

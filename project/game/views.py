@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
-from addquestion.models import Questions, Category, Theme
-from userK import level, models
+from questions.models import Questions, Category, Theme
+from userK import services as user_services, models as user_models
 from . import defs
 from main.sendmail import sendmail
 from django.conf import settings
 from django.http import JsonResponse
-import json
 
 
 def apiGame(request):
@@ -16,13 +15,13 @@ def apiGame(request):
         if questions[index]:
             for i in questions[index]:
                 d = i.__dict__
-                city = models.CustomUser.objects.get(id=d['author_id']).city
-                if models.CustomUser.objects.get(id=d['author_id']).hideMyName or not city:
-                    d['author'] = models.CustomUser.objects.get(id=d['author_id']).username
+                city = user_models.CustomUser.objects.get(id=d['author_id']).city
+                if user_models.CustomUser.objects.get(id=d['author_id']).hideMyName or not city:
+                    d['author'] = user_models.CustomUser.objects.get(id=d['author_id']).username
                 else:
                     d['author'] = '{0} {1}, г.{2}'.format(
-                        models.CustomUser.objects.get(id=d['author_id']).firstName,
-                        models.CustomUser.objects.get(id=d['author_id']).lastName, city,
+                        user_models.CustomUser.objects.get(id=d['author_id']).firstName,
+                        user_models.CustomUser.objects.get(id=d['author_id']).lastName, city,
                     )
                 d['category'] = str(Category.objects.get(id=d['category_id']))
                 d['theme'] = str(Theme.objects.get(id=d['theme_id']))
@@ -31,7 +30,7 @@ def apiGame(request):
     if request.GET['game'] == 'train':
 
         if str(request.user) != 'AnonymousUser':
-            league = level.op(int(request.user.opLVL))['dif']
+            league = user_services.get_user_rating_lvl_dif(int(request.user.opLVL))['level']
         else:
             league = 'Z'
         quest_template = defs.q_template(league)
