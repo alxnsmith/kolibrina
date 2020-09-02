@@ -42,7 +42,7 @@
 					<form action="" method="POST" id="chat-userPanel">
 						<textarea name="" id="mes" placeholder="Введите сообщение..."></textarea>
 						<div class="space-between flex">
-                            <div>В чате: <span id="chat-online">{{ ChatOnline }}</span></div>
+                            <div>В чате: <span id="chat-online"></span></div>
                             <a onclick="web_send_msg()" id="tosend">Отправить</a>
                         </div>
 
@@ -55,12 +55,49 @@
 		</div>
 
     <script src="{% static 'js/fetch.js' %}"></script>
-
         <script>
             let userdata
-        sendRequest('GET', `${window.location.origin}/api/?userstatus&username`).then(data => {
-            userdata = data
-        })
+            sendRequest('GET', `${window.location.origin}/api/?username`).then(data => {
+                userdata = data
+                for (let m in messages){
+                    print_message(messages[m])
+                    document.querySelector('#wrapper-chat').scroll(0, 10000)
+                }
+            })
+            let messages
+            sendRequest('GET', `${window.location.href}api/?mainROOM`).then(data => {
+                messages = JSON.parse(data['message_list'])
+            })
+
+        </script>
+
+        <script>
+
+            function print_message (data) {
+                const options = {year: "2-digit", month: "2-digit", day: "2-digit"};
+                let date = new Intl.DateTimeFormat("ru", options).format;
+                document.querySelector('#chat-online').textContent = data.online
+                if (data.username === userdata.username) {
+                    console.log(data)
+                    document.querySelector('.wrapper-messages').innerHTML +=
+                        '<div class="wrapper-messages__item my-message"><div class="message">'
+                        + data.message
+                        + '</div><div class="date">'
+                        + date()
+                        + '</div></div>'
+                } else {
+                    document.querySelector('.wrapper-messages').innerHTML +=
+                        '<div class="wrapper-messages__item friend-message"><div class="name">'
+                        + data.username
+                        + '</div><div class="message">'
+                        + data.message
+                        + '</div><div class="date">'
+                        + date()
+                        + '</div></div>'
+                }
+            }
+        </script>
+        <script>
 
 
         {#const roomName = JSON.parse(document.getElementById('room-name').textContent); //get room name#}
@@ -77,28 +114,10 @@
         );
 
         chatSocket.onmessage = (e) => {
-            const options = { year: "2-digit", month: "2-digit", day: "2-digit"};
-            let date = new Intl.DateTimeFormat("ru", options).format;
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-online').textContent = data.online
-            {#console.log(data) // loggin incoming messages#}
-            if (data.username === userdata.username) {
-                document.querySelector('.wrapper-messages').innerHTML +=
-                    '<div class="wrapper-messages__item my-message"><div class="message">'
-                    + data.message
-                    + '</div><div class="date">'
-                    + date()
-                    + '</div></div>'
-            }else {
-                document.querySelector('.wrapper-messages').innerHTML +=
-                    '<div class="wrapper-messages__item friend-message"><div class="name">'
-                    + data.username
-                    + '</div><div class="message">'
-                    + data.message
-                    + '</div><div class="date">'
-                    + date()
-                    + '</div></div>'
-            }
+
+            print_message(JSON.parse(e.data))
+
+
         };
 
         chatSocket.onclose = function(e) {
