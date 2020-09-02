@@ -24,7 +24,7 @@ SECRET_KEY = '0k#pueww6$7pm=8*-(e316$vzd3c=1ijd$^i!3y-g^a!n0v4pc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['kolibrina.noproblempc32.ru', '127.0.0.1']
+ALLOWED_HOSTS = ['kolibrina.noproblempc32.ru', '127.0.0.1', '94.103.86.84']
 
 # Application definition
 
@@ -129,8 +129,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "assets"),)
+
+STATICFILES_FINDERS = (
+'django.contrib.staticfiles.finders.FileSystemFinder',
+'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
 
 MEDIA_URL = '/mediacontent/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediacontent")
