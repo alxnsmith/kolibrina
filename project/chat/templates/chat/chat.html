@@ -61,7 +61,7 @@
                 userdata = data
                 for (let m in messages){
                     print_message(messages[m])
-                    document.querySelector('#wrapper-chat').scroll(0, 10000)
+                    scroll_to_bottom(document.querySelector('#wrapper-chat'))
                 }
             })
             let messages
@@ -78,7 +78,6 @@
                 let date = new Intl.DateTimeFormat("ru", options).format;
                 document.querySelector('#chat-online').textContent = data.online
                 if (data.username === userdata.username) {
-                    console.log(data)
                     document.querySelector('.wrapper-messages').innerHTML +=
                         '<div class="wrapper-messages__item my-message"><div class="message">'
                         + data.message
@@ -114,10 +113,8 @@
         );
 
         chatSocket.onmessage = (e) => {
-
             print_message(JSON.parse(e.data))
-
-
+            scroll_to_bottom(document.querySelector('#wrapper-chat'))
         };
 
         chatSocket.onclose = function(e) {
@@ -142,6 +139,13 @@
             messageInputDom.value = '';
         };
     </script>
+        <script>
+            function scroll_to_bottom (elem) {
+                elem.scrollTo(
+                    {top: elem.scrollHeight,
+                     behavior: 'smooth'})
+            }
+        </script>
 
 		<div class="mt20"></div>
 		{% include "main/footer.html"%}
