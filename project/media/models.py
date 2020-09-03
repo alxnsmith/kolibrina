@@ -4,7 +4,7 @@ from . import services
 
 class Avatar(models.Model):
     user = models.CharField(max_length=128, default='NullUserName')
-    image = models.ImageField(upload_to=services.get_user_avatar_path)
+    image = models.ImageField(upload_to=services.create_avatar)
 
     def __str__(self):
         return self.user

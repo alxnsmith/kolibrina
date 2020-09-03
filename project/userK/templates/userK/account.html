@@ -45,7 +45,7 @@
 							<form action="/media/" method="POST" enctype="multipart/form-data" style="display: none"> {% csrf_token %}
                                     <input type="file" name="image" accept=".jpg, .jpeg, .png, .bmp, .webp" required="" id="id_image">
 
-                                    <input type="hidden" name="user" value="admin" id="id_user">
+                                    <input type="hidden" name="user" value="{{ request.user }}" id="id_user">
 
                                 <button class="av-btn" value="submit">Загрузить новое фото</button>
 							</form>

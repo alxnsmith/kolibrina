@@ -9,5 +9,6 @@ def avatarUpload(request):
         try:
             if form.is_valid():
                 form.save()
-        except: pass
+        except:
+            pass
     return redirect('account')

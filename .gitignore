@@ -3,6 +3,7 @@
 *.pyc
 *.php
 koliVENV/
+env/
 project/static/mediacontent/
 project/static/admin/
 !project/static/mediacontent/users/user_admin/Avatar.png

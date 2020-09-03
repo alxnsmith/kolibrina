@@ -29,7 +29,6 @@ def create_render_data(request, ):
             'form': _get_form_values(userModel=userModel),
             'errors': [],
             'error_phone': '',
-            'r': request.user,
             'level': get_user_rating_lvl_dif(userModel.opLVL),
             'AvatarForm': media_forms.AvatarForm(initial={'user': request.user}),
             'AvatarImage': media_services.get_avatar(user=request.user),
