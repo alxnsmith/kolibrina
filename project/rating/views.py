@@ -16,13 +16,13 @@ def ratings(request):
     level = {'J': 0, 'L': 0, 'Z': 0, 'M': 0, 'P': 0}
 
     for i in opLVL_users:
-        if int(i.opLVL) < 1000:
+        if int(i.rating) < 1000:
             level['J'] += 1
-        elif int(i.opLVL) < 3000:
+        elif int(i.rating) < 3000:
             level['L'] += 1
-        elif int(i.opLVL) < 6000:
+        elif int(i.rating) < 6000:
             level['Z'] += 1
-        elif int(i.opLVL) < 10000:
+        elif int(i.rating) < 10000:
             level['M'] += 1
         else:
             level['P'] += 1
@@ -31,9 +31,9 @@ def ratings(request):
 
     for i in opLVL_users[:15]:
         opLVL_top15.append({'hideMyName': i.hideMyName,
-                            'lvl': '{0}-{1}'.format(get_user_rating_lvl_dif(i.opLVL)['level'],
-                                                    get_user_rating_lvl_dif(i.opLVL)['numLevel']),
-                            'opLVL': i.opLVL,
+                            'lvl': '{0}-{1}'.format(get_user_rating_lvl_dif(i.rating)['level'],
+                                                    get_user_rating_lvl_dif(i.rating)['numLevel']),
+                            'opLVL': i.rating,
                             'firstName': i.firstName,
                             'lastName': i.lastName,
                             'city': i.city,

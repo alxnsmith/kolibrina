@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from userK.models import CustomUser
+from userK.models import CustomUser, TeamInvites
 
-# Register your models here.
 
 admin.site.register(CustomUser)
+admin.site.register(TeamInvites)

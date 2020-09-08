@@ -1,0 +1,26 @@
+<div class="teammate" id="teammate{% if forloop.counter < 6 %}{{ forloop.counter }}{% else %}{{ new_teammate_num }}{% endif %}">
+    <input type="text" placeholder="Добавить игрока" list="users" value="{{ teammate }}" {% if teammate %}disabled{% endif %} style="min-width: 210px;">
+    {% if teammate %}
+        <a id="del_teammate" href="javascript:void(0)" onclick="del_teammate('{{ teammate }}')">Удалить тиммейта</a>
+    {% else %}
+        <a id="add_teammate" href="javascript:void(0)" onclick="add_teammate(this)" style="color: #0f74fe">Добавить тиммейта</a>
+    {% endif %}
+    {% if not teammate %}
+    <datalist id="users">
+        {% for user in users_list %}
+            <option value="{{ user }}">
+        {% endfor %}
+    </datalist>
+    {% endif %}
+    <div class="clear"></div>
+    <div class="flex">
+        <div>
+            <label for="{{ teammate }}_base"><input id="{{ teammate }}_base" name="new_teammate_status" type="radio" value="base" {% if teammate.team_role == 'BASIC' %}checked{% endif %}>
+                Базовый</label>
+        </div>
+        <div>
+            <label for="{{ teammate }}_legionary"><input id="{{ teammate }}_legionary" name="new_teammate_status" type="radio" value="legionary">
+                Легионер</label>
+        </div>
+    </div>
+</div>

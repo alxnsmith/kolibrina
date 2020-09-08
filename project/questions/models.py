@@ -58,7 +58,12 @@ class Questions(models.Model):
     answer4 = models.CharField(max_length=64, verbose_name='Ответ4')
 
     def __str__(self):
-        return f'ID: {self.id}, Q: {self.question[:50]}..., A: {self.corectAnsw}, D: {self.difficulty}, C: {self.category}, T: {self.theme}'
+        return 'ID: {}, Q: {}..., A: {}, D: {}, C: {}, T: {}'.format(self.id,
+                                                                     self.question[:50],
+                                                                     self.corectAnsw,
+                                                                     self.difficulty,
+                                                                     self.category,
+                                                                     self.theme)
 
     class Meta:
         verbose_name = _('Вопрос')

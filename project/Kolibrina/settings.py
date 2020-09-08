@@ -24,7 +24,7 @@ SECRET_KEY = '0k#pueww6$7pm=8*-(e316$vzd3c=1ijd$^i!3y-g^a!n0v4pc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['kolibrina.noproblempc32.ru', '127.0.0.1', '94.103.86.84']
+ALLOWED_HOSTS = ['kolibrina.noproblempc32.ru', '127.0.0.1', '192.168.1.6']
 
 # Application definition
 
@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'chat',
     'game',
     'rating',
+    'teams',
+    'stats',
 
     'API',
 
@@ -163,3 +165,8 @@ CHANNEL_LAYERS = {
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
+
+GENDER_CHOICES = (('Male', 'М'), ('Female', 'Ж'))
+COUNTRY_CHOICES = (('RU', 'Россия'), ('UK', 'Украина'), ('BY', 'Беларусь'), ('KZ', 'Казахстан'))
+TEAM_ROLES = (('COMMANDER', 'Командир'), ('BASIC', 'Базовый'), ('LEGIONARY', 'Легионер'))
+TEAM_NUMBERS = (('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5), ('6', 6))

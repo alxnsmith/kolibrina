@@ -57,7 +57,7 @@
 						<div class="mt40"></div>
 						<div id="level">
 							<strong>Уровень игрока</strong>
-							<span style="color: #5752FF;">{{ level.dif }} / {{ level.lvl }}</span>
+							<span style="color: #5752FF;">{{ level.level }} / {{ level.numLevel }}</span>
 							<span>J;L;Z;M;P / 1-10</span>
 						</div>
 					</div>
@@ -65,116 +65,37 @@
 						<form action="" method="POST"> {% csrf_token %}
 							<div class="row">
 
-                                {% if request.user.firstName != '' %}
-								    <div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока" value="{{ request.user.firstName }}" disabled></div>
-								{% else %}
-								    <div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока" value="{{ request.user.firstName }}"></div>
-                                {% endif %}
 
-                                {% if request.user.lastName != '' %}
-                                    <div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}" disabled></div>
-                                {% else %}
-								    <div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}"></div>
-                                {% endif %}
+                                <div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока" value="{{ request.user.firstName }}" {% if request.user.firstName != '' %}disabled{% endif %}></div>
+
+
+                                <div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}" {% if request.user.lastName != '' %}disabled{% endif %}></div>
 
 							</div>
 							<div>
-								<input type="checkbox" name="hideMyName" style="width: auto;" {% if request.user.hideMyName == 1 %}checked{% endif %}>
-								<label for="nick">Не отображать моё имя и фамилию</label><br>
+								<label for="hyde_my_name"><input type="checkbox" id='hyde_my_name' name="hideMyName" style="width: auto;" {% if request.user.hideMyName == 1 %}checked{% endif %}> Не отображать моё имя и фамилию</label><br>
 							</div>
-							<input type="text" name="username" placeholder="Ник / псевдоним, под которым будет играть участник" value="{{ request.user }}" disabled>
+							<input id='username' type="text" placeholder="Ник / псевдоним, под которым будет играть участник" value="{{ request.user }}" disabled>
                             <div class="row">
                                 <div class="col-md-6" id="birth">
                                     <span>Дата рождения</span>
                                     <br>
-{#                                    <select id="day">#}
-{#                                        <option label="1" value="1" selected>1</option>#}
-{#                                        <option value="2">2</option>#}
-{#                                        <option value="3">3</option>#}
-{#                                        <option value="4">4</option>#}
-{#                                        <option value="5">5</option>#}
-{#                                        <option value="6">6</option>#}
-{#                                        <option value="7">7</option>#}
-{#                                        <option value="8">8</option>#}
-{#                                        <option value="9">9</option>#}
-{#                                        <option value="10">10</option>#}
-{#                                        <option value="11">11</option>#}
-{#                                        <option value="12">12</option>#}
-{#                                        <option value="13">13</option>#}
-{#                                        <option value="14">14</option>#}
-{#                                        <option value="15">15</option>#}
-{#                                        <option value="16">16</option>#}
-{#                                        <option value="17">17</option>#}
-{#                                        <option value="18">18</option>#}
-{#                                        <option value="19">19</option>#}
-{#                                        <option value="20">20</option>#}
-{#                                        <option value="21">21</option>#}
-{#                                        <option value="22">22</option>#}
-{#                                        <option value="23">23</option>#}
-{#                                        <option value="24">24</option>#}
-{#                                        <option value="25">25</option>#}
-{#                                        <option value="26">26</option>#}
-{#                                        <option value="27">27</option>#}
-{#                                        <option value="28">28</option>#}
-{#                                        <option value="29">29</option>#}
-{#                                        <option value="30">30</option>#}
-{#                                        <option value="31">31</option>#}
-{#                                    </select>#}
-{#                                    <select id="month">#}
-{#                                        <option label="Январь" value="Январь" selected>Январь</option>#}
-{#                                        <option value="Февраль">Февраль</option>#}
-{#                                        <option value="Март">Март</option>#}
-{#                                        <option value="Апрель">Апрель</option>#}
-{#                                        <option value="Май">Май</option>#}
-{#                                        <option value="Июнь">Июнь</option>#}
-{#                                        <option value="Июль">Июль</option>#}
-{#                                        <option value="Август">Август</option>#}
-{#                                        <option value="Сентябрь">Сентябрь</option>#}
-{#                                        <option value="Октябрь">Октябрь</option>#}
-{#                                        <option value="Ноябрь">Ноябрь</option>#}
-{#                                        <option value="Декабрь">Декабрь</option>#}
-{#                                    </select>#}
-{#                                    <select id="year">#}
-{#                                        <option value="2010">2010</option>#}
-{#                                        <option value="2009">2009</option>#}
-{#                                        <option value="2008">2008</option>#}
-{#                                        <option value="2007">2007</option>#}
-{#                                        <option value="2006">2006</option>#}
-{#                                        <option value="2005">2005</option>#}
-{#                                        <option value="2004">2004</option>#}
-{#                                        <option value="2003">2003</option>#}
-{#                                        <option value="2002">2002</option>#}
-{#                                        <option value="2001">2001</option>#}
-{#                                        <option label="2000" value="2000" selected>2000</option>#}
-{#                                    </select>                                   #}
-                                    {% if request.user.birthday != None %}
-                                        <input type="date" name="birthday" value="" required="" id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}" disabled>
-                                    {% else %}
-                                        <input type="date" name="birthday" value="" required="" id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}">
-                                    {% endif %}
+
+                                        <input type="date" name="birthday" value="" required="" id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}" {% if request.user.birthday != None %}disabled{% endif %}>
                                 </div>
                                 <div class="col-md-6" id="gender">
                                     <div class="flex-row">
                                         <span>Пол</span>
                                         <br>
-{#                                        {% for choice in form.gender %}#}
-{#                                            {{ choice }}#}
-{#                                        {% endfor %}#}
                                         {% if gender == 'Male' %}
-                                            <input id="male" type="radio" name="gender" value="Male" checked disabled>
-                                            <label for="male">Мужской</label>
-                                            <input id="female" type="radio" name="gender" value="Female" disabled>
-                                            <label for="female">Женский</label>
-                                        {% elif gender == 'Male' %}
-                                            <input id="male" type="radio" name="gender" value="Male" disabled>
-                                            <label for="male">Мужской</label>
-                                            <input id="female" type="radio" name="gender" value="Female" checked disabled>
-                                            <label for="female">Женский</label>
+                                            <label for="male"><input id="male" type="radio" name="gender" checked disabled> Мужской</label>
+                                            <label for="female"><input id="female" type="radio" name="gender" disabled> Женский</label>
+                                        {% elif gender == 'Female' %}
+                                            <label for="male"><input id="male" type="radio" name="gender" disabled> Мужской</label>
+                                            <label for="female"><input id="female" type="radio" name="gender" checked disabled> Женский</label>
                                         {% else %}
-                                            <input id="male" type="radio" name="gender" value="Male">
-                                            <label for="male">Мужской</label>
-                                            <input id="female" type="radio" name="gender" value="Female">
-                                            <label for="female">Женский</label>
+                                            <label for="male"><input id="male" type="radio" name="gender" value="Male"> Мужской</label>
+                                            <label for="female"><input id="female" type="radio" name="gender" value="Female"> Женский</label>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -194,16 +115,9 @@
 							</div>
 
 							<div class="row">
-                                {% if request.user.email != ''%}
-    								<div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email" disabled></div>
-        						{% else %}
-                                    <div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email"></div>
-                                {% endif %}
-                                {% if request.user.phoneNumber != '' and request.user.phoneNumber != Null %}
-                                    <div class="col-md-6"><input value="{{ request.user.phoneNumber }}" disabled></div>
-                                {% else %}
-                                    <div class="col-md-6"><input id="tel" class="{{ error_phone }}" type="tel" name="phoneNumber" placeholder="Номер телефона" value="+7 "></div>
-                                {% endif %}
+
+    								<div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email" {% if request.user.email != ''%}disabled{% endif %}></div>
+                                    <div class="col-md-6"><input value="{{ request.user.phoneNumber }}" {% if request.user.phoneNumber != '' and request.user.phoneNumber != Null %}disabled{% endif %}></div>
 							</div>
 
 							<input type="text" name="swPlace" placeholder="Место работы / учёбы: ВУЗ / колледж / школа - класс" value="{{ request.user.swPlace }}">
@@ -219,75 +133,57 @@
 							<div class="mt10"></div>
 							<div class="line"></div>
                             <div class="mt5"></div>
-							<div class="row" id="panel-captain">
+                            <button hidden id="SAVE" value="submit">SAVE</button>
+						</form>
+                        <form action="">
+                            <div class="row" id="panel-captain">
 								<div class="col-md-6">
 									<div class="flex-row">
 										<span style="text-align: center;">Ваша команда</span>
 										<div>
-											<input type="text" placeholder="Название команды / ID" style="min-width: 210px;"> <a href="#">Удалить</a>
-										</div>
-										<div>
-											<input type="text" placeholder="Добавить игрока" style="min-width: 210px;"> <a href="#">Удалить</a>
+											<input id="team" type="text" placeholder="Название команды / ID" value="{{ team }}" style="min-width: 210px;">
+                                            {% if team %}
+                                                <a id="del_team" href="javascript:void(0)">Удалить команду</a>
+                                            {% else %}
+                                                <a id="add_team" href="javascript:void(0)" style="color: #0f74fe">Добавить команду</a>
+                                            {% endif %}
 										</div>
 
-										<div class="clear"></div>
-										<div>
-											<input id="base1" type="radio" value="base">
-											<label for="base1">Базовый</label>
-										</div>
-										<div>
-											<input id="legionary1" type="radio" value="legionary">
-											<label for="legionary1">Легионер</label>
-										</div>
+                                        {% for teammate in team_players_list %}
+                                            {% if teammate != request.user %}
+                                                {% include 'userK/blocks/teammate_input.html' %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if team_players_list|length < 6 and team %}
+                                            {% include 'userK/blocks/teammate_input.html' %}
+                                        {% endif %}
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="flex-row">
 										<span style="text-align: center;">Ваш статус в команде</span>
 										<div>
-											<input id="captain" type="radio" value="captain" checked>
-											<label for="captain">Капитан</label>
+											<label for="captain"><input id="captain" name="your_team_status" type="radio" value="captain" {% if request.user.team_role == 'COMMANDER' %}checked{% endif %}> Капитан</label>
 										</div>
 										<div>
-											<input id="base" type="radio" value="base">
-											<label for="base">Базовый</label>
+											<label for="base"><input id="base" name="your_team_status" type="radio" value="base" {% if request.user.team_role == 'BASIC' %}checked{% endif %}> Базовый</label>
 										</div>
 										<div>
-											<input id="legionary" type="radio" value="legionary">
-											<label for="legionary">Легионер</label>
+											<label for="legionary"><input id="legionary" name="your_team_status" type="radio" value="legionary" {% if request.user.team_role == 'LEGiONARY' %}checked{% endif %}> Легионер</label>
 										</div>
 
 
 										<span style="text-align: center;">Ваш номер в команде</span>
-										<div>
-											<input id="num1" type="radio" value="1" checked>
-											<label for="num1">1</label>
-										</div>
-										<div>
-											<input id="num2" type="radio" value="2">
-											<label for="num2">2</label>
-										</div>
-										<div>
-											<input id="num3" type="radio" value="3">
-											<label for="num3">3</label>
-										</div>
-										<div>
-											<input id="num4" type="radio" value="4">
-											<label for="num4">4</label>
-										</div>
-										<div>
-											<input id="num5" type="radio" value="5">
-											<label for="num5">5</label>
-										</div>
-										<div>
-											<input id="num6" type="radio" value="6">
-											<label for="num6">6</label>
-										</div>
+										{% for num in team_number %}
+                                            <div>
+											    <label for="num{% cycle 1 2 3 4 5 6 %}">
+                                                    <input id="num{% cycle 1 2 3 4 5 6 %}" name="team_pos" type="radio" value="{% cycle 1 2 3 4 5 6 %}"> {% cycle 1 2 3 4 5 6 %}</label>
+										    </div>
+                                        {% endfor %}
 									</div>
 								</div>
 							</div>
-                            <button hidden id="SAVE" value="submit">SAVE</button>
-						</form>
+                        </form>
 					</div>
 					<div class="clear"></div>
 					<div class="mt40"></div>
@@ -404,11 +300,13 @@
 				margin-bottom: 20px;
 			}
 		</style>
+        <script src="{% static 'js/fetch.js' %}"></script>
+        <script src="{% static 'js/account/remote_teammates.js' %}"></script>
         <script>
             $.fn.formatPnoneNumber = function(){
 			    return this.each(function(){
 				$(this).bind('keyup', function(){
-					var num = this.value.replace( '+7' , '' ).replace( /\D/g, '' ).split( /(?=.)/ ), i = num.length;
+					let num = this.value.replace( '+7' , '' ).replace( /\D/g, '' ).split( /(?=.)/ ), i = num.length;
 					if ( 0 <= i ) num.unshift( '+7' );
 					if ( 1 <= i ) num.splice(1, 0, ' ');
 					if ( 4 <= i ) num.splice(5, 0, ' ');
@@ -501,6 +399,11 @@
             }
             initLeagues()
             document.querySelector('#id_birthday').oninput = function() {initLeagues()}
+        </script>
+        <script>
+            function init_number_in_the_team(){
+
+            }
         </script>
         <script>
             let inpAvatar = document.querySelector('#id_image')
