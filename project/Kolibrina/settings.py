@@ -24,7 +24,7 @@ SECRET_KEY = '0k#pueww6$7pm=8*-(e316$vzd3c=1ijd$^i!3y-g^a!n0v4pc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['kolibrina.noproblempc32.ru', '127.0.0.1', '192.168.1.6']
+ALLOWED_HOSTS = ['kolibrina.noproblempc32.ru', '127.0.0.1', '192.168.1.6', '2.92.81.43']
 
 # Application definition
 

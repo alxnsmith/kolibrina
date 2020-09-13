@@ -87,16 +87,8 @@
                                     <div class="flex-row">
                                         <span>Пол</span>
                                         <br>
-                                        {% if gender == 'Male' %}
-                                            <label for="male"><input id="male" type="radio" name="gender" checked disabled> Мужской</label>
-                                            <label for="female"><input id="female" type="radio" name="gender" disabled> Женский</label>
-                                        {% elif gender == 'Female' %}
-                                            <label for="male"><input id="male" type="radio" name="gender" disabled> Мужской</label>
-                                            <label for="female"><input id="female" type="radio" name="gender" checked disabled> Женский</label>
-                                        {% else %}
-                                            <label for="male"><input id="male" type="radio" name="gender" value="Male"> Мужской</label>
-                                            <label for="female"><input id="female" type="radio" name="gender" value="Female"> Женский</label>
-                                        {% endif %}
+                                            <label for="male"><input id="male" type="radio" name="gender" value="Male" {% if gender == 'Male' %}checked disabled{% elif gender == 'Female' %}disabled{% endif %}> Мужской</label>
+                                            <label for="female"><input id="female" type="radio" name="gender" value="Female" {% if gender == 'Male' %}disabled{% elif gender == 'Female' %}checked disabled{% endif %}> Женский</label>
                                     </div>
                                 </div>
 
@@ -135,15 +127,24 @@
                             <div class="mt5"></div>
                             <button hidden id="SAVE" value="submit">SAVE</button>
 						</form>
-                        <form action="">
+                        <form action="javascript:void(0)">
                             <div class="row" id="panel-captain">
 								<div class="col-md-6">
 									<div class="flex-row">
 										<span style="text-align: center;">Ваша команда</span>
 										<div>
-											<input id="team" type="text" placeholder="Название команды / ID" value="{{ team }}" style="min-width: 210px;">
+											<input id="team" type="text" list="team_list" placeholder="Название команды / ID" value="{{ team }}" style="min-width: 210px;" {% if request.user.team_role != "COMMANDER" and request.user.team %}disabled{% endif %}>
+                                                <datalist id="team_list">
+                                                    {% for team in invite_teams_list %}
+                                                    <option value="{{ team.team }}"></option>
+                                                    {% endfor %}
+                                                </datalist>
                                             {% if team %}
-                                                <a id="del_team" href="javascript:void(0)">Удалить команду</a>
+                                                {% if request.user.team_role == "COMMANDER" %}
+                                                    <a id="del_team" href="javascript:void(0)" onclick="del_team()">Удалить команду</a>
+                                                {% else %}
+                                                    <a id="leave_team" href="javascript:void(0)" onclick="leave_from_team(this)">Покинуть команду</a>
+                                                {% endif %}
                                             {% else %}
                                                 <a id="add_team" href="javascript:void(0)" style="color: #0f74fe">Добавить команду</a>
                                             {% endif %}
@@ -154,34 +155,43 @@
                                                 {% include 'userK/blocks/teammate_input.html' %}
                                             {% endif %}
                                         {% endfor %}
-                                        {% if team_players_list|length < 6 and team %}
+                                        {% if team_players_list|length < 6 and team and request.user.team_role == 'COMMANDER' %}
                                             {% include 'userK/blocks/teammate_input.html' %}
                                         {% endif %}
 									</div>
 								</div>
-								<div class="col-md-6">
+								{% if request.user.team %}
+                                <div class="col-md-6">
 									<div class="flex-row">
 										<span style="text-align: center;">Ваш статус в команде</span>
-										<div>
-											<label for="captain"><input id="captain" name="your_team_status" type="radio" value="captain" {% if request.user.team_role == 'COMMANDER' %}checked{% endif %}> Капитан</label>
-										</div>
-										<div>
-											<label for="base"><input id="base" name="your_team_status" type="radio" value="base" {% if request.user.team_role == 'BASIC' %}checked{% endif %}> Базовый</label>
-										</div>
-										<div>
-											<label for="legionary"><input id="legionary" name="your_team_status" type="radio" value="legionary" {% if request.user.team_role == 'LEGiONARY' %}checked{% endif %}> Легионер</label>
-										</div>
+										<div  class="roles flex">
+                                            <div>
+                                                <label class="role" for="captain"><input id="captain" name="your_team_status" type="radio" value="CAPTAIN" {% if request.user.team_role == 'COMMANDER' %}checked{% endif %} {% if request.user.team %}disabled{% endif %}> Капитан
+                                                <span>Готово! <span></span></span></label>
+                                            </div>
+                                            <div>
+                                                <label class="role" for="basic"><input id="basic" name="your_team_status" type="radio" value="BASIC" {% if request.user.team_role == 'COMMANDER' %}disabled{% endif %} {% if request.user.team_role == 'BASIC' %}checked{% endif %}> Базовый
+                                                <span>Готово! <span></span></span></label>
+                                            </div>
+                                            <div>
+                                                <label class="role" for="legionary"><input id="legionary" name="your_team_status" type="radio" value="LEGIONARY" {% if request.user.team_role == 'COMMANDER' %}disabled{% endif %} {% if request.user.team_role == 'LEGIONARY' %}checked{% endif %}> Легионер
+                                                <span>Готово! <span></span></span></label>
+                                            </div>
+                                        </div>
 
-
-										<span style="text-align: center;">Ваш номер в команде</span>
+                                        <span class="nums" style="text-align: center; display: none" >Ваш номер в команде</span>
+                                        <div class="nums flex" style="display: none">
 										{% for num in team_number %}
                                             <div>
-											    <label for="num{% cycle 1 2 3 4 5 6 %}">
-                                                    <input id="num{% cycle 1 2 3 4 5 6 %}" name="team_pos" type="radio" value="{% cycle 1 2 3 4 5 6 %}"> {% cycle 1 2 3 4 5 6 %}</label>
+											    <label class="number_in_the_team" for="num{% cycle 1 2 3 4 5 6 %}">
+                                                    <input id="num{% cycle 1 2 3 4 5 6 %}" class="num" name="team_pos" type="radio" value="{% cycle 1 2 3 4 5 6 %}"> {% cycle 1 2 3 4 5 6 %}
+                                                <span>Готово! <span></span></span></label>
 										    </div>
                                         {% endfor %}
+                                        </div>
 									</div>
 								</div>
+                                {% endif %}
 							</div>
                         </form>
 					</div>
@@ -301,7 +311,7 @@
 			}
 		</style>
         <script src="{% static 'js/fetch.js' %}"></script>
-        <script src="{% static 'js/account/remote_teammates.js' %}"></script>
+        <script src="{% static 'js/account/remote_team.js' %}"></script>
         <script>
             $.fn.formatPnoneNumber = function(){
 			    return this.each(function(){
@@ -326,7 +336,7 @@
 				$(".title > h2 > strong").html("Личный Кабинет");
 				$(".footer__buttons").append('<a onclick="$(\'#SAVE\').click()">Сохранить изменения</a>');
 				$(".footer__buttons").append('<a href="#">Скачать бланк на обработку ПД</a>');
-				$(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');
+				{#$(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');#}
 			});
 		</script>
         <script>

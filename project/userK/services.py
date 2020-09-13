@@ -45,7 +45,8 @@ def create_render_data(request, ):
             'team': _get_team_name_or_blank(request.user),
             'team_players_list': team_players_list,
             'new_teammate_num': len(team_players_list)+1,
-            'team_number': settings.TEAM_NUMBERS}
+            'team_number': settings.TEAM_NUMBERS,
+            'invite_teams_list': _get_invite_teams_list(request.user)}
     return data
 
 
@@ -122,6 +123,11 @@ def _get_team_name_or_blank(user):
         return user.team
     else:
         return ''
+
+
+def _get_invite_teams_list(user):
+    invite_list = user.invitelist_set.all()
+    return invite_list
 
 
 def _get_teammates(user):

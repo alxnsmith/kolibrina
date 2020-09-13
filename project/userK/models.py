@@ -29,9 +29,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     balance = models.FloatField(verbose_name='Баланс', default=0.00)
 
     # team
-    team = models.ForeignKey(Team, verbose_name='Команда', on_delete=models.DO_NOTHING, blank=True, null=True)
-    team_role = models.CharField(verbose_name='Роль в команде', choices=settings.TEAM_ROLES, max_length=10, blank=True)
-    number_in_the_team = models.CharField(verbose_name='Номер в команде', choices=settings.TEAM_NUMBERS, max_length=1, blank=True)
+    team = models.ForeignKey(Team, verbose_name='Команда', on_delete=models.SET_NULL, blank=True, null=True)
+    team_role = models.CharField(
+        verbose_name='Роль в команде', choices=settings.TEAM_ROLES, max_length=10, null=True, blank=True)
+    number_in_the_team = models.CharField(
+        verbose_name='Номер в команде', choices=settings.TEAM_NUMBERS, max_length=1, null=True, blank=True)
 
     # toggles
     is_staff = models.BooleanField(verbose_name='Администратор', default=False)
@@ -77,7 +79,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.username
 
 
-class TeamInvites(models.Model):
+class InviteList(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 

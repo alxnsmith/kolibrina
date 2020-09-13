@@ -3,6 +3,7 @@
 *.pyc
 *.php
 koliVENV/
+env3.8/
 env/
 project/static/mediacontent/
 project/static/admin/

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from userK.models import CustomUser, TeamInvites
+from userK.models import CustomUser, InviteList
 
 
 admin.site.register(CustomUser)
-admin.site.register(TeamInvites)
+admin.site.register(InviteList)
