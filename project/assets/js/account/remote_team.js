@@ -12,7 +12,7 @@ function init(){
                 current_user_info = get_info_about_current_user()
                 set_checked_number_in_the_team()
                 init_invite_list()
-
+                _init_nums(team_info)
                 if (current_user_info.team_role){
                     _show_nums()
                 }
@@ -54,7 +54,6 @@ function set_checked_number_in_the_team() {
 
 function _get_num_from_select(){
     let nums = document.querySelectorAll('.nums')[1]
-    console.log(nums)
     nums.onclick = event => {
         let target = event.target
         if (target.classList.contains('num')){
@@ -368,11 +367,21 @@ function _smooth_show_and_hide_popup(element, left){
         setTimeout(()=>{element_style.display = ''},2000)
 }
 
+function _init_nums(team_info){
+    for (let i=0; i<team_info.players.length; i++) {
+        let num = team_info.players[i].number_in_the_team
+        if (num) {
+            let elem = document.querySelector(`#num${num}`)
+            if (!elem.checked) {
+                elem.disabled = true
+            }
+        }
+    }
+}
 
 function _show_nums(){
     let nums = document.querySelectorAll('.nums')
     for (let i=0; i<nums.length; i++){
-        console.log(nums[i])
         nums[i].style.display = ''
         setTimeout(()=>{nums[i].style.opacity = '1'}, 100)
     }

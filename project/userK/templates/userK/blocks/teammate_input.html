@@ -1,5 +1,5 @@
 <div class="teammate" id="teammate{% if forloop.counter < 6 %}{{ forloop.counter }}{% else %}{{ new_teammate_num }}{% endif %}">
-    <input type="text"  class="teammate_username" placeholder="Пригласить игрока" list="users" value="{{ teammate }}" {% if teammate %}disabled{% endif %} style="min-width: 210px; {% if request.user.team_role != "COMMANDER" %}min-width: 94%;{% endif %}">
+    <input type="text"  {% if teammate %}class="teammate_username"{% endif %} placeholder="Пригласить игрока" list="users" value="{{ teammate }}" {% if teammate %}disabled{% endif %} style="min-width: 210px; {% if request.user.team_role != "COMMANDER" %}min-width: 94%;{% endif %}">
     {% if request.user.team_role == 'COMMANDER' %}
         {% if teammate %}
             <a id="del_teammate" href="javascript:void(0)" onclick="del_teammate('{{ teammate }}', this)">Удалить тиммейта</a>
@@ -29,4 +29,5 @@
         КАПИТАН
     {% endif %}
     </div>
+    <span class="teammate_num">#{% if teammate.number_in_the_team %}{{ teammate.number_in_the_team }}{% endif %}</span>
 </div>

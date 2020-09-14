@@ -12,6 +12,7 @@
                 </div>
             </a>
             <div id="online">ONLINE: <span></span></div>
+
         </div>
 	</div>
 	<nav>
@@ -58,9 +59,9 @@
 
         onlineSocket.onmessage = (e) => {
             const data = JSON.parse(e.data);
-{#            console.log(e.data)#}
-            document.querySelector('#online span').textContent = data}
+            document.querySelector('#online span').textContent = data
+        }
         onlineSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
+            console.error('Chat socket closed unexpectedly.', e);
             };
         </script>
