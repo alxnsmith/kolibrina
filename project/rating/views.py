@@ -4,7 +4,7 @@ from userK.services import get_user_rating_lvl_dif
 
 
 def ratings(request):
-    opLVL_users = User.objects.extra(select={'opLVL': 'CAST(opLVL AS INTEGER)'}).order_by('-opLVL')
+    opLVL_users = User.objects.extra(select={'rating': 'CAST(rating AS INTEGER)'}).order_by('-rating')
 
     league_count = {'l1': User.objects.filter(league='l1').__len__(),
                     'l2': User.objects.filter(league='l2').__len__(),

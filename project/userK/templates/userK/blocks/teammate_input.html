@@ -1,4 +1,4 @@
-<div class="teammate" id="teammate{% if forloop.counter < 6 %}{{ forloop.counter }}{% else %}{{ new_teammate_num }}{% endif %}">
+<div class="teammate line" id="teammate{% if forloop.counter < 6 %}{{ forloop.counter }}{% else %}{{ new_teammate_num }}{% endif %}">
     <input type="text"  {% if teammate %}class="teammate_username"{% endif %} placeholder="Пригласить игрока" list="users" value="{{ teammate }}" {% if teammate %}disabled{% endif %} style="min-width: 210px; {% if request.user.team_role != "COMMANDER" %}min-width: 94%;{% endif %}">
     {% if request.user.team_role == 'COMMANDER' %}
         {% if teammate %}

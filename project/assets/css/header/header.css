@@ -13,3 +13,38 @@
     margin-top: 20px!important;
     font-size: 20px;
 }
+
+.develop{
+    position: relative;
+    justify-content: center;
+    min-width: 200px;
+}
+.develop:before{
+    content: '' !important;
+    position: absolute;
+    z-index: 1;
+    background: #999;
+    border: 4px #555 solid ;
+    margin: 1px;
+    opacity: 0.8;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+.develop:after{
+    content: 'В РАЗРАБОТКЕ' !important;
+    position: absolute;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 0 0 30px black;
+    border-radius: 5px;
+    opacity: 0.6;
+    z-index: 1;
+    left: calc(50% - 65px);
+    top: calc(44% - 10px);
+}
+
+.pd-h-10{
+    padding: 0 10px;
+}
