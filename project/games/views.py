@@ -27,7 +27,7 @@ def apiGame(request):
                 d['theme'] = str(Theme.objects.get(id=d['theme_id']))
                 del d['_state'], d['purpose_id'], d['premoderate'], d['author_id'], d['category_id'], d['theme_id'],
                 quest_list.append(d)
-    if request.GET['game'] == 'train':
+    if request.GET['games'] == 'train':
 
         if str(request.user) != 'AnonymousUser':
             league = user_services.get_user_rating_lvl_dif(int(request.user.opLVL))['level']

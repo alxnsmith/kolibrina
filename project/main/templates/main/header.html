@@ -18,7 +18,7 @@
 	<nav>
 		<a href="{% url 'account' %}"><span>Личный кабинет</span></a>
 		<a href="{% url 'tournaments' %}">
-            {% if request.resolver_match.url_name == 'train' or request.resolver_match.url_name == 'result-game' %}
+            {% if request.resolver_match.url_name == 'train' or request.resolver_match.url_name == 'result-games' %}
                 <span class="select">Турниры</span>
             {% else %}
                 <span>Турниры</span>

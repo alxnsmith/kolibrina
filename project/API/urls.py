@@ -3,5 +3,5 @@ from .views import *
 
 urlpatterns = [
     path('', api),
-    path('team/', include('teams.urls'))
+    path('team/', include('api_teams.urls'))
 ]

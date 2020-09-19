@@ -138,8 +138,8 @@
 		{% include "main/footer.html"%}
                 <script src="{% static 'js/fetch.js' %}"></script>
         <script>
-            let result_game = '{% url 'result-game' %}'
-            request_url = '{% url 'apiGame' %}?game=train'
+            let result_game = '{% url 'result-games' %}'
+            request_url = '{% url 'apiGame' %}?games=train'
             sendRequest('GET', request_url).then(data => {
                 let quest_list = data.quest_list
                 let league = data.league
@@ -405,8 +405,8 @@
                 }
             })
             .finally(() => {
-                document.querySelector('.game .loading').style.opacity = 0
-                document.querySelector('.game .loading').style.zIndex = 0
+                document.querySelector('.games .loading').style.opacity = 0
+                document.querySelector('.games .loading').style.zIndex = 0
                 document.querySelector('.text-author span').style.opacity = 1
             })
         </script>

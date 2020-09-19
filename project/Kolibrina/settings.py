@@ -47,9 +47,9 @@ INSTALLED_APPS = [
     'questions',
     'rules',
     'chat',
-    'game',
+    'games',
     'rating',
-    'teams',
+    'api_teams',
     'stats',
 
     'API',

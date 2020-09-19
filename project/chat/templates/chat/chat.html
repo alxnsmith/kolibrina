@@ -74,15 +74,14 @@
         <script>
 
             function print_message (data) {
-                const options = {year: "2-digit", month: "2-digit", day: "2-digit"};
-                let date = new Intl.DateTimeFormat("ru", options).format;
+                console.log(data)
                 document.querySelector('#chat-online').textContent = data.online
                 if (data.username === userdata.username) {
                     document.querySelector('.wrapper-messages').innerHTML +=
                         '<div class="wrapper-messages__item my-message"><div class="message">'
                         + data.message
                         + '</div><div class="date">'
-                        + date()
+                        + data.time
                         + '</div></div>'
                 } else {
                     document.querySelector('.wrapper-messages').innerHTML +=
@@ -91,7 +90,7 @@
                         + '</div><div class="message">'
                         + data.message
                         + '</div><div class="date">'
-                        + date()
+                        + data.time
                         + '</div></div>'
                 }
             }
@@ -99,7 +98,6 @@
         <script>
 
 
-        {#const roomName = JSON.parse(document.getElementById('room-name').textContent); //get room name#}
         const roomName = 'mainROOM'; // get room name
 
 
@@ -129,12 +127,15 @@
             }
         };
 
-        document.querySelector('#tosend').onclick = function(e) {
+        document.querySelector('#tosend').onclick = function() {
             const messageInputDom = document.querySelector('#mes');
             const message = messageInputDom.value;
+            const options = {hour: "2-digit", minute: "2-digit"};
+            let time = new Intl.DateTimeFormat("ru", options).format;
             chatSocket.send(JSON.stringify({
                 'message': message,
-                'username': userdata.username
+                'username': userdata.username,
+                'time': time(),
             }));
             messageInputDom.value = '';
         };

@@ -109,7 +109,7 @@
 							<div class="row">
 
     								<div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email" {% if request.user.email != ''%}disabled{% endif %}></div>
-                                    <div class="col-md-6"><input value="{{ request.user.phoneNumber }}" {% if request.user.phoneNumber != '' and request.user.phoneNumber != Null %}disabled{% endif %}></div>
+                                    <div class="col-md-6"><input type="tel" name="phoneNumber" id="phoneNumber"  placeholder="Номер телефона" {% if request.user.phoneNumber %}value="{{ request.user.phoneNumber }}" disabled{% endif %}></div>
 							</div>
 
 							<input type="text" name="swPlace" placeholder="Место работы / учёбы: ВУЗ / колледж / школа - класс" value="{{ request.user.swPlace }}">
@@ -201,7 +201,6 @@
 						<div id="wrap-title">
 							<hr>
 							<div id="text1"><span>Открыта регистрация на турниры</span></div>
-                            <div class="l"><span>Открыта регистрация на турниры</span></div>
 						</div>
 						<table>
 						  <tr>
@@ -314,21 +313,21 @@
         <script src="{% static 'js/fetch.js' %}"></script>
         <script src="{% static 'js/account/remote_team.js' %}"></script>
         <script>
-            $.fn.formatPnoneNumber = function(){
-			    return this.each(function(){
-				$(this).bind('keyup', function(){
-					let num = this.value.replace( '+7' , '' ).replace( /\D/g, '' ).split( /(?=.)/ ), i = num.length;
-					if ( 0 <= i ) num.unshift( '+7' );
-					if ( 1 <= i ) num.splice(1, 0, ' ');
-					if ( 4 <= i ) num.splice(5, 0, ' ');
-					if ( 7 <= i ) num.splice(9, 0, '-');
-					if ( 9 <= i ) num.splice(12, 0, '-');
-					if ( 11 <= i ) num.splice(15, num.length - 15 );
-					this.value = num.join('');
-		    		});
-		    	});
-		    };
-            $('#tel').formatPnoneNumber()
+            function format (elem){
+                    elem.bind('input', function(){
+                        let num = this.value.replace( '+ 7' , '' ).replace( /\D/g, '' ).split( /(?=.)/ ), i = num.length;
+                        if ( 0 <= i ) num.unshift( '+ 7' );
+                        if ( 1 <= i ) num.splice( 1, 0, ' ' );
+                        if ( 4 <= i ) num.splice( 5, 0, ' ' );
+                        if ( 7 <= i ) num.splice( 9, 0, '-' );
+                        if ( 9 <= i ) num.splice( 12, 0, '-' );
+                        if ( 11 <= i ) num.splice( 15, num.length - 15 );
+                        this.value = num.join( '' );
+                    });
+            };
+            format($('#phoneNumber'))
+            let phoneInput = document.getElementById('phoneNumber')
+            phoneInput.onclick = (e)=>e.target.value='+ 7 '
         </script>
 
 		<script>

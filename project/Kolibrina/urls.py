@@ -17,7 +17,7 @@ urlpatterns = [
     path('rules/', include('rules.urls')),
     path('ratings/', include('rating.urls')),
     path('chat/', include('chat.urls')),
-    path('', include('game.urls')),
+    path('', include('games.urls')),
     path('api/', include('API.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()

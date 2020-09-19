@@ -106,14 +106,19 @@ def _get_form_values(userModel):
     userModel = userModel.__dict__
     try:
         form = forms.EditUser(initial={
-            'birthday': userModel['birthday'].__format__('%Y-%m-%d'), 'gender': userModel['gender'],
+            'birthday': userModel['birthday'].__format__('%Y-%m-%d'),
+            'gender': userModel['gender'],
             'country': userModel['country'],
-            'area': userModel['area'], 'city': userModel['city'],
+            'area': userModel['area'],
+            'city': userModel['city'],
         })
     except TypeError:
         form = forms.EditUser(initial={
-            'birthday': '', 'gender': userModel['gender'], 'country': userModel['country'],
-            'area': userModel['area'], 'city': userModel['city'],
+            'birthday': '',
+            'gender': userModel['gender'],
+            'country': userModel['country'],
+            'area': userModel['area'],
+            'city': userModel['city'],
         })
     return form
 

@@ -7,7 +7,7 @@ from django.conf import settings
 from stats.services import get_sum_score_user
 
 from media.models import Avatar
-from teams.models import Team
+from api_teams.models import Team
 
 from .managers import CustomUserManager
 

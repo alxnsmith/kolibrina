@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class TeamsConfig(AppConfig):
-    name = 'teams'
+    name = 'api_teams'
     verbose_name = 'Команды'
