@@ -36,18 +36,21 @@
             {{ form.author }}
             <div class="addquest_theme-category">
                 <div class="">
-					<select name="category" id="category" onchange="get_themes($('#category').val())">
+					<select name="category" id="category" onchange="get_themes($('#category').val())" required>
                         <option value="">Категория темы</option>
                         {% for category in categories %}
     						<option value="{{ category.id }}">{{ category }}</option>
                         {% endfor %}
 					</select>
 					<div class="addtheme_wrap">
-						<select name="theme" id="theme">
+						<select name="theme" id="theme" required>
 							<option value="">Тема вопроса</option>
 						</select>
 						<div class="addtheme" title="Добавить свою тему"><span>+</span></div>
 					</div>
+                    <div id="add_theme">
+                        <input type="text"><span class="btn">✔</span>
+                    </div>
 				</div>
 			<div class="addquest_complexity">
 				<span>Уровень сложности:</span>
@@ -120,26 +123,70 @@
 		</script>
         <script src="{% static 'js/fetch.js' %}"></script>
         <script>
+            function add_theme(event){
+                let cat = document.getElementById('category').value
+                let theme = event.target.parentElement.querySelector('input').value
+                if (theme.length > 3){
+                    let request_url = '{% url 'questions_api' %}'
+                    let body = {'event': 'add_theme_to_category', 'cat': cat, 'theme': theme}
+                    sendRequest('post', request_url, body).then(result=>{
+                        window.location.reload()
+                    }).catch(error=>{
+                        alert('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
+                        console.error(error)
+                    })
+                }
+            }
+            let add_theme_btn = document.getElementById('add_theme').querySelector('.btn')
+            add_theme_btn.onclick = e =>{add_theme(e)}
+        </script>
+        <script>
+            function clean_themes(themes, themes_field){
+                for (let i = 0; i < themes.length; i++) {themes[i].remove()}
+                    themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+            }
             function get_themes(cat) {
                 let themes_field = document.querySelector('#theme')
-                let themes = document.querySelectorAll('#theme option')
+                let themes_old = document.querySelectorAll('#theme option')
                 if (cat !== ''){
-                    let requestURL = `{% url 'getTheme' %}?cat=${cat}`
+                    let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
                     sendRequest('get', requestURL)
-                        .then(themes => {
-                            for (let theme in themes) {
-                                themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
+                        .then(result => {
+                            let themes = result.themes
+                            if (result.status === 'OK') {
+                                clean_themes(themes_old, themes_field)
+                                for (let theme in themes) {
+                                    themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
+                                }
+                            }else{
+                                console.error(result.error)
                             }
                         })
                         .catch(err => {console.error(err)})
 
                 } else {
-                    for (let i = 0; i < themes.length; i++) {themes[i].remove()}
-                    themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+                    let addTheme = document.getElementById('add_theme')
+                    addTheme.style.transform = 'scaleY(0)'
+                    addTheme.style.height = '0'
+                    clean_themes(themes_old, themes_field)
                 }
             }
         </script>
+        <script>
+            let addtheme = document.querySelector('.addtheme')
+            let addTheme = document.getElementById('add_theme')
+            let category = document.getElementById('category')
+            addtheme.onclick = ()=>{
+                if (addTheme.style.transform === 'scaleY(0)' && category.value){
+                    addTheme.style.transform = 'scaleY(1)'
+                    addTheme.style.height = '35px'
+                }else{
+                    addTheme.style.transform = 'scaleY(0)'
+                    addTheme.style.height = '0'
+                }
+            }
 
+        </script>
 
 	</body>
 </html>

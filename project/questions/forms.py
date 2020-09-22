@@ -1,10 +1,10 @@
 from django import forms
-from .models import Questions
+from .models import Question
 
 
 class AddQuestionForm(forms.ModelForm):
     class Meta:
-        model = Questions
+        model = Question
         fields = ('author', 'category', 'theme', 'difficulty', 'question', 'corectAnsw',
                   'answer2', 'answer3', 'answer4')
         widgets = {'difficulty': forms.RadioSelect,

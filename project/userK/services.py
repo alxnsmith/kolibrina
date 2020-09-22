@@ -3,6 +3,7 @@ from django.conf import settings
 
 from userK.models import CustomUser as User
 from . import forms
+from .phone_validate import phone_validate
 from media import forms as media_forms, services as media_services
 
 
@@ -11,15 +12,22 @@ def write_user_model(username, values):
     fields = []
     for value in values:
         fields.append(value)
-        if value != 'hideMyName':
+        if value != 'hideMyName' and value != 'phoneNumber':
             userModel.__dict__[value] = values[value]
+        elif value == 'phoneNumber':
+            result = phone_validate(values['phoneNumber'])
+            if result['status'] == 'OK':
+                userModel.__dict__[value] = result['phone']
+            elif result['status'] == 'error':
+                return result
 
     if fields.__contains__('hideMyName'):
         userModel.__dict__['hideMyName'] = True
-
     else:
         userModel.__dict__['hideMyName'] = False
+
     userModel.save()
+    return {'status': 'OK'}
 
 
 def create_render_data(request, ):

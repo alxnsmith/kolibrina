@@ -48,3 +48,21 @@
 .pd-h-10{
     padding: 0 10px;
 }
+
+#modal_notification{
+    display: block;
+    box-sizing: content-box;
+    text-align: center;
+    position: fixed;
+    left: 20vw;
+    top: -2vh;
+    overflow-wrap: break-word;
+    opacity: 0;
+    background: #fd0e;
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: #550 2px solid;
+    width: 60vw;
+    min-height: 1vh;
+    transition: 0.7s;
+}

@@ -65,3 +65,17 @@
             console.error('Chat socket closed unexpectedly.', e);
             };
         </script>
+<div id="modal_notification"></div>
+
+        <script>
+            function show_modal_notification(text){
+                let notification = document.getElementById('modal_notification')
+                notification.innerText = text
+                notification.style.opacity = '1'
+                notification.style.top = '1vh'
+                setTimeout(()=>{
+                notification.style.opacity = ''
+                notification.style.top = ''
+                }, 5000)
+            }
+        </script>

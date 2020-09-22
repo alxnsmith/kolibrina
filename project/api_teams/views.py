@@ -13,12 +13,16 @@ def team_api(request):
 
     if request.method == 'GET':
         get = request.GET
-        if get['event'] == 'get_team_info':
-            return JsonResponse(_get_team_info(get['team'], user))
-        elif get['event'] == 'set_number_in_the_team':
-            return JsonResponse(_set_team_number_for_player(user, get.number))
+        if get.__contains__('event'):
+            event = get['event']
+            if event == 'get_team_info':
+                return JsonResponse(_get_team_info(get['team'], user))
+            elif event == 'set_number_in_the_team':
+                return JsonResponse(_set_team_number_for_player(user, get.number))
+            else:
+                return JsonResponse({'error': 'Error! Unknown event.'})
         else:
-            return JsonResponse({'error': 'Error! Unknown event.'})
+            return JsonResponse({'status': 'ERROR! Need "event".'})
 
     elif request.method == 'POST':
         post = json.loads(request.body)
@@ -35,30 +39,35 @@ def team_api(request):
 
     elif request.method == 'DELETE':
         data = json.loads(request.body)
-        if data['event'] == 'delete_player_from_team':
-            result = services.del_player_from_team(team=user.team, player=data['player'])
-            return JsonResponse(result)
-        elif data['event'] == 'delete_team':
-            result = services.delete_team(user)
-            return JsonResponse(result)
-        else:
-            return JsonResponse({'error': 'Error! Unknown event.'})
-
-    elif request.method == 'PUT':
-        put = json.loads(request.body)
-        if put.__contains__('event'):
-            event = put['event']
-            if event == 'set_number_in_the_team':
-                return _set_team_number_for_player(put, user)
-            elif event == 'set_team_role':
-                return _set_team_role(user, put)
-            elif event == 'join_to_team':
-                return JsonResponse(services.join_player_to_team(user=user, team_name=put['team_name']))
-            elif event == 'leave_from_team':
-                return JsonResponse(services.leave_from_team(user=user))
+        if data.__contains__('event'):
+            event = data['event']
+            if event == 'delete_player_from_team':
+                result = services.del_player_from_team(team=user.team, player=data['player'])
+                return JsonResponse(result)
+            elif event == 'delete_team':
+                result = services.delete_team(user)
+                return JsonResponse(result)
             else:
                 return JsonResponse({'error': 'Error! Unknown event.'})
+        else:
+            return JsonResponse({'status': 'ERROR! Need "event".'})
 
+    elif request.method == 'PUT':
+            put = json.loads(request.body)
+            if put.__contains__('event'):
+                event = put['event']
+                if event == 'set_number_in_the_team':
+                    return _set_team_number_for_player(put, user)
+                elif event == 'set_team_role':
+                    return _set_team_role(user, put)
+                elif event == 'join_to_team':
+                    return JsonResponse(services.join_player_to_team(user=user, team_name=put['team_name']))
+                elif event == 'leave_from_team':
+                    return JsonResponse(services.leave_from_team(user=user))
+                else:
+                    return JsonResponse({'error': 'Error! Unknown event.'})
+            else:
+                return JsonResponse({'status': 'ERROR! Need "event".'})
     else:
         return HttpResponse("Error")
 

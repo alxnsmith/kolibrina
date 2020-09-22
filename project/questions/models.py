@@ -33,6 +33,7 @@ class Purpose(models.Model):
 class Theme(models.Model):
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, default='0', db_column='category', verbose_name='Категория')
     theme = models.CharField(max_length=50, verbose_name='Тема')
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.theme
@@ -42,11 +43,12 @@ class Theme(models.Model):
         verbose_name_plural = _('Темы')
 
 
-class Questions(models.Model):
+class Question(models.Model):
     diffChoices = (('10', '10'), ('20', '20'), ('30', '30'), ('40', '40'), ('50', '50'))
 
     purpose = models.ForeignKey(Purpose, on_delete=models.SET(get_user_model()), db_column='purpose', default=1, verbose_name='Назначение')
     premoderate = models.BooleanField(default=True, verbose_name='На модерации')
+
     author = models.ForeignKey(CustomUser, on_delete=models.SET(get_user_model()), db_column='author', verbose_name='Автор', default='0')
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, default='0', db_column='category', verbose_name='Категория')
     theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING, default='0', db_column='theme', verbose_name='Тема')

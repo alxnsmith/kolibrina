@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from questions.models import Questions, Category, Theme
+from questions.models import Question, Category, Theme
 from userK import services as user_services, models as user_models
 from . import defs
 from main.sendmail import sendmail
@@ -34,7 +34,7 @@ def apiGame(request):
         else:
             league = 'Z'
         quest_template = defs.q_template(league)
-        questions = defs.q_questions(league, Questions, p)
+        questions = defs.q_questions(league, Question, p)
         questions = {'q10': questions['10'], 'q20': questions['20'], 'q30': questions['30'],
                      'q40': questions['40'], 'q50': questions['50']}
         quest_l(questions, 'q10')

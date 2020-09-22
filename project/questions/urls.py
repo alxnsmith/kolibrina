@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.navigate, name='questions'),
+    path('api', views.questions_api, name='questions_api'),
     path('add-question', views.addQuestion, name='add-question'),
-    path('get-themes/', views.getThemes, name='getTheme')
+    path('add-tournament-week', views.add_tournament_week, name='add-tournament-week'),
 ]
