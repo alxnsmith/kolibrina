@@ -33,8 +33,8 @@
 
 		<div class="addquest_info"><p>Внимание авторам! <a href="#">Обязательно к прочтению!</a></p></div>
 		<div class="container addquest_wrap">
-			<div class="addquest_author">СЕРГЕЙ ЗАДОРОЖНЫЙ, МОСКВА, spartak2903@yandex.ru</div>
-            <input type="text" id="user_id" value="{{ request.user.id }}" disabled hidden>
+            {% include "questions/blocks/userinfo.html" %}
+            <input type="hidden" id="user_id" value="{{ request.user.id }}">
 			<div class="add_in_tourn">
 				<span>Внесение вопросов турнира ЭЛТН <span class="rrd">0000*</span> Эрудит-лото/Турнир недели <br><span class="rrd">(*номер присваиваеться редактором)</span></span>
 
@@ -52,7 +52,7 @@
 			<td class="vntr">
 				<table>
 					<tr>
-						<td><div class="circle_btn act"><span difficulty="10">01</span></div></td>
+						<td><div class="circle_btn act"><span>01</span></div></td>
 						<td><div class="circle_btn"><span>02</span></div></td>
 						<td><div class="circle_btn"><span>03</span></div></td>
 						<td><div class="circle_btn"><span>04</span></div></td>
@@ -231,7 +231,7 @@
 						<div class="addtheme" title="Добавить свою тему"><span>+</span></div>
 					</div>
                     <div id="add_theme">
-                        <input type="text"><span class="btn">✔</span>
+                        <input type="text" disabled><span class="btn">✔</span>
                     </div>
 				</div>
 
@@ -241,12 +241,12 @@
 			<div class="reply_var">
 				<span>Варианты ответов:</span>
 				<input type="text" placeholder="Правильный ответ" class="correct_ans" id="correct_answer">
-				<input type="text" placeholder="Вариант" id="a2">
-				<input type="text" placeholder="Вариант" id="a3">
-				<input type="text" placeholder="Вариант" id="a4">
+				<input type="text" placeholder="Вариант" id="answer2">
+				<input type="text" placeholder="Вариант" id="answer3">
+				<input type="text" placeholder="Вариант" id="answer4">
 			</div>
 			<div class="addquest_btns">
-				<div class="addtour_btn">Добавить турнир в базу</div>
+				<div class="addtour_btn" id="add_tournament">Добавить турнир в базу</div>
 			</div>
 		</div>
 
@@ -260,18 +260,33 @@
 			});
 		</script>
         <script src="{% static 'js/fetch.js' %}"></script>
+                <script>
+                    {# init quetion difficults in table an write to attribute "difficulty" in circle_buttons span #}
+                    let difficults = document.querySelectorAll('.fc')
+                    for (let i=0; i<difficults.length; i++){
+                        let row = difficults[i].parentElement
+                        let difficulty = row.querySelector('span').innerText
+                        let circle_buttons = row.querySelectorAll('.circle_btn')
+                        for (let i=0; i<circle_buttons.length; i++){
+                            circle_buttons[i].querySelector('span').setAttribute('difficulty', difficulty)
+                        }
+                    }
+                </script>
         <script>
+            {# question model #}
             class question{
-                constructor(author_id, category_id, theme_id, difficulty, question_text, correct_answer, a2, a3, a4) {
-                this.author_id = author_id
-                this.category_id = category_id
-                this.theme_id = theme_id
-                this.difficulty = difficulty
-                this.question_text = question_text
-                this.correct_answer = correct_answer
-                this.a2 = a2
-                this.a3 = a3
-                this.a4 = a4
+                constructor(author_id, category_id, theme_id, difficulty, question_text, correct_answer, a2, a3, a4, position) {
+                    this.author_id = author_id
+                    this.category_id = category_id
+                    this.theme_id = theme_id
+                    this.difficulty = difficulty
+                    this.question = question_text
+                    this.correct_answer = correct_answer
+                    this.answer2 = a2
+                    this.answer3 = a3
+                    this.answer4 = a4
+                    this.position = position
+
                 }
             }
 
@@ -285,9 +300,9 @@
                 let difficulty = current_question.getAttribute('difficulty')
                 let question_text = document.getElementById('question_text').value
                 let correct_answer = document.getElementById('correct_answer').value
-                let a2 = document.getElementById('a2').value
-                let a3 = document.getElementById('a3').value
-                let a4 = document.getElementById('a4').value
+                let a2 = document.getElementById('answer2').value
+                let a3 = document.getElementById('answer3').value
+                let a4 = document.getElementById('answer4').value
 
                 list_questions[`${current_question.innerHTML}`] = new question(
                     user_id,
@@ -298,7 +313,9 @@
                     correct_answer,
                     a2,
                     a3,
-                    a4)
+                    a4,
+                    current_question.innerHTML
+                )
             }
 
         </script>
@@ -308,18 +325,18 @@
                 document.getElementById('theme_id').value = ''
                 document.getElementById('question_text').value = ''
                 document.getElementById('correct_answer').value = ''
-                document.getElementById('a2').value = ''
-                document.getElementById('a3').value = ''
-                document.getElementById('a4').value = ''
+                document.getElementById('answer2').value = ''
+                document.getElementById('answer3').value = ''
+                document.getElementById('answer4').value = ''
             }
             function check_fields(){
                 return(document.getElementById('category_id').value !== '' &&
                 document.getElementById('theme_id').value !== '' &&
                 document.getElementById('question_text').value !== '' &&
                 document.getElementById('correct_answer').value !== '' &&
-                document.getElementById('a2').value !== '' &&
-                document.getElementById('a3').value !== '' &&
-                document.getElementById('a4').value !== '')
+                document.getElementById('answer2').value !== '' &&
+                document.getElementById('answer3').value !== '' &&
+                document.getElementById('answer4').value !== '')
             }
             {# switch questions #}
             let questions = document.querySelectorAll('.circle_btn')
@@ -337,10 +354,13 @@
                             let question_data = list_questions[`${new_question.innerHTML}`]
                             let question_keys = Object.keys(question_data)
                             for (let i = 0; i<question_keys.length; i++){
-                                let key = `${question_keys[i]}`
-                                if (key !== 'author_id' && key !== 'difficulty' && question_data[`${key}`]) {
-                                    document.getElementById(`${key}`).value = question_data[`${key}`]
 
+                                let key = `${question_keys[i]}`
+
+                                if (key !== 'position' && key !== 'author_id' && key !== 'difficulty' && question_data[`${key}`]){
+                                    let key_value = question_data[`${key}`]
+                                    if (key === 'question'){key = 'question_text'}
+                                    document.getElementById(`${key}`).value = key_value
                                 }
                             }
                         }
@@ -351,18 +371,50 @@
             }
         </script>
         <script>
-            {# init cuurent question class #}
-            document.getElementById('question_text').oninput = init_question
-            document.getElementById('correct_answer').oninput = init_question
-            document.getElementById('a2').oninput = init_question
-            document.getElementById('a3').oninput = init_question
-            document.getElementById('a4').oninput = init_question
-        </script>
+            let add_tournament_btn = document.getElementById('add_tournament')
 
+            function check_tournament(){
+                if (check_fields() && Object.keys(list_questions).length === 35){  {# Здесь нужно будет указать === 35, для проверки заполненности турнира #}
+                    let request_url = '{% url 'questions_api' %}'
+                    let body = {
+                        'event': 'add_tournament',
+                        'tournament': list_questions
+                    }
+                    sendRequest('post', request_url, body).then(result=>{
+                        if (result.error === 'Not full tournament'){
+                            show_modal_notification('Турнир не заполнен до конца! Перестаньте баловаться с кодом!')
+                        }else {
+                            document.getElementById('add_tournament').onclick = null
+                            show_modal_notification('Готово')
+                            setTimeout(()=>{window.location.reload()}, 2000)
+                        }
+                    })
+                }else{
+                    show_modal_notification('Для добавления турнира в базу - заполните все вопросы!')
+                }
+
+            }
+
+            function add_tournament(){
+                check_tournament()
+            }
+
+            add_tournament_btn.onclick = ()=> {
+                init_question()
+                add_tournament()
+            }
+            {# init cuurent question class #}
+            {#document.getElementById('question_text').oninput = init_question#}
+            {#document.getElementById('correct_answer').oninput = init_question#}
+            {#document.getElementById('answer2').oninput = init_question#}
+            {#document.getElementById('answer3').oninput = init_question#}
+            {#document.getElementById('answer4').oninput = init_question#}
+
+        </script>
 
         <script>
             function add_theme(event){
-                let cat = document.getElementById('category').value
+                let cat = document.getElementById('category_id').value
                 let theme = event.target.parentElement.querySelector('input').value
                 if (theme.length > 3){
                     let request_url = '{% url 'questions_api' %}'
@@ -370,7 +422,7 @@
                     sendRequest('post', request_url, body).then(result=>{
                         window.location.reload()
                     }).catch(error=>{
-                        alert('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
+                        show_modal_notification('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
                         console.error(error)
                     })
                 }
@@ -413,14 +465,21 @@
         <script>
             let addtheme = document.querySelector('.addtheme')
             let addTheme = document.getElementById('add_theme')
-            let category = document.getElementById('category')
+            let category = document.getElementById('category_id')
             addtheme.onclick = ()=>{
-                if (addTheme.style.transform === 'scaleY(0)' && category.value){
-                    addTheme.style.transform = 'scaleY(1)'
-                    addTheme.style.height = '35px'
+                if (addTheme.style.transform === 'scaleY(0)'){
+                     if (category.value) {
+                         addTheme.style.transform = 'scaleY(1)'
+                         addTheme.style.height = '35px'
+                         addTheme.querySelector('input').disabled = false
+
+                     }else{
+                         show_modal_notification('Для добавления темы выберите категорию, к которой она относится.')
+                     }
                 }else{
                     addTheme.style.transform = 'scaleY(0)'
                     addTheme.style.height = '0'
+                    addTheme.querySelector('input').disabled = true
                 }
             }
 

@@ -139,7 +139,7 @@ def _get_team_name_or_blank(user):
 
 
 def _get_invite_teams_list(user):
-    invite_list = user.invitelist_set.all()
+    invite_list = user.invitetoteam_set.all()
     return invite_list
 
 

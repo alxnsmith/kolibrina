@@ -79,7 +79,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.username
 
 
-class InviteList(models.Model):
+class InviteToTeam(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 

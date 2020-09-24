@@ -13,7 +13,7 @@ def navigate(request):
 
 
 @csrf_exempt
-def questions_api(request):
+def questions_api(request):  # url: questions_api
     user = request.user
 
     if request.method == 'GET':
@@ -45,6 +45,11 @@ def questions_api(request):
                     return JsonResponse({'status': 'OK', 'result': result})
                 else:
                     return JsonResponse({'status': 'error', 'error': result})
+            if event == 'add_tournament':
+                if not post.__contains__('tournament'):
+                    return JsonResponse({'status': 'error', 'error': 'Error! Need "tournament"'})
+                result = services.add_tournament(post)
+                return JsonResponse(result)
             else:
                 return JsonResponse({'status': 'error', 'error': 'Error! Unknown event.'})
         else:
@@ -87,10 +92,6 @@ def addQuestion(request):
             return redirect('add-question')
         else:
             data = {
-                'USER': ', '.join((' '.join((request.user.firstName.upper(),
-                                             request.user.lastName.upper())),
-                                             request.user.city.upper(),
-                                             request.user.email)),
                 'form': forms.AddQuestionForm(initial={'author': request.user.id}),
                 'categories': Category.objects.all(),
             }

@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Team
-from userK.models import CustomUser, InviteList
+from userK.models import CustomUser, InviteToTeam
 
 
 def set_number_on_the_team(username, number):
@@ -43,11 +43,11 @@ def delete_team(user):
 
 
 def add_player_to_invite_list(user_id, team_id):
-    exists = InviteList.objects.filter(team=team_id, user=user_id).exists()
+    exists = InviteToTeam.objects.filter(team=team_id, user=user_id).exists()
     if not exists:
         team = Team.objects.get(id=team_id)
         user = CustomUser.objects.get(id=user_id)
-        InviteList.objects.create(team=team, user=user)
+        InviteToTeam.objects.create(team=team, user=user)
         return {'status': 'OK'}
     return {'status': 'error', 'error': 'This invitation is already there'}
 
@@ -104,7 +104,7 @@ def set_player_team_role(user, put):
 
 def join_player_to_team(user, team_name):
     user = CustomUser.objects.get(username=user.username)
-    invited = user.invitelist_set.all()
+    invited = user.invitetoteam_set.all()
     if invited.filter(team__team_name=team_name).exists():
         team = Team.objects.get(team_name=team_name)
         user.team = team

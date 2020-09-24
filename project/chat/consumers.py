@@ -14,7 +14,7 @@ class ChatConsumer(WebsocketConsumer):
     redis_instance.set('ChatOnline', '0')
 
     def connect(self):
-        self._increase_online()
+        self.redis_instance.incr('ChatOnline')
         # Join room group
 
         self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -28,7 +28,7 @@ class ChatConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, code):
-        self._decrease_online()
+        self.redis_instance.decr('ChatOnline')
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
@@ -80,9 +80,3 @@ class ChatConsumer(WebsocketConsumer):
                                         json.dumps(message_list))
         else:
             self.redis_instance.set(f'{self.room_group_name}_messages', json.dumps([message]))
-
-    def _increase_online(self):
-        self.redis_instance.set('ChatOnline', str(int(self.redis_instance.get('ChatOnline'))+1))
-
-    def _decrease_online(self):
-        self.redis_instance.set('ChatOnline', str(int(self.redis_instance.get('ChatOnline'))-1))

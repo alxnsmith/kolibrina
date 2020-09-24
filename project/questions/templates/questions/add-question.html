@@ -32,7 +32,7 @@
         {% if not errors %}
 		<div class="addquest_info"><p>Внимание авторам!<a class="red" href="#"> Обязательно к прочтению!</a></p></div>
 		<form class="container addquest_wrap" method="post">{% csrf_token %}
-			<div class="addquest_author">{% if request.user.hideMyName == 0 %}{{ USER }}{% else %}{{ request.user }}{% endif %}</div>
+        {% include "questions/blocks/userinfo.html" %}
             {{ form.author }}
             <div class="addquest_theme-category">
                 <div class="">

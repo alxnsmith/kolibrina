@@ -16,7 +16,7 @@ class OnlineConsumer(WebsocketConsumer):
             'online',
             self.channel_name
         )
-        self.redis_instance.set('online', int(self.redis_instance.get('online').decode()) + 1)
+        self.redis_instance.incr('online')
         async_to_sync(self.channel_layer.group_send)(
             'online',
             {'type': 'new_online',
@@ -26,7 +26,7 @@ class OnlineConsumer(WebsocketConsumer):
         self.send(self.redis_instance.get('online').decode())
 
     def disconnect(self, code):
-        self.redis_instance.set('online', int(self.redis_instance.get('online').decode())-1)
+        self.redis_instance.decr('online')
         async_to_sync(self.channel_layer.group_send)(
             'online',
             {'type': 'new_online',
