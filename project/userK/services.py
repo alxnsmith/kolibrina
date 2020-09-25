@@ -21,7 +21,7 @@ def write_user_model(username, values):
             elif result['status'] == 'error':
                 return result
 
-    if fields.__contains__('hideMyName'):
+    if 'hideMyName' in fields:
         userModel.__dict__['hideMyName'] = True
     else:
         userModel.__dict__['hideMyName'] = False

@@ -13,7 +13,7 @@ def team_api(request):
 
     if request.method == 'GET':
         get = request.GET
-        if get.__contains__('event'):
+        if 'event' in get:
             event = get['event']
             if event == 'get_team_info':
                 return JsonResponse(_get_team_info(get['team'], user))
@@ -26,7 +26,7 @@ def team_api(request):
 
     elif request.method == 'POST':
         post = json.loads(request.body)
-        if post.__contains__('event'):
+        if 'event' in post:
             event = post['event']
             if event == 'add_player_to_invite_list':
                 return _add_player_to_invite_list(post['player_id'], user.team.id)
@@ -39,7 +39,7 @@ def team_api(request):
 
     elif request.method == 'DELETE':
         data = json.loads(request.body)
-        if data.__contains__('event'):
+        if 'event' in data:
             event = data['event']
             if event == 'delete_player_from_team':
                 result = services.del_player_from_team(team=user.team, player=data['player'])
@@ -54,7 +54,7 @@ def team_api(request):
 
     elif request.method == 'PUT':
             put = json.loads(request.body)
-            if put.__contains__('event'):
+            if 'event' in put:
                 event = put['event']
                 if event == 'set_number_in_the_team':
                     return _set_team_number_for_player(put, user)

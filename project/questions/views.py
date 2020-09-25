@@ -18,10 +18,10 @@ def questions_api(request):  # url: questions_api
 
     if request.method == 'GET':
         get = request.GET
-        if get.__contains__('event'):
+        if 'event' in get:
             event = get['event']
             if event == 'get_themes_in_category':
-                if not get.__contains__('cat'):
+                if not 'cat' in get:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "cat"'})
                 cat = Theme.objects.filter(category=get['cat'])
                 themes = [[str(i), str(i.id)] for i in cat]
@@ -33,12 +33,12 @@ def questions_api(request):  # url: questions_api
 
     elif request.method == 'POST':
         post = json.loads(request.body)
-        if post.__contains__('event'):
+        if 'event' in post:
             event = post['event']
             if event == 'add_theme_to_category':
-                if not post.__contains__('cat'):
+                if not 'cat' in post:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "cat"'})
-                if not post.__contains__('theme'):
+                if not 'theme' in post:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "theme"'})
                 result = services.add_theme_to_category(post)
                 if result['status'] == 'OK':
@@ -46,7 +46,7 @@ def questions_api(request):  # url: questions_api
                 else:
                     return JsonResponse({'status': 'error', 'error': result})
             if event == 'add_tournament':
-                if not post.__contains__('tournament'):
+                if not 'tournament' in post:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "tournament"'})
                 result = services.add_tournament(post)
                 return JsonResponse(result)
@@ -57,7 +57,7 @@ def questions_api(request):  # url: questions_api
 
     # elif request.method == 'DELETE':
     #     delete = json.loads(request.body)
-    #     if delete.__contains__('event'):
+    #     if 'event' in delete:
     #         event = delete['event']
     #         if event == 'add_player_to_invite_list':
     #             pass
@@ -68,7 +68,7 @@ def questions_api(request):  # url: questions_api
 
     # elif request.method == 'PUT':
     #     delete = json.loads(request.body)
-    #     if delete.__contains__('event'):
+    #     if 'event' in delete:
     #         event = delete['event']
     #         if event == 'add_player_to_invite_list':
     #             pass

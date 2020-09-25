@@ -56,7 +56,7 @@ def train(request):
 
 
 def win_lose(request):
-    if request.GET.__contains__('status'):
+    if 'status' in request.GET:
         status = request.GET['status']
         score = request.GET["score"]
         if status == 'lose':

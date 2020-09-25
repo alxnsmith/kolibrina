@@ -5,7 +5,7 @@ from django.http import JsonResponse
 
 
 def get_last_messages(request):
-    if request.GET.__contains__('mainROOM'):
+    if 'mainROOM' in request.GET:
         room_group_name = 'mainROOM'
         redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                            port=settings.REDIS_PORT, db=0)

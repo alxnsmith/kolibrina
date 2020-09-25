@@ -7,7 +7,7 @@ def set_number_on_the_team(username, number):
     user = CustomUser.objects.get(username=username)
     team_object = Team.objects.get(team_name=user.team)
     occupied_player_numbers = [i['number_in_the_team'] for i in team_object.customuser_set.values('number_in_the_team')]
-    if occupied_player_numbers.__contains__(number):
+    if number in occupied_player_numbers:
         return {'status': 'error', 'error': 'This number is occupied'}
     user.number_in_the_team = number
     user.save()
@@ -59,7 +59,7 @@ def get_team_info(team, user):
         return {'Error': 'Нет такой команды'}
     players_list = list(team_object.customuser_set.values('id', 'username', 'team_role', 'number_in_the_team'))
     players = _create_dict_with_user_models(players_list)
-    if not players['list'].__contains__(str(user)):
+    if not str(user) in players['list']:
         return {'Error': 'Вы не состоите в этой команде, доступ закрыт.'}
     score = team_object.score
     last_game_date = team_object.last_game_date
@@ -84,7 +84,7 @@ def set_player_team_role(user, put):
     role = put['role']
     teammate_list = user.team.customuser_set.all()
     if user.team_role == 'COMMANDER':
-        if put.__contains__('username'):
+        if 'username' in put:
             if teammate_list.filter(username=put['username']).exists():
                 user = teammate_list.get(username=put['username'])
     empty_places_list = _check_empty_place_in_team_roles(teammate_list=teammate_list)

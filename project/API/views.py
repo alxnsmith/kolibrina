@@ -8,7 +8,7 @@ def api(request):
     user = get_object_or_404(User, username=sender_name)
 
     def value(req):
-        return request.GET.__contains__(req)
+        return req in request.GET
 
     response = {}
     if value('username'):

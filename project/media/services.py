@@ -33,7 +33,7 @@ class User:
 
     def choose_avatar(self, filename):
         def _image_valid(image_name=filename):
-            return ['png', 'jpg', 'jpeg', 'bmp', 'webp', ].__contains__(image_name.split('.')[-1])
+            return image_name.split('.')[-1] in ['png', 'jpg', 'jpeg', 'bmp', 'webp', ]
 
         if _image_valid():
             user_path = os.path.join(*self.full_user_media_path.split('/')[-2:])

@@ -14,7 +14,7 @@ def phone_validate(number):
         return {'status': 'error', 'error': 'Введите корректный номер телефона'}
 
     phone = '89'+''.join(regex_num.group(1, 2, 3, 4))
-    if phone_list.__contains__(phone):
+    if phone in phone_list:
         return {'status': 'error', 'error': 'Этот номер телефона уже используется в другом аккаунте'}
     if not re.match(r'8\d{10}', phone):
         return {'status': 'error', 'error': 'Что то произошло не так, попробуйте еще раз'}
