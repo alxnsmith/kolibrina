@@ -4,7 +4,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 from django.conf import settings
 
-from stats.services import get_sum_score_user
+from stats.services import get_sum_score_user, init_league
 
 from media.models import Avatar
 from api_teams.models import Team
@@ -73,6 +73,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         self.rating = get_sum_score_user(self)
+        init_league(self)
         super(CustomUser, self).save(*args, **kwargs)
 
     def __str__(self):

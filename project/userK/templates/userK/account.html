@@ -80,8 +80,7 @@
                                 <div class="col-md-6" id="birth">
                                     <span>Дата рождения</span>
                                     <br>
-
-                                        <input type="date" name="birthday" value="" required="" id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}" {% if request.user.birthday != None %}disabled{% endif %}>
+                                        <input type="date" name="birthday" value="{{ form.birthday.value }}" required="" id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}" {% if request.user.birthday != None %}disabled{% endif %}>
                                 </div>
                                 <div class="col-md-6" id="gender">
                                     <div class="flex-row">
@@ -340,39 +339,28 @@
 			});
 		</script>
         <script>
-            console.log()
-            let birthday = '{{ request.user.birthday }}'
-            if (birthday !== 'None') {
-                birthday = birthday.split(' ')
-                function monthToD() {
-                    if (birthday[1] === 'января') {
-                        return '01'
-                    } else if (birthday[1] === 'февраля') {
-                        return '02'
-                    } else if (birthday[1] === 'марта') {
-                        return '03'
-                    } else if (birthday[1] === 'апреля') {
-                        return '04'
-                    } else if (birthday[1] === 'мая') {
-                        return '05'
-                    } else if (birthday[1] === 'июня') {
-                        return '06'
-                    } else if (birthday[1] === 'июля') {
-                        return '07'
-                    } else if (birthday[1] === 'августа') {
-                        return '08'
-                    } else if (birthday[1] === 'сентября') {
-                        return '09'
-                    } else if (birthday[1] === 'октября') {
-                        return '10'
-                    } else if (birthday[1] === 'ноября') {
-                        return '11'
-                    } else if (birthday[1] === 'декабря') {
-                        return '12'
-                    }
+            function get_lower_threshold(rating){
+                if (rating < 1000){return ''}
+                else if(rating < 3000){return ['l1', 'l2']}
+                else if(rating < 6000){return ['l1', 'l2', 'l3']}
+                else if(rating < 10000){return ['l1', 'l2', 'l3', 'l4']}
+                else if(rating >= 10000){return ['l1', 'l2', 'l3', 'l5']}
                 }
 
-                document.querySelector('#id_birthday').value = `${birthday[2]}-${monthToD()}-${birthday[0].padStart(2, '0')}`
+            function disable_league({l1=false, l2=false, l3=false, l4=false, l5=false, l6=false}){
+                let rating = parseInt(document.getElementById('rating').querySelector('span').innerText.split('/')[0])
+                let threshold = get_lower_threshold(rating)
+                let leagues = {'l1': l1, 'l2': l2, 'l3':l3, 'l4':l4, 'l5':l5, 'l6':l6,}
+                for (let i = 0; threshold.length > i; i++){
+                    leagues[threshold[i]] = true
+                }
+                console.log(leagues)
+                document.querySelector('#id_league_0').disabled = leagues['l1']
+                document.querySelector('#id_league_1').disabled = leagues['l2']
+                document.querySelector('#id_league_2').disabled = leagues['l3']
+                document.querySelector('#id_league_3').disabled = leagues['l4']
+                document.querySelector('#id_league_4').disabled = leagues['l5']
+                document.querySelector('#id_league_5').disabled = leagues['l6']
             }
         </script>
         <script>
@@ -382,24 +370,16 @@
                 let currentYear = date.getFullYear()
                 let age = currentYear - yearBirthday
                 if (age > 0 && age < 100) {
-                    if (age > 0 && age < 18) {
-                        document.querySelector('#id_league_0').disabled = ''
-                        document.querySelector('#id_league_1').disabled = ''
-                        document.querySelector('#id_league_2').disabled = ''
-                    } else if (age < 22) {
-                        document.querySelector('#id_league_0').disabled = ' '
-                        document.querySelector('#id_league_1').disabled = ''
-                        document.querySelector('#id_league_2').disabled = ''
+                    if (age > 0 && age < 18) {}
+                    else if (age < 22) {
+                        disable_league({l1: true})
                     } else if (age < 25) {
-                        document.querySelector('#id_league_0').disabled = ' '
-                        document.querySelector('#id_league_1').disabled = ' '
-                        document.querySelector('#id_league_2').disabled = ''
+                        disable_league({l1: true, l2: true})
                     } else if (age > 25) {
-                        document.querySelector('#id_league_0').disabled = ' '
-                        document.querySelector('#id_league_1').disabled = ' '
-                        document.querySelector('#id_league_2').disabled = ' '
+                        disable_league({l1: true, l2: true, l3: true})
                     }
                 }
+
                 let leagues = document.querySelectorAll('.league')
                 for (let i=0; i<leagues.length; i++){
                     if (leagues[i].querySelector('input').value === '{{ league }}') {
@@ -411,15 +391,11 @@
             document.querySelector('#id_birthday').oninput = function() {initLeagues()}
         </script>
         <script>
-            function init_number_in_the_team(){
-
-            }
-        </script>
-        <script>
             let inpAvatar = document.querySelector('#id_image')
             let btn = document.querySelector('button.av-btn')
             inpAvatar.oninput = function() {btn.click()}
             document.querySelector('.set-av').onclick = function () {inpAvatar.click()}
         </script>
+
 	</body>
 </html>

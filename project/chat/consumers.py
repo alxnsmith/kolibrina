@@ -75,7 +75,7 @@ class ChatConsumer(WebsocketConsumer):
                 self.redis_instance.set(f'{self.room_group_name}_messages',
                                         json.dumps(message_list))
             else:
-                message_list = message_list[1:]
+                message_list = message_list.pop(0)
                 self.redis_instance.set(f'{self.room_group_name}_messages',
                                         json.dumps(message_list))
         else:
