@@ -17,3 +17,6 @@ class ScoreHistory(models.Model):
     def save(self, *args, **kwargs):
         super(ScoreHistory, self).save(*args, **kwargs)
         self.player.save()
+
+# def wq():
+#     ScoreHistory.objects.filter(date__range=)

@@ -5,8 +5,11 @@ def get_sym_plus_if_num_is_positive(num):
     return sym
 
 
-def get_sum_score_user(user):
-    score_history = list(user.scorehistory_set.values('score'))
+def get_sum_score_user(user, date_range=False):
+    if not date_range:
+        score_history = list(user.scorehistory_set.values('score'))
+    else:
+        score_history = list(user.scorehistory_set.filter(date__range=date_range).values('score'))
 
     def _get_sum(scores):
         scores_list = []

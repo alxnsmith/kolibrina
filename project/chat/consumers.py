@@ -70,12 +70,14 @@ class ChatConsumer(WebsocketConsumer):
     def _message_buffer(self, message):
         if self.redis_instance.exists(f'{self.room_group_name}_messages') == 1:
             message_list = json.loads(self.redis_instance.get(f'{self.room_group_name}_messages').decode())
+            print('\n', message_list)
+            print(message, '\n')
             message_list.append(message)
             if len(message_list) <= 20:
                 self.redis_instance.set(f'{self.room_group_name}_messages',
                                         json.dumps(message_list))
             else:
-                message_list = message_list.pop(0)
+                message_list.pop(0)
                 self.redis_instance.set(f'{self.room_group_name}_messages',
                                         json.dumps(message_list))
         else:

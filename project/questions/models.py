@@ -11,9 +11,17 @@ def get_sentinel_user():
 
 class Tournament(models.Model):
     name = models.CharField(max_length=128, verbose_name='Имя турнира', blank=True)
+
+    class Destinations(models.TextChoices):
+        NONE = 'NONE', _('Не указано')
+        TRAIN_ER_LOTTO = 'TEL', _('Тренировка эрудит-лото')
+        TOURNAMENT_WEEK_ER_LOTTO = 'TWEL', _('Турнир недели эрудит-лото')
+    destination = models.CharField(verbose_name='Назначение', max_length=128, choices=Destinations.choices, default=Destinations.NONE)
     author = models.ForeignKey(CustomUser, default=None, null=True, on_delete=models.SET_NULL, verbose_name="Автор турнира")
+    timer = models.IntegerField(verbose_name='Время таймера', default=30)
     date = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)
     create_date = models.DateField(verbose_name='Дата создания', default=timezone.now)
+    is_active = models.BooleanField(verbose_name="Активный турнир", default=False)
 
     def __str__(self):
         return f'Name: {self.name}; Author: {self.author}; Create date: {self.create_date}'
@@ -85,8 +93,12 @@ class Question(models.Model):
     answer4 = models.CharField(max_length=64, verbose_name='Ответ4')
 
     def __str__(self):
-        return 'ID: {}, Q: {}..., A: {}, D: {}, C: {}, T: {}'.format(self.id,
-                                                                     self.question[:50],
+        if len(self.question) > 50:
+            question_str = self.question[:50] + '...'
+        else:
+            question_str = self.question.ljust(50, '_')
+        return 'ID: {}, Q: {}, A: {}, D: {}, C: {}, T: {}'.format(self.id,
+                                                                     question_str,
                                                                      self.correct_answer,
                                                                      self.difficulty,
                                                                      self.category,

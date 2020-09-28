@@ -18,6 +18,7 @@
     position: relative;
     justify-content: center;
     min-width: 200px;
+    pointer-events: none;
 }
 .develop:before{
     content: '' !important;
@@ -34,6 +35,7 @@
 }
 .develop:after{
     content: 'В РАЗРАБОТКЕ' !important;
+    color: #000;
     position: absolute;
     background: #fff;
     padding: 10px;
@@ -65,4 +67,8 @@
     width: 60vw;
     min-height: 1vh;
     transition: 0.7s;
+}
+
+.al-center{
+    text-align: center;
 }

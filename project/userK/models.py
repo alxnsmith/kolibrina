@@ -4,12 +4,12 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 from django.conf import settings
 
+from .managers import CustomUserManager
+
 from stats.services import get_sum_score_user, init_league
 
 from media.models import Avatar
 from api_teams.models import Team
-
-from .managers import CustomUserManager
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):

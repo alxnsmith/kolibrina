@@ -3,8 +3,9 @@ from . import views
 
 urlpatterns = [
     path('', views.train, name='train'),
+    path('tournament-week', views.tournament_week, name='tournament-week'),
     path('result-games/', views.win_lose, name='result-games'),
     path('tournaments/', views.tournaments, name='tournaments'),
     path('clarify-question/', views.clarify_question, name='clarify-question'),
-    path('api-games/', views.apiGame, name='apiGame'),
+    path('api-train/', views.api_train, name='api_train'),
 ]

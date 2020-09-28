@@ -74,7 +74,6 @@
         <script>
 
             function print_message (data) {
-                console.log(data)
                 document.querySelector('#chat-online').textContent = data.online
                 if (data.username === userdata.username) {
                     document.querySelector('.wrapper-messages').innerHTML +=

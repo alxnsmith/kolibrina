@@ -4,6 +4,7 @@ from .models import Category, Theme
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from main.services import check_fill_profile
 import json
 
 
@@ -14,14 +15,12 @@ def navigate(request):
 
 @csrf_exempt
 def questions_api(request):  # url: questions_api
-    user = request.user
-
     if request.method == 'GET':
         get = request.GET
         if 'event' in get:
             event = get['event']
             if event == 'get_themes_in_category':
-                if not 'cat' in get:
+                if 'cat' not in get:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "cat"'})
                 cat = Theme.objects.filter(category=get['cat'])
                 themes = [[str(i), str(i.id)] for i in cat]
@@ -36,19 +35,20 @@ def questions_api(request):  # url: questions_api
         if 'event' in post:
             event = post['event']
             if event == 'add_theme_to_category':
-                if not 'cat' in post:
+                if 'cat' not in post:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "cat"'})
-                if not 'theme' in post:
+                if 'theme' not in post:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "theme"'})
                 result = services.add_theme_to_category(post)
                 if result['status'] == 'OK':
                     return JsonResponse({'status': 'OK', 'result': result})
                 else:
                     return JsonResponse({'status': 'error', 'error': result})
-            if event == 'add_tournament':
-                if not 'tournament' in post:
+            if event == 'add_tournament_week':
+                print(request.body)
+                if 'tournament' not in post:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "tournament"'})
-                result = services.add_tournament(post)
+                result = services.add_tournament_week(post)
                 return JsonResponse(result)
             else:
                 return JsonResponse({'status': 'error', 'error': 'Error! Unknown event.'})
@@ -78,27 +78,29 @@ def questions_api(request):  # url: questions_api
     #         return JsonResponse({'status': 'error', 'error': 'ERROR! Need "event".'})
 
 
+@login_required(login_url='login')
 def add_tournament_week(request):
+    template = 'questions/add-tournament.html'
+    result_check_fill_profile = check_fill_profile(request, template)
+    if result_check_fill_profile['status'] == 'error':
+        return result_check_fill_profile['response']
     data = {'categories': Category.objects.all()}
-    return render(request, 'questions/add-tournament.html', data)
+    return render(request, template, data)
 
 
 @login_required(login_url='login')
-def addQuestion(request):
-    if request.user.firstName and request.user.lastName and request.user.city:
-        if request.POST:
-            services.add_question(post=request.POST)
-            print(request.POST)
-            return redirect('add-question')
-        else:
-            data = {
-                'form': forms.AddQuestionForm(initial={'author': request.user.id}),
-                'categories': Category.objects.all(),
-            }
-            return render(request, 'questions/add-question.html', data)
+def add_question(request):
+    template = 'questions/add-question.html'
+    result_check_fill_profile = check_fill_profile(request, template)
+    if result_check_fill_profile['status'] == 'error':
+        return result_check_fill_profile['response']
+    if request.POST:
+        services.add_question(post=request.POST)
+        print(request.POST)
+        return redirect('add-question')
     else:
-        return render(request, 'questions/add-question.html',
-                      {'errors': [
-                          {'link': '/account',
-                           'tlink': 'Заполните',
-                           'error': ' свой профиль для полноценного пользования сервисом.'}]})
+        data = {
+            'form': forms.AddQuestionForm(initial={'author': request.user.id}),
+            'categories': Category.objects.all(),
+        }
+        return render(request, template, data)

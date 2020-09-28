@@ -8,13 +8,13 @@ def add_theme_to_category(post):
     return {'status': 'OK'}
 
 
-def add_tournament(post):
+def add_tournament_week(post):
     question_list = post['tournament']
     if len(question_list) != 35:
         return {'status': 'error', 'error': 'Not full tournament'}
     author_id = post['tournament']['01']['author_id']
     author = models.CustomUser.objects.get(id=author_id)
-    _create_tournament(author_id)
+    _create_tournament(author_id, models.Tournament.Destinations.TOURNAMENT_WEEK_ER_LOTTO)
     tournament = author.tournament_set.all().order_by('create_date').last()
     for q in question_list:
         print(question_list[q]['position'])
@@ -29,8 +29,12 @@ def add_tournament(post):
     return {'status': 'OK'}
 
 
-def _create_tournament(author_id):
-    models.Tournament.objects.create(author_id=author_id)
+def add_question(post):
+    pass
+
+
+def _create_tournament(author_id, destination):
+    models.Tournament.objects.create(author_id=author_id, destination=destination)
 
 
 def _add_question_to_db(author_id, category_id, theme_id, difficulty,
@@ -46,3 +50,7 @@ def _add_question_to_db(author_id, category_id, theme_id, difficulty,
                                    answer4=answer4,
                                    pos=position,
                                    for_tournament=tournament)
+
+
+def get_questions_from_tournament(tournament):
+    return tournament.question_set.all()

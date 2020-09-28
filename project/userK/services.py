@@ -8,25 +8,25 @@ from media import forms as media_forms, services as media_services
 
 
 def write_user_model(username, values):
-    userModel = get_user_model(username=username)
+    user_model = get_user_model(username=username)
     fields = []
     for value in values:
         fields.append(value)
         if value != 'hideMyName' and value != 'phoneNumber':
-            userModel.__dict__[value] = values[value]
+            user_model.__dict__[value] = values[value]
         elif value == 'phoneNumber':
             result = phone_validate(values['phoneNumber'])
             if result['status'] == 'OK':
-                userModel.__dict__[value] = result['phone']
+                user_model.__dict__[value] = result['phone']
             elif result['status'] == 'error':
                 return result
 
     if 'hideMyName' in fields:
-        userModel.__dict__['hideMyName'] = True
+        user_model.__dict__['hideMyName'] = True
     else:
-        userModel.__dict__['hideMyName'] = False
+        user_model.__dict__['hideMyName'] = False
 
-    userModel.save()
+    user_model.save()
     return {'status': 'OK'}
 
 
@@ -71,27 +71,27 @@ def get_user_rating_lvl_dif(rating):
     if rating < 1000:
         max = 100
         deltamax = 100
-        level = 'J'
+        level = 'J (юниор)'
         return r(rating, max, deltamax, level)
     elif rating < 3000:
         max = 1000
         deltamax = 200
-        level = 'L'
+        level = 'L (любитель)'
         return r(rating, max, deltamax, level)
     elif rating < 6000:
         max = 3000
         deltamax = 300
-        level = 'Z'
+        level = 'Z (знаток)'
         return r(rating, max, deltamax, level)
     elif rating < 10000:
         max = 6000
         deltamax = 400
-        level = 'M'
+        level = 'M (мастер)'
         return r(rating, max, deltamax, level)
     else:
         max = 10000
         deltamax = 500
-        level = 'P'
+        level = 'P (профи)'
         return r(rating, max, deltamax, level)
 
 

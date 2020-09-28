@@ -118,9 +118,10 @@
 		<script>
 			$(document).ready(function() {
 				$("header nav a:nth-child(4) > span").addClass("select");
-				$(".title > h2 > strong").html("Добавить вопрос | Добавить авторский турнир");
+				$(".title > h2 > strong").html("Добавить вопрос");
 			});
 		</script>
+        {% if not errors %}
         <script src="{% static 'js/fetch.js' %}"></script>
         <script>
             function add_theme(event){
@@ -187,6 +188,6 @@
             }
 
         </script>
-
+    {% endif %}
 	</body>
 </html>

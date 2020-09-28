@@ -59,66 +59,12 @@
 				<p>Текстовая информация</p>
 			</div>
 
-			<div class="game_nav">
-				<div class="game_nav-btns j-c-Center">
-					<a href="javascript:void(0)" id="q_num" class="act">01</a>
-					<a href="javascript:void(0)" id="q_num">02</a>
-					<a href="javascript:void(0)" id="q_num">03</a>
-					<a href="javascript:void(0)" id="q_num">04</a>
-					<a href="javascript:void(0)" id="q_num">05</a>
-					<a href="javascript:void(0)" id="q_num">06</a>
-					<a href="javascript:void(0)" id="q_num">07</a>
-					<a href="javascript:void(0)" id="q_num">08</a>
-					<a href="javascript:void(0)" id="q_num">09</a>
-					<a href="javascript:void(0)" id="q_num">10</a>
-					<a href="javascript:void(0)" id="q_num">11</a>
-					<a href="javascript:void(0)" id="q_num">12</a>
-				</div>
-			</div>
+			{% include 'game/blocks/quest_nums.html' %}
+
 			<div class="text-author"><span> </span></div>
 
-			<form action="" method="POST" class="game">
-                <div class="loading"></div>
-				<div class="row">
-					<div class="col-sm-8 col-md-8 col-lg-8">
-						<div class="game__question">
-							Сколько медведей на картине И. Шишкина "Утро в сосновом лесу"?
-						</div>
-						<div class="game__options" style="transition: all 2s cubic-bezier(0.22, 1.15, 0.25, 0.96) 0s; height: 114px;">
-							<label id="answer">
-								<input type="radio" name="answer" value="Два">
-								Два
-								<span></span>
-							</label>
-							<label id="answer">
-								<input type="radio" name="answer" value="Три">
-								Три
-								<span></span>
-							</label>
-							<label id="answer">
-								<input type="radio" name="answer" value="Четыре">
-								Четыре
-								<span></span>
-							</label>
-							<label id="answer">
-								<input type="radio" name="answer" value="Пять">
-								Пять
-								<span></span>
-							</label>
-						</div>
-						<div class="game__button">
-							<a>Ответить</a>
-						</div>
-					</div>
-					<div class="col-sm-4 col-md-4 col-lg-4 game__functional">
-						<a href="javascript:void(0)" class="hint1">Спросить у мастера</a>
-						<a href="javascript:void(0)" class="hint2">Убрать 2 ответа</a>
-						<a href="javascript:void(0)" class="hint3">Пропустить вопрос</a>
-						<a href="javascript:void(0)" class="hint4">Ответ со второй попытки</a>
-						<a href="javascript:void(0)">Добавить баллы на счёт</a>
-					</div>
-				</div>
-			</form>
+            {% include 'game/blocks/el_game_nav.html' %}
+
 
 			<div class="estimate-author">
 				<span>Оцените автора: </span>
@@ -139,10 +85,10 @@
                 <script src="{% static 'js/fetch.js' %}"></script>
         <script>
             let result_game = '{% url 'result-games' %}'
-            request_url = '{% url 'apiGame' %}?games=train'
+            request_url = '{% url 'api_train' %}?games=train'
             sendRequest('GET', request_url).then(data => {
                 let quest_list = data.quest_list
-                let league = data.league
+                let league = data.league.split(' ')[0]
                 let quest_template = data.quest_template
                 let q_nums = document.querySelectorAll('a#q_num')
                 let q_act = 0
@@ -177,7 +123,7 @@
                 function losePage() {
                 window.location.replace(`${result_game}?status=lose&`+
                         `question=${encodeURIComponent(quest_list[q_act-1]['question'])}&`+
-                        `correctAnswer=${encodeURIComponent(quest_list[q_act-1]['corectAnsw'])}&`+
+                        `correctAnswer=${encodeURIComponent(quest_list[q_act-1]['correct_answer'])}&`+
                         `score=${score}&`+`author=${encodeURIComponent(quest_list[1]['author'])}&`+
                         `newGame=${window.location.href}&` + `questID=${encodeURIComponent(quest_list[1]['id'])}`)
                 }
@@ -204,8 +150,8 @@
 
                 function checkAnswer() {
                     if(check() === undefined){
-                        alert('Выберите один из предложенных вариантов ответа.')
-                    } else if(check() === quest_list[q_act-1]['corectAnsw']){
+                        show_modal_notification('Выберите один из предложенных вариантов ответа.')
+                    } else if(check() === quest_list[q_act-1]['correct_answer']){
                         bf_dif = parseInt(bf_dif)
                         currentQuest['difficulty'] = parseInt(currentQuest['difficulty'])
                         attempts = 1
@@ -274,6 +220,8 @@
                 {#    console.log('+ Score: ', Math.round(deltaScore[q_act-1]+bonus))#}
                 {#    console.log(`tmpScore: ${tmpScore}`)#}
                 {#    console.log(`Score: ${score}`)}#}
+                {#console.log('Current question: ', q_act)#}
+                {#    console.log('---------------------------------------------------------------')#}
 
                 function initGameField(a = 2) {
 
@@ -304,7 +252,7 @@
                             answersArray.splice(3, 1, `<label id="answer"><input type="radio" name="answer" value="${currentQuest[`answer${a}`]}">${currentQuest[`answer${a}`]}<span></span></label>`)
                             a++
                         }else {
-                            answersArray.splice(3, 1, `<label id="answer"><input type="radio" name="answer" value="${quest_list[q_act]['corectAnsw']}">${currentQuest['corectAnsw']}<span></span></label>`)
+                            answersArray.splice(3, 1, `<label id="answer"><input type="radio" name="answer" value="${quest_list[q_act]['correct_answer']}">${currentQuest['correct_answer']}<span></span></label>`)
                         }
                     }
                     shuffle(answersArray)
@@ -313,9 +261,6 @@
                         a++
                     }
                     q_act++
-                    console.log('Current question: ', q_act)
-                    console.log(currentQuest)
-
                     }
 
                 function startDeltaScore(){
@@ -358,8 +303,8 @@
                         {#'<div class="hint1" style="background: #d2d2d2; font-size: 18px;' +#}
                         {#'color: #6b6b6b; text-shadow: 1px 1px 1px black; width: 100%;' +#}
                         {#'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +#}
-                        {#`">Мастер: Я считаю, что правильный ответ - "<span style="text-transform: none">${currentQuest['corectAnsw']}</span>"</div>`#}
-                    alert(`Мастер: Я считаю, что правильный ответ - ${currentQuest['corectAnsw']}`)
+                        {#`">Мастер: Я считаю, что правильный ответ - "<span style="text-transform: none">${currentQuest['correct_answer']}</span>"</div>`#}
+                    show_modal_notification(`Мастер: Я считаю, что правильный ответ - ${currentQuest['correct_answer']}`)
                     hintsCounter['askMaster'] = 0
                     hintsBonusCalc()
                 }
@@ -371,7 +316,7 @@
                     let currentAnswers = document.getElementsByName('answer')
                     for (let i=0; i<4; i++){
                         if (c<2){
-                            if (currentAnswers[i].value !== currentQuest['corectAnsw']) {
+                            if (currentAnswers[i].value !== currentQuest['correct_answer']) {
                                 currentAnswers[i].parentElement.remove()
                                 c++
                             }
@@ -391,23 +336,23 @@
                     hintsBonusCalc()
                     attempts = 2
                 }
-                document.querySelector('.game__functional a:nth-child(5)').onclick = function () {
+                document.querySelector('.game__functional .btn:nth-child(5)').onclick = function () {
                     if (scoreSaveCounter > 1) {
                         score = tmpScore
-                        alert('Очки сохранены!')
+                        show_modal_notification('Очки сохранены!')
                         scoreSaveCounter--
                     } else {
                         score = tmpScore
-                        alert('Очки сохранены!')
+                        show_modal_notification('Очки сохранены!')
                         scoreSaveCounter--
                         losePage()
                     }
                 }
             })
             .finally(() => {
-                document.querySelector('.games .loading').style.opacity = 0
-                document.querySelector('.games .loading').style.zIndex = 0
-                document.querySelector('.text-author span').style.opacity = 1
+                document.querySelector('.game .loading').style.opacity = '0'
+                document.querySelector('.game .loading').style.zIndex = '-1'
+                document.querySelector('.text-author span').style.opacity = '1'
             })
         </script>
 

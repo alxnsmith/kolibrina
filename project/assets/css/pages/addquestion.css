@@ -8,6 +8,7 @@
 #add_theme input{
     width: 300px;
     height: 35px;
+    transition: background-color 1s;
 }
 #add_theme .btn{
     display: block;
