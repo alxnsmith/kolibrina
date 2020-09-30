@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, Http404
 from django.contrib.auth.decorators import login_required
-from questions.models import Question, Category, Theme
+from django.forms.models import model_to_dict
+from questions.models import Question
 from userK import services as user_services, models as user_models
 from . import defs, services
 from main.sendmail import sendmail
 from django.conf import settings
 from django.http import JsonResponse
-from questions.models import Tournament
 
 
 def api_train(request):
@@ -15,18 +15,22 @@ def api_train(request):
     def quest_l(questions_list, index):
         if questions_list[index]:
             for i in questions_list[index]:
-                d = i.__dict__
-                city = user_models.CustomUser.objects.get(id=d['author_id']).city
-                if user_models.CustomUser.objects.get(id=d['author_id']).hideMyName or not city:
-                    d['author'] = user_models.CustomUser.objects.get(id=d['author_id']).username
+                d = model_to_dict(i)
+                city = i.author.city
+                print('{0} {1}, г.{2}'.format(
+                        i.author.firstName,
+                        i.author.lastName, city,
+                    ))
+                if user_models.CustomUser.objects.get(id=d['author']).hideMyName or not city:
+                    d['author'] = str(i.author)
                 else:
                     d['author'] = '{0} {1}, г.{2}'.format(
-                        user_models.CustomUser.objects.get(id=d['author_id']).firstName,
-                        user_models.CustomUser.objects.get(id=d['author_id']).lastName, city,
+                        i.author.firstName,
+                        i.author.lastName, city,
                     )
-                d['category'] = str(Category.objects.get(id=d['category_id']))
-                d['theme'] = str(Theme.objects.get(id=d['theme_id']))
-                del d['_state'], d['purpose_id'], d['premoderate'], d['author_id'], d['category_id'], d['theme_id'],
+                d['category'] = str(i.category)
+                d['theme'] = str(i.theme)
+                del d['purpose'], d['premoderate'],
                 quest_list.append(d)
     if request.GET['games'] == 'train':
 
@@ -71,24 +75,39 @@ def tournament_week(request):
     return render(request, 'game/er-loto.html', data)
 
 
-@login_required(login_url='login')
 def win_lose(request):
-    if 'status' in request.GET:
-        status = request.GET['status']
-        score = request.GET["score"]
+    get = request.GET
+    if 'score' in get and 'status' in get:
+        status = get['status']
+        score = get["score"]
         if status == 'lose':
-            author = f'{request.GET["author"]}'
-            question = f'{request.GET["question"]}'
-            correct_answer = f'{request.GET["correctAnswer"]}'
+            author = f'{get["author"]}'
+            question = f'{get["question"]}'
+            correct_answer = f'{get["correctAnswer"]}'
             score = f'<span>{score} баллов</span>'
-            new_game = f'{request.GET["newGame"]}'
-            quest_id = f'{request.GET["questID"]}'
+            new_game = f'{get["newGame"]}'
+            quest_id = f'{get["questID"]}'
             return render(request, 'game/win-lose/wrong.html', {'question': question, 'correctAnswer': correct_answer,
                                                                 'score': score, 'author': author, 'newGame': new_game,
                                                                 'questID': quest_id})
         elif status == 'win':
             score = f'<span>Вы набрали {score} баллов</span>'
             return render(request, 'game/win-lose/win.html', {'score': score})
+        elif status == 'lose_tournament_week':
+            raw_data = services.create_render_data_for_tournament_week_el(request)
+            if raw_data['status'] == 'error':
+                raise Http404(raw_data['error'])
+            del raw_data['status']
+            data = raw_data
+            data['score'] = score
+            data['attempt'] = True if int(get['attempt']) < 3 else False
+            data['timer'] = get['time']
+            data['correct_answer'] = get['correct_answer']
+            data['tournament_author'] = get['author']
+            data['question_text'] = get['question']
+            return render(request, 'game/win-lose/tournament-week-wrong.html', data)
+    else:
+        raise Http404('')
 
 
 @login_required(login_url='login')

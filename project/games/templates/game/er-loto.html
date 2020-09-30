@@ -42,50 +42,7 @@
 				</div>
 			</div>
 
-			<div class="user-stat">
-				<div class="user-avatar user_div">
-					<div class="user_img">{% if AvatarImage != False %}<img class="user_img" src="{{ AvatarImage }}" alt="">{% endif %}</div>
-					<div class="user-name">
-						<span>{{ request.user.lastName }}</span>
-						<span>{{ request.user.firstName }}</span>
-						<span><b>г.{{ request.user.city }}</b></span>
-					</div>
-				</div>
-				<div class="user-points user_div">
-					<span class="points-title">Баллы</span>
-					<div class="user-points_points">
-						<div class="per-game points_block">
-							<div class="points_block-title">за игру</div>
-							<div id="points_per_game" class="points_block-points">00</div>
-						</div>
-						<div class="per-game points_block">
-							<div class="points_block-title">за месяц</div>
-							<div id="points_per_month" class="points_block-points">{{ month_score }}</div>
-						</div>
-						<div class="per-game points_block">
-							<div class="points_block-title">всего</div>
-							<div id="points_in_total" class="points_block-points">00</div>
-						</div>
-					</div>
-				</div>
-				<div class="league_place user_div">
-					<span><b>Место <br>в лиге</b></span>
-					<div class="league_count">123 / 878</div>
-				</div>
-				<div class="author user_div marafon_author">
-					<span class="marafon_author-title">Автор турнира</span>
-					<span class="marafon_author-name">Сергей Задорожный, Москва</span>
-				</div>
-
-				<div class="marafon_league">
-					<span style="color: #B658B0;">{{ league }}</span>
-
-				</div>
-				<div class="user-lvl user_div">
-					<span>Уровень игрока</span>
-					<div class="lvl">{{ level.level }} / {{ level.numLevel }}</div>
-				</div>
-			</div>
+			{% include 'game/blocks/tornament_user_info.html' %}
 
 			{% include 'game/blocks/quest_nums.html' %}
 
@@ -116,70 +73,52 @@
 				$(".title > h2 > strong").html("Тренировка Эрудит-Лото / Турнир Недели");
 			});
 		</script>
-
-        <script>
-            function init_points_in_total() {
-                document.getElementById('points_in_total').innerText =
-                    parseInt(document.getElementById('points_per_game').innerText) + parseInt(document.getElementById('points_per_month').innerText)}
-            init_points_in_total()
-        </script>
+        <script src="{% static 'js/game/render_question.js' %}"></script>
+        <script src="{% static 'js/game/timer.js' %}"></script>
+        <script src="{% static 'js/game/calculate_and_render_tournament_score.js' %}"></script>
 
         <script>
             function main(){
                 let elem_timer = document.getElementById('timer')
-
-                class timer {
-                    timer
-
-                    constructor(time, element) {
-                        self.duration = time
-                        self.elem_timer = element
-                        this.rearm_timer()
-                    }
-
-                    minutes() {
-                        return `${Math.floor(self.time / 60)}`.padStart(2, '0')
-                    }
-
-                    seconds() {
-                        return `${self.time % 60}`.padStart(2, '0')
-                    }
-
-                    timer_value() {
-                        return `${this.minutes()}:${this.seconds()}`
-                    }
-
-                    rearm_timer() {
-                        self.time = self.duration
-                        self.elem_timer.innerText = this.timer_value()
-                    }
-
-                    stop() {
-                        clearInterval(self.timer)
-                    }
-
-                    start() {
-                        self.timer = setInterval(() => {
-                            if (self.time > 0) {
-                                self.elem_timer.innerText = this.timer_value()
-                                self.time--
-                            }
-                        }, 1000)
-                    }
-                }
-
                 let round_timer
+                let tournament_author
+                let question_text
                 const t = "TWEL"
+                let old_answers = ['______', '______', '______', '______']
                 const tournament_socket = new WebSocket(
                     'ws://' + window.location.host + `/ws/tournament-week-${t}/`
                 );
-                tournament_socket.onmessage = (e) => {
-                    let data = JSON.parse(e.data)
-                    if (data.type === 'send_timer_duration') {
+                tournament_socket.onmessage = (event) => {
+                    let data = JSON.parse(event.data)
+                    if (data.type === 'timer_duration') {
                         round_timer = new timer(data.timer, elem_timer)
-
-
+                    } else if (data.type === 'question') {
+                        question_text = data.question.question
+                        render_question(question_text, data.question.answers, old_answers, data.question_num)
+                        old_answers = data.question.answers
+                    } else if (data.type === 'tournament_author') {
+                        tournament_author = data.author
+                        document.getElementById('tournament_author').innerText = tournament_author
+                    } else if (data.type === 'reset_timer') {
+                        round_timer.stop()
+                        round_timer.rearm_timer()
+                    } else if (data.type === 'answer_result') {
+                        console.log(data)
+                        if (data.result === 'OK'){
+                            round_timer.start()
+                        } else {
+                            window.location.replace('{% url 'result-game' %}'+
+                                `?status=lose_tournament_week`+
+                                `&score=0`+
+                                `&time=${encodeURI(round_timer.timer_value())}`+
+                                `&author=${encodeURI(tournament_author)}`+
+                                `&correct_answer=${encodeURI(data.correct_answer)}`+
+                                `&attempt=3`+
+                                `&question=${encodeURI(question_text)}`
+                            )
+                        }
                     }
+
 
 
                 }
@@ -187,16 +126,32 @@
                     console.error('Online socket closed unexpectedly.', e);
                 };
 
-            document.getElementById('start_game').onclick = (event)=>{
+                function start_game(){
+                    tournament_socket.send(JSON.stringify({
+                    'event': 'start_game',
+                    }))
+                    round_timer.start()
+                }
+
+            document.getElementById('start_game').onclick = (event)=>{  {# start game and get first question #}
                 let start_banner = event.target.parentElement
                 start_banner.style.opacity = '0'
                 start_banner.style.zIndex = '-10'
-                tournament_socket.send(JSON.stringify({
-                    'event': 'start_game',
-                    }))
-                round_timer.start()
+                start_game()
             }
-
+            document.getElementById('respond').onclick = (event)=>{  {# get and send answer #}
+                let answer = document.querySelectorAll('.answer input')
+                for (let i=0; i<answer.length; i++){
+                    if (answer[i].checked){
+                        answer = answer[i].value
+                        break
+                    }
+                }
+                tournament_socket.send(JSON.stringify({
+                    'event': 'respond',
+                    'answer': answer
+                }))
+            }
             }
             main()
         </script>

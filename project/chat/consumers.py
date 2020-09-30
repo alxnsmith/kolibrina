@@ -40,7 +40,7 @@ class ChatConsumer(WebsocketConsumer):
         text_data = kwargs['text_data']
         text_data_json = json.loads(text_data)
         message = {'message': text_data_json['message'],
-                   'username': text_data_json['username'],
+                   'username': str(self.scope['user']),
                    'time': text_data_json['time']}
 
         self._message_buffer(message=message)  # save last 20 messages (not for room, for all sockets)
@@ -70,8 +70,6 @@ class ChatConsumer(WebsocketConsumer):
     def _message_buffer(self, message):
         if self.redis_instance.exists(f'{self.room_group_name}_messages') == 1:
             message_list = json.loads(self.redis_instance.get(f'{self.room_group_name}_messages').decode())
-            print('\n', message_list)
-            print(message, '\n')
             message_list.append(message)
             if len(message_list) <= 20:
                 self.redis_instance.set(f'{self.room_group_name}_messages',

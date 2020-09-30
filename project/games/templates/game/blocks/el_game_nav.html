@@ -1,42 +1,43 @@
 <div class="game">
     <div class="loading"></div>
-    <div class="start"><div id="start_game" class="btn">Старт</div></div>
+    {% if not hide_start %}<div class="start"><div id="start_game" class="btn">Старт</div></div>{% endif %}
 	<div class="row">
 		<div class="col-sm-8 col-md-8 col-lg-8">
-			<div class="game__question">
+			<div class="game__question" id="question">
 				_____________________________________________
 			</div>
 			<div class="game__options">
-				<label id="answer">
-					<input type="radio" name="answer" value="" checked>
+				<label class="answer">
+					<input type="radio" name="answer" value="______" checked>
 					______
 					<span></span>
 				</label>
-				<label id="answer">
-					<input type="radio" name="answer" value="">
+				<label class="answer">
+					<input type="radio" name="answer" value="______">
+					______
+					<span></span>
+					<span></span>
+				</label>
+				<label class="answer">
+					<input type="radio" name="answer" value="______">
 					______
 					<span></span>
 				</label>
-				<label id="answer">
-					<input type="radio" name="answer" value="">
-					______
-					<span></span>
-				</label>
-				<label id="answer">
-					<input type="radio" name="answer" value="">
+				<label class="answer">
+					<input type="radio" name="answer" value="______">
 					______
 					<span></span>
 				</label>
 			</div>
 			<div class="game__button">
-				<div class="btn">Ответить</div>
+				<div class="btn" id="respond">Ответить</div>
 			</div>
 		</div>
 		<div class="col-sm-4 col-md-4 col-lg-4 game__functional">
-			<div class="btn hint1">Спросить у мастера</div>
-			<div class="btn hint2">Убрать 2 ответа</div>
-			<div class="btn hint3">Пропустить вопрос</div>
-			<div class="btn hint4">Ответ со второй попытки</div>
+			<div class="btn hint1" id="master_hint">Спросить у мастера</div>
+			<div class="btn hint2" id="fifty-fifty_hint">Убрать 2 ответа</div>
+			<div class="btn hint3" id="skip_hint">Пропустить вопрос</div>
+			<div class="btn hint4" id="chance_hint">Ответ со второй попытки</div>
 			<div class="btn">Добавить баллы на счёт</div>
 		</div>
 	</div>

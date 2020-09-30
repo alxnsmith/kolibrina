@@ -1,12 +1,7 @@
 from django.db import models
 from userK.models import CustomUser
-from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
-
-
-def get_sentinel_user():
-    return get_user_model().objects.get_or_create(username='deleted')[0]
 
 
 class Tournament(models.Model):
@@ -25,6 +20,27 @@ class Tournament(models.Model):
 
     def __str__(self):
         return f'Name: {self.name}; Author: {self.author}; Create date: {self.create_date}'
+
+    class Meta:
+        verbose_name = _('Турнир')
+        verbose_name_plural = _('Турниры')
+
+
+class Attempt(models.Model):
+    class Attempts(models.IntegerChoices):
+        ONE = 1, _('Одна')
+        TWO = 2, _('Две')
+        THREE = 3, _('Три')
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, verbose_name='Турнир')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Игрок')
+    attempt = models.IntegerField(verbose_name='Попыток совершено', choices=Attempts.choices, default=Attempts.ONE)
+
+    def __str__(self):
+        return f'T: {self.tournament}; P: {self.user}, A: {self.attempt}'
+
+    class Meta:
+        verbose_name = _('Попытка')
+        verbose_name_plural = _('Попытки')
 
 
 class Category(models.Model):

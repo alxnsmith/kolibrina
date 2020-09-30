@@ -39,54 +39,11 @@
 					<p>Текстовая информация</p>
 				</div>
 				<div class="marafon-top_right">
-					<div class="marafon-timer">00:17</div>
+					<div class="marafon-timer">{{ timer }}</div>
 				</div>
 			</div>
 
-			<div class="user-stat">
-				<div class="user-avatar user_div">
-					<div class="user_img"></div>
-					<div class="user-name">
-						<span>Никитин</span>
-						<span>Сергей</span>
-						<span><b>г.Москва</b></span>
-					</div>
-				</div>
-				<div class="user-points user_div">
-					<span class="points-title">Баллы</span>
-					<div class="user-points_points">
-						<div class="per-game points_block">
-							<div class="points_block-title">за игру</div>
-							<div class="points_block-points">00</div>
-						</div>
-						<div class="per-game points_block">
-							<div class="points_block-title">за месяц</div>
-							<div class="points_block-points">00</div>
-						</div>
-						<div class="per-game points_block">
-							<div class="points_block-title">всего</div>
-							<div class="points_block-points">00</div>
-						</div>
-					</div>
-				</div>
-				<div class="league_place user_div">
-					<span><b>Место <br>в лиге</b></span>
-					<div class="league_count">123 / 878</div>
-				</div>
-				<div class="author user_div marafon_author">
-					<span class="marafon_author-title">Автор турнира</span>
-					<span class="marafon_author-name">Сергей Задорожный, Москва</span>
-				</div>
-
-				<div class="marafon_league">
-					<span style="color: #B658B0;">Лига</span>
-					<span style="color: #B658B0;">Высшая</span>
-				</div>
-				<div class="user-lvl user_div">
-					<span>Уровень игрока</span>
-					<div class="lvl">J (юниор) / 1</div>
-				</div>
-			</div>
+			{% include 'game/blocks/tornament_user_info.html' %}
 
 			<div class="mt40"></div>
 			<div class="row">
@@ -96,18 +53,20 @@
 					<div class="mt20"></div>
 					<div href="#" class="status_red flex-row"><span>Ответ неверный</span></div>
 					<p id="info-question">Правильный ответ на вопрос: </p>
-					<p id="question">"Сколько медведей на картине И. Шишкина «Утро в сосновом лесу»?"</p>
+					<p id="question">"{{ question_text }}"</p>
 					<p id="answer">
-						<i class="fa fa-caret-right" aria-hidden="true"></i> <span>Четыре</span>
+						<i class="fa fa-caret-right" aria-hidden="true"></i> <span>{{ correct_answer }}</span>
 					</p>
 					<div class="buttons-game">
 						<div class="mt40"></div>
 						<div class="result-game">
-							<a href="#">Ваш результат 74,53 балла</a>
+							<a href="#">Ваш результат {{ score }} балла</a>
 						</div>
+                        {% if attempt %}
 						<div class="continiue-game">
 							<a href="#">Продолжить игру</a>
 						</div>
+                        {% endif %}
 					</div>
 					
 					<div class="mt40"></div>
@@ -127,9 +86,8 @@
 					</div>
 				</div>
 				<div class="col-sm-4 col-md-4 col-lg-4">
-					<?php 
-						include $_SERVER['DOCUMENT_ROOT']."/templates/banner/banner.php"; 
-					?>
+
+					{% include 'main/banner.html' %}
 					
 					<div class="mt40"></div>
 					<div class="buttons-view">
@@ -162,7 +120,9 @@
 				</div>
 			</div>
 		</form>
-		
+
+        <script src="{% static 'js/game/calculate_and_render_tournament_score.js' %}"></script>
+
 		<script>
 			$(document).ready(function() {
 				$("header nav a:nth-child(2) > span").addClass("select");
@@ -171,6 +131,6 @@
 			});
 		</script>
 		
-		<script src="static/js/modal.js"></script>
+		<script src="{% static 'js/modal.js' %}"></script>
 	</body>
 </html>
