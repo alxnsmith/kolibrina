@@ -221,16 +221,16 @@
                 }
                 document.getElementById('respond').onclick = ()=>{
                     let answer = document.querySelectorAll('.answer input')
-                    for (let i=0; i<answer.length; i++){
-                        if (answer[i].checked){
+                    for (let i=0; i<answer.length; i++) {
+                        if (answer[i].checked) {
                             answer = answer[i].value
+                            tournament_socket.send(JSON.stringify({
+                                'event': 'respond',
+                                'answer': answer
+                            }))
                             break
                         }
                     }
-                    tournament_socket.send(JSON.stringify({
-                        'event': 'respond',
-                        'answer': answer
-                    }))
                 }
                 }
             main()

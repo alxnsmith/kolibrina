@@ -27,12 +27,28 @@ class ChatConsumer(WebsocketConsumer):
 
         self.accept()
 
+        for mes in json.loads(self.redis_instance.get(f'{self.room_group_name}_messages').decode()):
+            message = {'type': 'message',
+                       'message': mes['message'],
+                       'username': mes['username'],
+                       'time': mes['time']}
+            self.send(json.dumps(message))
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {'type': 'chat_online'}
+        )
+
     def disconnect(self, code):
         self.redis_instance.decr('ChatOnline')
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name
+        )
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {'type': 'chat_online'}
         )
 
     def receive(self, *args, **kwargs):
@@ -60,11 +76,17 @@ class ChatConsumer(WebsocketConsumer):
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
+            'type': 'message',
             'message': message,
             'username': username,
-            'online': int(self.redis_instance.get('ChatOnline')),
             'time': time,
-            'message_list': self.redis_instance.get(f'{self.room_group_name}_messages').decode(),
+            # 'message_list': self.redis_instance.get(f'{self.room_group_name}_messages').decode(),
+        }))
+
+    def chat_online(self, *args, **kwargs):
+        self.send(json.dumps({
+            'type': 'online',
+            'online': int(self.redis_instance.get('ChatOnline')),
         }))
 
     def _message_buffer(self, message):

@@ -54,28 +54,11 @@
 			</div>
 		</div>
 
-    <script src="{% static 'js/fetch.js' %}"></script>
-        <script>
-            let userdata
-            sendRequest('GET', `${window.location.origin}/api/?username`).then(data => {
-                userdata = data
-                for (let m in messages){
-                    print_message(messages[m])
-                    scroll_to_bottom(document.querySelector('#wrapper-chat'))
-                }
-            })
-            let messages
-            sendRequest('GET', `${window.location.href}api/?mainROOM`).then(data => {
-                messages = JSON.parse(data['message_list'])
-            })
-
-        </script>
-
         <script>
 
             function print_message (data) {
-                document.querySelector('#chat-online').textContent = data.online
-                if (data.username === userdata.username) {
+
+                if (data.username === '{{ request.user }}') {
                     document.querySelector('.wrapper-messages').innerHTML +=
                         '<div class="wrapper-messages__item my-message"><div class="message">'
                         + data.message
@@ -110,8 +93,14 @@
         );
 
         chatSocket.onmessage = (e) => {
-            print_message(JSON.parse(e.data))
-            scroll_to_bottom(document.querySelector('#wrapper-chat'))
+            let data = JSON.parse(e.data)
+            if (data.type === 'online'){
+                document.querySelector('#chat-online').textContent = data.online
+            } else if (data.type === 'message') {
+                print_message(data)
+                scroll_to_bottom(document.querySelector('#wrapper-chat'))
+            }
+
         };
 
         chatSocket.onclose = function(e) {
