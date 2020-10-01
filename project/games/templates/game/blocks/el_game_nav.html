@@ -1,6 +1,6 @@
 <div class="game">
     <div class="loading"></div>
-    {% if not hide_start %}<div class="start"><div id="start_game" class="btn">Старт</div></div>{% endif %}
+    {% if not hide_start %}<div class="start" id="overlay_start"><div id="start_game" class="btn">Старт</div></div>{% endif %}
 	<div class="row">
 		<div class="col-sm-8 col-md-8 col-lg-8">
 			<div class="game__question" id="question">
@@ -38,7 +38,7 @@
 			<div class="btn hint2" id="fifty-fifty_hint">Убрать 2 ответа</div>
 			<div class="btn hint3" id="skip_hint">Пропустить вопрос</div>
 			<div class="btn hint4" id="chance_hint">Ответ со второй попытки</div>
-			<div class="btn">Добавить баллы на счёт</div>
+			<div class="btn" id="save_score">Добавить баллы на счёт</div>
 		</div>
 	</div>
 </div>

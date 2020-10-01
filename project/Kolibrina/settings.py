@@ -136,13 +136,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "assets"),)
 
 STATICFILES_FINDERS = (
-'django.contrib.staticfiles.finders.FileSystemFinder',
-'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
 MEDIA_URL = '/mediacontent/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediacontent")
-
 
 AUTH_USER_MODEL = 'userK.CustomUser'
 
@@ -170,3 +169,12 @@ GENDER_CHOICES = (('Male', 'М'), ('Female', 'Ж'))
 COUNTRY_CHOICES = (('RU', 'Россия'), ('UK', 'Украина'), ('BY', 'Беларусь'), ('KZ', 'Казахстан'))
 TEAM_ROLES = (('COMMANDER', 'Командир'), ('BASIC', 'Базовый'), ('LEGIONARY', 'Легионер'))
 TEAM_NUMBERS = (('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5), ('6', 6))
+QUESTION_SCORE_EQUALS = {'1': 0.1, '2': 0.3, '3': 0.5, '4': 0.7, '5': 0.9,
+                         '6': 1.2, '7': 1.5, '8': 1.8, '9': 2.1, '10': 2.4,
+                         '11': 2.8, '12': 3.2, '13': 3.7, '14': 4.1, '15': 4.5,
+                         '16': 5.0, '17': 5.5, '18': 6.0, '19': 6.5, '20': 7.0,
+                         '21': 7.7, '22': 8.4, '23': 9.1, '24': 10.0,
+                         'd1.1': 2.8, 'd1.2': 3.2, 'd1.3': 3.7, 'd1.4': 4.1, 'd1.5': 4.5,
+                         'd2.1': 5.0, 'd2.2': 5.5, 'd2.3': 6.0, 'd2.4': 6.5, 'd2.5': 7.0,
+                         'zamena': 0
+                         }

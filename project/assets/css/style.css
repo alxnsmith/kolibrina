@@ -40,6 +40,12 @@
     color: #fff
 }
 
+.game_nav a.OK {
+    background-color: #06ff2d;
+    border-color: #03a31b;
+    color: #fff
+}
+
 .text-information {
     border: 1px solid #969696;
     color: #333;
@@ -227,4 +233,12 @@
     padding: 10px;
     margin: auto auto;
     cursor: pointer;
+}
+
+.game .game__options{
+    transition: height 0.8s;
+}
+
+.game .game__functional *{
+    transition: opacity 0.8s;
 }

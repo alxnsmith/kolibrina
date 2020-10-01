@@ -42,15 +42,16 @@
 			
 			<div class="row">
 				<div class="col-sm-8 col-md-8 col-lg-8">
-						
-						<div style="margin-top: 20%;">
-							<p id="message"><i>К сожалению ваш результат не может быть учтён в рейтинговой таблице участников. Для официального участия необходимо зарегистрироваться и принять участие в Турнире недели</i></p>
-						</div>
-						<br>
-						<div class="new-game flex-row">
-							<a href="#">Новая игра</a>
-						</div>
-					
+                    {% if train == 1 %}
+                        <div style="margin-top: 20%;">
+                            <p id="message"><i>К сожалению ваш результат не может быть учтён в рейтинговой таблице участников. Для официального участия необходимо зарегистрироваться и принять участие в Турнире недели</i></p>
+                        </div>
+                        <br>
+                        <div class="new-game flex-row">
+                            <a href="#">Новая игра</a>
+                        </div>
+                    {% endif %}
+
 				</div>
 				<div class="col-sm-4 col-md-4 col-lg-4">
 							{% include "main/banner.html"%}
@@ -84,10 +85,10 @@
 		<script>
 			$(document).ready(function() {
 				$(".title > h2 > strong").html("Тренировка Эрудит-Лото");
-				$(".footer__buttons").append('<a href="#ask-question" class="open-modal">Уточнение по вопросу</a>');
+				{#$(".footer__buttons").append('<a href="#ask-question" class="open-modal">Уточнение по вопросу</a>');#}
 			});
 		</script>
 
-		<script src="static/js/modal.js"></script>
+{#		<script src="{% static 'js/modal.js' %}"></script>#}
 	</body>
 </html>

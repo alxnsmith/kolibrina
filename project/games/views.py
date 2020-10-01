@@ -92,7 +92,7 @@ def win_lose(request):
                                                                 'questID': quest_id})
         elif status == 'win':
             score = f'<span>Вы набрали {score} баллов</span>'
-            return render(request, 'game/win-lose/win.html', {'score': score})
+            return render(request, 'game/win-lose/win.html', {'score': score, 'train': get.get('train')})
         elif status == 'lose_tournament_week':
             raw_data = services.create_render_data_for_tournament_week_el(request)
             if raw_data['status'] == 'error':
@@ -105,6 +105,7 @@ def win_lose(request):
             data['correct_answer'] = get['correct_answer']
             data['tournament_author'] = get['author']
             data['question_text'] = get['question']
+            data['answer'] = get['answer']
             return render(request, 'game/win-lose/tournament-week-wrong.html', data)
     else:
         raise Http404('')
