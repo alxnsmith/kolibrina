@@ -10,6 +10,13 @@ from questions.models import Tournament, Attempt
 from questions.services import get_questions_from_tournament
 from stats.services import get_sum_score_user
 from userK import services as user_services
+from stats.services import Score as UserScore
+
+
+def round3(func):
+    def wrapper(*args, **kwargs):
+        return round(func(*args, **kwargs), 3)
+    return wrapper
 
 
 def create_render_data_for_tournament_week_el(request):
@@ -39,104 +46,22 @@ def create_render_data_for_train_el(request):
             }
 
 
-class Score:
-    def __init__(self, win_bonus, hints_quantity=4):
-        self.last_difficulty = 0
-        self.hints_quantity = hints_quantity
-        self.combo = 0
-        self.num_question_in_current_difficult = 0
-
-        self.win_bonus = win_bonus
-        self.question_score_equals = settings.QUESTION_SCORE_EQUALS
-
-        self.per_questions = 0
-        self.saved_time = 0
-        self.bonus = 0
-        self.value = 0
-
-    def total(self):
-        total_value = round(self.per_questions + self.saved_time + self.bonus, 3)
-        return total_value
-
-    def save_bonuses(self):
-        self.value += round(self.bonus + self.saved_time, 3)
-        self.saved_time = 0
-        self.combo = 0
-        self.bonus = 0
-        return round(self.value + self.saved_time, 3)
-
-    def exexute(self):
-        return round(self.value + self.saved_hints, 3)
-
-    def save(self):
-        self.value += self.total()
-        self.per_questions = 0
-        self.saved_time = 0
-        self.bonus = 0
-        return round(self.value, 3)
-
-    def increase_saved_time(self, saved_time):
-        if int(self.last_difficulty) == 10:
-            self.saved_time = round(self.saved_time + saved_time * 0.007, 3)
-        elif int(self.last_difficulty) == 20:
-            self.saved_time = round(self.saved_time + saved_time * 0.08, 3)
-        elif int(self.last_difficulty) == 30:
-            self.saved_time = round(self.saved_time + saved_time * 0.14, 3)
-        elif int(self.last_difficulty) == 40:
-            self.saved_time = round(self.saved_time + saved_time * 0.2, 3)
-        elif int(self.last_difficulty) == 50:
-            self.saved_time = round(self.saved_time + saved_time * 0.23, 3)
-
-    def increase_bonus(self, question_pos, difficulty):
-        self.bonus = round(self.bonus + (self.combo-1)*(int(difficulty) + self._get_num_question_in_current_difficult(question_pos))/(70-int(difficulty)), 3)
-
-    def increase_per_questions(self, question_pos):
-        self.per_questions = round(self.per_questions + self.question_score_equals[question_pos], 3)
-
-    @property
-    def saved_hints(self):
-        return round((int(self.hints_quantity) * int(self.last_difficulty)) / 5, 3)
-
-    def win(self):
-        return round(self.total() + self.win_bonus, 3)
-
-    def init(self, last_difficulty, difficulty, hints_quantity, saved_time, question_pos):
-        self.increase_bonus(question_pos, difficulty)
-        self.last_difficulty = last_difficulty
-        self.hints_quantity = hints_quantity
-        self.increase_saved_time(saved_time)
-        self.increase_per_questions(question_pos)
-        self.combo += 1
-        return round(self.total() + self.saved_hints, 3)
-
-    @staticmethod
-    def _get_num_question_in_current_difficult(question_pos):
-        try:
-            return int(question_pos)
-        except ValueError:
-            if question_pos.startswith('d'):
-                return int(question_pos[-1])
-            else:
-                return 1
-
-    def __str__(self):
-        return str(self.total())
-
-
 class Game:
-    def __init__(self, tournament_shortname, user, win_bonus=29, lose_question=0):
-        self.score = Score(win_bonus=win_bonus)
+    def __init__(self, tournament_instance, user, win_bonus=29, lose_question=0):
+        self.score = Score(question_score_equals=settings.QUESTION_SCORE_EQUALS,
+                           time_score_equals=settings.TIME_SCORE_EQUALS)
         self.lose_question = lose_question
-        self.tournament_model = self._get_tournament_model(tournament_shortname)
-        self.player = user
+        self.tournament_instance = tournament_instance
+        self.player_instance = user
+        self.player_score_instance = UserScore(self.player_instance)
         self.current_question_num = self._get_start_answer_number()
-        self.questions_queryset = get_questions_from_tournament(self.tournament_model)
-
+        self.questions_queryset = get_questions_from_tournament(self.tournament_instance)
+        
         self._get_attempt()
 
         self.pos_list = self.init_pos_list(self.attempt + 1, self.lose_question)
         self.next_question_pos = self._gen_pos_question(self.pos_list)
-        self.timer_duration = self.tournament_model.timer
+        self.timer_duration = self.tournament_instance.timer
         self.tournament_author = self._get_tournament_author()
 
         self.current_question_num_gen = self._get_next_question_number()
@@ -144,6 +69,10 @@ class Game:
 
         self.current_question = None
         self.timer = None
+
+    @property
+    def correct_answer(self):
+        return self.current_question.correct_answer
 
     def zamena(self):
         position = 'zamena'
@@ -169,16 +98,14 @@ class Game:
         return question, current_question_num
 
     def _get_next_question_number(self):
-        if self.lose_question > 7:
-            quantity_questions = 25 - self.lose_question + 5
-        else:
-            quantity_questions = 25
+        quantity_questions = 25
         while int(self.current_question_num) < quantity_questions:
             yield self.current_question_num
             self.current_question_num = str(int(self.current_question_num) + 1).rjust(2, '0')
 
+
     def _get_tournament_author(self):
-        user = self.tournament_model.author
+        user = self.tournament_instance.author
         if user.hideMyName:
             return user.username
         else:
@@ -199,7 +126,7 @@ class Game:
             self._get_attempt(changes=True)
 
     def _get_attempt(self, changes=False):
-        attempts = self.player.attempt_set.filter(tournament=self.tournament_model)
+        attempts = self.player_instance.attempt_set.filter(tournament=self.tournament_instance)
         if attempts.exists():
             attempt = attempts[0]
             if changes:
@@ -211,7 +138,7 @@ class Game:
                 self._create_attempts()
 
     def _create_attempts(self):
-        Attempt.objects.create(tournament=self.tournament_model, user=self.player, attempt=1)
+        Attempt.objects.create(tournament=self.tournament_instance, user=self.player_instance, attempt=1)
 
     @staticmethod
     def _increase_quantity_used_attempts(attempt):
@@ -239,16 +166,6 @@ class Game:
         return question
 
     @staticmethod
-    def _get_tournament_model(tournament_shortname):
-        date_range = (timezone.now() - timezone.timedelta(days=7), timezone.now())  # last 7 days
-        active_tournaments_list = Tournament.objects.filter(
-            is_active=True, destination=tournament_shortname,
-            date__range=date_range)
-        tournament_model = active_tournaments_list.order_by('date')[0]
-        return tournament_model
-
-
-    @staticmethod
     def init_pos_list(attempt, lose_question):
         pos_list = list(range(1, 25))
         d1 = ['d1.1', 'd1.2', 'd1.3', 'd1.4', 'd1.5']
@@ -259,8 +176,115 @@ class Game:
             pos_list = d2 + pos_list[lose_question:]
         return pos_list
 
-
     @staticmethod
     def _gen_pos_question(pos_list):
         for i in pos_list:
             yield i
+
+
+class Score:
+    def __init__(self, question_score_equals, time_score_equals, win=29):
+        self.question_score_equals = question_score_equals
+        self.time_score_equals = time_score_equals
+        self.quantity_saved_hints = 4
+        self.question_pos = 0
+        self.prev_question_difficulty = 0
+        self.saved_time = 0
+        self.combo = 0
+        self.question_difficulty = 0
+        self.win_bonus = win
+
+        self.combo_bonus = 0
+        self.current_total_combo_bonus = 0
+        self.time_bonus = 0
+        self.current_total_time_bonus = 0
+        self.question_score = 0
+        self.current_total_question_score = 0
+        self.saved_bonus_score = 0
+        self.saved_question_score = 0
+
+    @round3
+    def init_and_get_current_score(self, question_pos, saved_time, question_difficulty):
+        if question_pos != 'zamena':
+            self.question_pos = question_pos
+            self.prev_question_difficulty = self.question_difficulty
+            self.saved_time = int(saved_time)
+            self.question_difficulty = int(question_difficulty)
+
+            self.current_total_combo_bonus += self.combo_bonus_on_question
+            self.current_total_time_bonus += self.time_bonus_on_question
+            self.current_total_question_score += self.question_score_on_question
+            self.combo_bonus += self.combo_bonus_on_question
+            self.time_bonus += self.time_bonus_on_question
+            self.question_score += self.question_score_on_question
+        return self.current_score
+
+    @round3
+    def save_and_get_saved_score(self):
+        self.saved_bonus_score += self.combo_bonus + self.time_bonus
+        self.saved_question_score += self.question_score
+        self.combo_bonus = 0
+        self.time_bonus = 0
+        self.question_score = 0
+        return self.saved_score + self.hint_bonus
+
+    def hint_used_and_get_saved_score(self):
+        self.saved_bonus_score += self.combo_bonus + self.time_bonus
+        self.time_bonus = 0
+        self.combo_bonus = 0
+        self.combo_reset()
+        self.hints_decr()
+        
+        return round(self.current_score, 3), round(self.saved_score, 3)
+
+    def hints_decr(self):
+        self.quantity_saved_hints -= 1
+
+    def combo_incr(self):
+        self.combo += 1
+
+    def combo_reset(self):
+        self.combo = 0
+
+    @property
+    @round3
+    def saved_score(self):
+        return self.saved_question_score + self.saved_bonus_score
+
+    @property
+    @round3
+    def lose(self):
+        return self.saved_score + self.time_bonus + self.hint_bonus + self.combo_bonus
+
+    @property
+    @round3
+    def win(self):
+        return self.current_score + self.win_bonus
+
+    @property
+    @round3
+    def current_score(self):
+        return self.current_total_combo_bonus + self.current_total_time_bonus \
+               + self.current_total_question_score + self.hint_bonus
+
+    @property
+    @round3
+    def hint_bonus(self):
+        return round(self.quantity_saved_hints * 0.2 * self.prev_question_difficulty, 3)
+
+    @property
+    @round3
+    def question_score_on_question(self):
+        return self.question_score_equals[self.question_pos]
+
+    @property
+    @round3
+    def time_bonus_on_question(self):
+        return self.saved_time * self.time_score_equals[str(self.question_difficulty)]
+
+    @property
+    @round3
+    def combo_bonus_on_question(self):
+        return (self.combo - 1) * (self.question_difficulty + int(self.question_pos.split('.')[-1])) / (
+                70 - self.question_difficulty)
+

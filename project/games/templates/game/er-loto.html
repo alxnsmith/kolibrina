@@ -120,6 +120,10 @@
                     } else if (data.type === 'reset_timer') {
                         round_timer.stop()
                         round_timer.rearm_timer()
+                    } else if (data.type === 'restart_timer') {
+                        round_timer.stop()
+                        round_timer.rearm_timer()
+                        round_timer.start()
                     } else if (data.type === 'current_score') {
                         document.querySelector('#not_saved_points_per_game span').innerText = data.score
                     } else if (data.type === 'saved_score') {

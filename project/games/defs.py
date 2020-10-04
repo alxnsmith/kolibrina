@@ -28,10 +28,6 @@ def dif_q(q):
 
 def q_questions(league, q):
     t = q_template(league)
-    print(t)
-    print(league)
-    print(t)
-    print(t)
     template = {'10': counter(t, 10), '20': counter(t, 20), '30': counter(t, 30),
                 '40': counter(t, 40), '50': counter(t, 50)}
     q1 = dif_q(q)

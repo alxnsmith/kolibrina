@@ -34,6 +34,7 @@ class Attempt(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, verbose_name='Турнир')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Игрок')
     attempt = models.IntegerField(verbose_name='Попыток совершено', choices=Attempts.choices, default=Attempts.ONE)
+    lose_num_question = models.IntegerField(verbose_name='Номер, последнего вопроса', default=0)
 
     def __str__(self):
         return f'T: {self.tournament}; P: {self.user}, A: {self.attempt}'

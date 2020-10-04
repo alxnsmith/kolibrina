@@ -6,7 +6,7 @@ from django.utils import timezone
 
 class ScoreHistory(models.Model):
     player = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False)
-    score = models.IntegerField()
+    score = models.FloatField()
     date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -18,5 +18,6 @@ class ScoreHistory(models.Model):
         super(ScoreHistory, self).save(*args, **kwargs)
         self.player.save()
 
-# def wq():
-#     ScoreHistory.objects.filter(date__range=)
+    def delete(self, using=None, keep_parents=False):
+        super(ScoreHistory, self).delete()
+        self.player.save()

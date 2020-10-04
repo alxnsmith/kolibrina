@@ -15,7 +15,7 @@ def get_sum_score_user(user, date_range=False):
         scores_list = []
         for i in scores:
             scores_list.append(i['score'])
-        return sum(scores_list)
+        return round(sum(scores_list), 3)
 
     return _get_sum(score_history)
 
@@ -39,3 +39,23 @@ def _get_lower_threshold(rating, league):
         return {'status': 'SWITCH', 'new_league': 'l6'}
     else:
         return {'status': 'OK'}
+
+
+class Score:
+    def __init__(self, user_instance):
+        self.user_instance = user_instance
+        self.score_history_instance = self.user_instance.scorehistory_set
+
+    @property
+    def score_history(self):
+        return self.score_history_instance.all()
+
+    def add(self, score):
+        self.score_history_instance.create(player=self.user_instance, score=score)
+
+    def remove_last(self):
+        self.score_history_instance.last().delete()
+
+    @staticmethod
+    def remove(score_instance):
+        score_instance.delete()

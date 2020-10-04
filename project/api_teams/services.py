@@ -61,7 +61,7 @@ def get_team_info(team, user):
     players = _create_dict_with_user_models(players_list)
     if not str(user) in players['list']:
         return {'Error': 'Вы не состоите в этой команде, доступ закрыт.'}
-    score = team_object.score
+    score = team_object.old_score
     last_game_date = team_object.last_game_date
     data = {
         'team': team,

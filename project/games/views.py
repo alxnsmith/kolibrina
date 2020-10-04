@@ -17,10 +17,6 @@ def api_train(request):
             for i in questions_list[index]:
                 d = model_to_dict(i)
                 city = i.author.city
-                print('{0} {1}, г.{2}'.format(
-                        i.author.firstName,
-                        i.author.lastName, city,
-                    ))
                 if user_models.CustomUser.objects.get(id=d['author']).hideMyName or not city:
                     d['author'] = str(i.author)
                 else:
@@ -35,7 +31,7 @@ def api_train(request):
     if request.GET['games'] == 'train':
 
         if str(request.user) != 'AnonymousUser':
-            league = user_services.get_user_rating_lvl_dif(int(request.user.rating))['level']
+            league = user_services.get_user_rating_lvl_dif(float(request.user.rating))['level']
         else:
             league = 'Z'
         quest_template = defs.q_template(league)
@@ -116,7 +112,7 @@ def clarify_question(request):
     if request.POST:
         post = request.POST
         message = f'Пользователь: {post["user"]} \nID вопроса: {post["questID"]}\nВопрос: {post["question"]}'\
-                  '\nСообщение: {post["message"]}'
+                  f'\nСообщение: {post["message"]}'
 
         sendmail('Уточнение по вопросу', message, settings.EMAIL_ADMIN_USERS)
         return redirect('account')
