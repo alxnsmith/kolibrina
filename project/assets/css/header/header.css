@@ -46,7 +46,9 @@
 /*    left: calc(50% - 65px);*/
 /*    top: calc(44% - 10px);*/
 /*}*/
-
+*{
+    user-select:none
+}
 .pd-h-10{
     padding: 0 10px;
 }

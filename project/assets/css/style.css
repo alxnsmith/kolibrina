@@ -141,7 +141,8 @@
     color: #fff;
     display: inline-block;
     text-transform: uppercase;
-    font-size: 18px
+    font-size: 18px;
+    cursor: pointer;
 }
 
 .game .btn:hover {
