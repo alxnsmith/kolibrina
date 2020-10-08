@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 class Team(models.Model):
@@ -9,4 +10,6 @@ class Team(models.Model):
     def __str__(self):
         return self.team_name
 
-
+    class Meta:
+        verbose_name = _('Команда')
+        verbose_name_plural = _('Команды')

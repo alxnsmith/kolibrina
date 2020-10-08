@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import ScoreHistory
+from .models import ScoreHistoryElement
 
-admin.site.register(ScoreHistory)
+admin.site.register(ScoreHistoryElement)

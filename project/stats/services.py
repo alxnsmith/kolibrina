@@ -7,9 +7,9 @@ def get_sym_plus_if_num_is_positive(num):
 
 def get_sum_score_user(user, date_range=False):
     if not date_range:
-        score_history = list(user.scorehistory_set.values('score'))
+        score_history = list(user.scorehistoryelement_set.values('score'))
     else:
-        score_history = list(user.scorehistory_set.filter(date__range=date_range).values('score'))
+        score_history = list(user.scorehistoryelement_set.filter(date__range=date_range).values('score'))
 
     def _get_sum(scores):
         scores_list = []
@@ -44,7 +44,7 @@ def _get_lower_threshold(rating, league):
 class UserScore:
     def __init__(self, user_instance):
         self.user_instance = user_instance
-        self.score_history_instance = self.user_instance.scorehistory_set
+        self.score_history_instance = self.user_instance.scorehistoryelement_set
 
     @property
     def score_history(self):

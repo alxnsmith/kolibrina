@@ -11,6 +11,8 @@ from stats.services import get_sum_score_user, init_league
 from media.models import Avatar
 from api_teams.models import Team
 
+from django.utils.translation import ugettext_lazy as _
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     # personal data
@@ -79,6 +81,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+    class Meta:
+        verbose_name = _('Пользователь')
+        verbose_name_plural = _('Пользователи')
+
 
 class InviteToTeam(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -86,3 +92,7 @@ class InviteToTeam(models.Model):
 
     def __str__(self):
         return f'"{self.user}" invited to "{self.team}"'
+
+    class Meta:
+        verbose_name = _('Приглашение в команду')
+        verbose_name_plural = _('Приглашения в команды')

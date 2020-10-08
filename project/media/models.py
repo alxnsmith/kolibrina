@@ -1,5 +1,6 @@
 from django.db import models
 from . import services
+from django.utils.translation import ugettext_lazy as _
 
 
 class Avatar(models.Model):
@@ -16,3 +17,7 @@ class Banner(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _('Баннер')
+        verbose_name_plural = _('Баннеры')
