@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from userK.models import CustomUser as User
+from userK.models import User as User
 from userK.services import get_user_rating_lvl_dif
 
 

@@ -41,7 +41,7 @@ def _get_lower_threshold(rating, league):
         return {'status': 'OK'}
 
 
-class Score:
+class UserScore:
     def __init__(self, user_instance):
         self.user_instance = user_instance
         self.score_history_instance = self.user_instance.scorehistory_set
@@ -51,7 +51,7 @@ class Score:
         return self.score_history_instance.all()
 
     def add(self, score):
-        self.score_history_instance.create(player=self.user_instance, score=score)
+        return self.score_history_instance.create(player=self.user_instance, score=score)
 
     def remove_last(self):
         self.score_history_instance.last().delete()

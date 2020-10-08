@@ -17,7 +17,7 @@ def api_train(request):
             for i in questions_list[index]:
                 d = model_to_dict(i)
                 city = i.author.city
-                if user_models.CustomUser.objects.get(id=d['author']).hideMyName or not city:
+                if user_models.User.objects.get(id=d['author']).hideMyName or not city:
                     d['author'] = str(i.author)
                 else:
                     d['author'] = '{0} {1}, г.{2}'.format(
@@ -53,7 +53,7 @@ def tournaments(request):
 
 
 def train(request):
-    raw_data = services.create_render_data_for_train_el(request)
+    raw_data = services.create_render_data_for_train_el()
     if raw_data['status'] == 'error':
         raise Http404(raw_data['error'])
     del raw_data['status']
@@ -116,3 +116,5 @@ def clarify_question(request):
 
         sendmail('Уточнение по вопросу', message, settings.EMAIL_ADMIN_USERS)
         return redirect('account')
+
+

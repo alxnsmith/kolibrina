@@ -1,11 +1,11 @@
 from django.db import models
-from userK.models import CustomUser
+from userK.models import User
 from .services import get_sym_plus_if_num_is_positive
 from django.utils import timezone
 
 
 class ScoreHistory(models.Model):
-    player = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False)
+    player = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
     score = models.FloatField()
     date = models.DateTimeField(default=timezone.now)
 

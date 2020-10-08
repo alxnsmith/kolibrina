@@ -1,5 +1,5 @@
 import re
-from userK.models import CustomUser as User
+from userK.models import User as User
 
 
 def phone_validate(number):

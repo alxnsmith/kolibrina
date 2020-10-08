@@ -13,7 +13,7 @@ def add_tournament_week(post):
     if len(question_list) != 35:
         return {'status': 'error', 'error': 'Not full tournament'}
     author_id = post['tournament']['01']['author_id']
-    author = models.CustomUser.objects.get(id=author_id)
+    author = models.User.objects.get(id=author_id)
     _create_tournament(author_id, models.Tournament.Destinations.TOURNAMENT_WEEK_ER_LOTTO)
     tournament = author.tournament_set.all().order_by('create_date').last()
     for q in question_list:

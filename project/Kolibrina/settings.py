@@ -143,7 +143,7 @@ STATICFILES_FINDERS = (
 MEDIA_URL = '/mediacontent/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediacontent")
 
-AUTH_USER_MODEL = 'userK.CustomUser'
+AUTH_USER_MODEL = 'userK.User'
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = '465'

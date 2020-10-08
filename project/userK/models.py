@@ -4,7 +4,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 from django.conf import settings
 
-from .managers import CustomUserManager
+from .managers import UserManager
 
 from stats.services import get_sum_score_user, init_league
 
@@ -12,7 +12,7 @@ from media.models import Avatar
 from api_teams.models import Team
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     # personal data
     username = models.CharField(verbose_name='Никнейм', unique=True, max_length=30)
     firstName = models.CharField(verbose_name='Имя', max_length=128)
@@ -69,12 +69,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 
-    objects = CustomUserManager()
+    objects = UserManager()
 
     def save(self, *args, **kwargs):
         self.rating = get_sum_score_user(self)
         init_league(self)
-        super(CustomUser, self).save(*args, **kwargs)
+        super(User, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.username
@@ -82,7 +82,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class InviteToTeam(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'"{self.user}" invited to "{self.team}"'

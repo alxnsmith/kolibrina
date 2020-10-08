@@ -1,6 +1,6 @@
 from django.shortcuts import HttpResponse, redirect
 from base64 import b64decode
-from userK.models import CustomUser as User
+from userK.models import User as User
 from django.conf import settings
 from main.sendmail import sendmail
 

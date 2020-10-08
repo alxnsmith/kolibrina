@@ -6,15 +6,12 @@ from django.forms.models import model_to_dict
 import random
 
 from questions.models import Tournament
-from .services import Game
+from .services import TournamentWeekInstance
 import redis
 from django.conf import settings
 
 
 class TournamentWeek(WebsocketConsumer):
-    redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
-                                       port=settings.REDIS_PORT, db=0)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.game_session = None
@@ -43,13 +40,29 @@ class TournamentWeek(WebsocketConsumer):
         self.tournament_shortname = self.scope['url_route']['kwargs']['tournament_name']
         self.tournament_instance = _get_tournament_instance(self.tournament_shortname)
         self.accept()
-        self.game_session = Game(self.tournament_instance, self.scope['user'], lose_question=self.lose_num_question)
+        self.game_session = TournamentWeekInstance(self.tournament_instance, self.scope['user'], lose_question=self.lose_num_question)
         self.send(json.dumps({'type': 'timer_duration',
                               'timer': self.game_session.timer_duration}))
         self.send(json.dumps({'type': 'tournament_author',
                               'author': str(self.game_session.tournament_author)}))
-        if self.game_session.attempt == 3:
-            self.send(json.dumps({'type': 'many_attempts'}))
+        attempt = self.game_session.attempt
+        print(attempt)
+        if attempt > 0:
+            attempt2 = self.game_session.attempt2
+            if attempt > 0 and not attempt2:
+                self.send(json.dumps({'type': 'many_attempts'}))
+            attempt3 = self.game_session.attempt3
+            if attempt > 1 and not attempt3:
+                self.send(json.dumps({'type': 'many_attempts'}))
+            if attempt == 3:
+                self.send(json.dumps({'type': 'many_attempts'}))
+
+    def disconnect(self, code):
+        if code == 1001:
+            print('Tab closed')
+            if self.game_session.is_started:
+                data = {'event': 'respond', 'answer': None}
+                self.check_respond(data)
 
     def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
@@ -61,6 +74,7 @@ class TournamentWeek(WebsocketConsumer):
                     self.current_question_num = int(self.current_question_and_question_num[1])
                     self._send_next_question(self.current_question_and_question_num)
                     self.game_session.init_attempt()
+                    self.game_session.is_started = True
                 else:
                     self.send(json.dumps({'type': 'many_attempts'}))
 
@@ -86,9 +100,8 @@ class TournamentWeek(WebsocketConsumer):
 
             elif data['event'] == 'save_score':
                 saved_score = self.game_session.score.save_and_get_saved_score()
-                self.send(json.dumps({'type': 'saved_score', 'score': saved_score}))
-                self.score_saves += 1
-                if self.score_saves == 3:
+                self.send(json.dumps({'type': 'saved_score', 'score': saved_score['saved_score']}))
+                if saved_score['saves_left'] == 0:
                     self.chance = 0
                     self._answer(correct_answer=self.game_session.current_question.correct_answer)
 
@@ -97,38 +110,40 @@ class TournamentWeek(WebsocketConsumer):
                 self.current_question_and_question_num = self.game_session.next_question()
                 self.current_question_num = int(self.current_question_and_question_num[1])
                 self._send_next_question(self.current_question_and_question_num)
+
             elif data['event'] == 'respond':
-                timer = self.game_session.time_delta()
-                if timer < self.game_session.timer_duration:
-                    result = self._answer(answer=data['answer'],
-                                          correct_answer=self.game_session.current_question.correct_answer)
-                    difficulty = self.game_session.current_question.difficulty
-                    saved_time = self.game_session.timer_duration - timer
-                    question_pos = self.game_session.current_question.pos
-                    print(self.game_session.score.current_score, '<<<<<<<current_score')
+                self.check_respond(data)
 
-                    current_score = self.game_session.score.init_and_get_current_score(
-                        question_pos=question_pos,
-                        saved_time=saved_time,
-                        question_difficulty=difficulty
-                    )
-                    print(self.game_session.score.current_score, '<<<<<<<current_score')
+    def check_respond(self, data):
+        timer = self.game_session.time_delta()
+        if timer < self.game_session.timer_duration:
+            result = self._answer(answer=data['answer'],
+                                  correct_answer=self.game_session.current_question.correct_answer)
+            difficulty = self.game_session.current_question.difficulty
+            saved_time = self.game_session.timer_duration - timer
+            question_pos = self.game_session.current_question.pos
 
-                    if result['status'] == 'CORRECT':
-                        self.game_session.score.combo_incr()
-                        self.send(json.dumps({'type': 'current_score', 'score': current_score}))
-                    elif result['status'] == 'WRONG':
-                        score = self.game_session.score.lose
-                        self.send(json.dumps({
-                            'type': 'answer_result', 'result': 'WRONG', 'correct_answer': self.correct_answer,
-                            'answer': data['answer'], 'score': score}))
-                    elif result['status'] == 'WIN':
-                        current_score = self.game_session.score.win
-                        self.game_session.player_score_instance.add(current_score)
-                        self.send(json.dumps({'type': 'win', 'score': current_score}))
+            current_score = self.game_session.score.init_and_get_current_score(
+                question_pos=question_pos,
+                saved_time=saved_time,
+                question_difficulty=difficulty)
 
-                else:
-                    self._answer(correct_answer=self.game_session.current_question.correct_answer)
+            if result['status'] == 'CORRECT':
+                self.game_session.score.combo_incr()
+                self.send(json.dumps({'type': 'current_score', 'score': current_score}))
+            elif result['status'] == 'WRONG':
+                score = self.game_session.score.lose
+                self.send(json.dumps({
+                    'type': 'answer_result', 'result': 'WRONG', 'correct_answer': self.correct_answer,
+                    'answer': data['answer'], 'score': score}))
+                self.game_session.end_game(score)
+            elif result['status'] == 'WIN':
+                score = self.game_session.score.win
+                self.game_session.player_score_instance.add(score)
+                self.send(json.dumps({'type': 'win', 'score': score}))
+                self.game_session.end_game(score)
+        else:
+            self._answer(correct_answer=self.game_session.current_question.correct_answer)
 
     def send_timer_duration(self, event):
         self.send(text_data=json.dumps(event))
@@ -144,12 +159,27 @@ class TournamentWeek(WebsocketConsumer):
             self.send(json.dumps({'type': 'zamena', 'question': question}))
 
     def _answer(self, correct_answer='', answer=None):
+        def wrong():
+            user = self.scope['user']
+            attempts = self.game_session.tournament_instance.attempt_set.get(user=user)
+            attempts.lose_num_question = self.current_question_num
+            attempts.save()
+            return {'status': 'WRONG'}
+
+        def chance():
+            self.game_session.time_delta()
+            self.send(json.dumps({'type': 'chance'}))
+            self.chance = 0
+            return {'status': 'CHANCE'}
+
+        if answer is None:
+            return wrong()
         if answer == correct_answer:
             self.game_session.time_delta(event='reset')
             self.send(json.dumps({'type': 'answer_result', 'result': 'OK'}))
             self.send(json.dumps({'type': 'reset_timer'}))
             if int(self.current_question_num) == 24:
-                # ввести переменную с попбедным вопросом (количеством вопросов в игре)
+                # TODO: ввести переменную с попбедным вопросом (количеством вопросов в игре)
                 user = self.scope['user']
                 attempts = self.game_session.tournament_instance.attempt_set.get(user=user)
                 attempts.lose_num_question = self.current_question_num
@@ -158,20 +188,9 @@ class TournamentWeek(WebsocketConsumer):
                 return {'status': 'WIN'}
             return {'status': 'CORRECT'}
         elif self.chance > 0:
-            self.game_session.time_delta()
-            self.send(json.dumps({'type': 'chance'}))
-            self.chance = 0
-            return {'status': 'CHANCE'}
+            return chance()
         else:
-            user = self.scope['user']
-            score = self.game_session.score.lose
-            self.game_session.player_score_instance.add(score)
-            attempts = self.game_session.tournament_instance.attempt_set.get(user=user)
-            attempts.lose_num_question = self.current_question_num
-            if self.current_question_num < 8:
-                attempts.attempt = 3
-            attempts.save()
-            return {'status': 'WRONG'}
+            return wrong()
 
 
 def _get_tournament_instance(tournament_shortname):

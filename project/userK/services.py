@@ -1,7 +1,7 @@
 import datetime
 from django.conf import settings
 
-from userK.models import CustomUser as User
+from userK.models import User as User
 from . import forms
 from .phone_validate import phone_validate
 from media import forms as media_forms, services as media_services
@@ -145,6 +145,6 @@ def _get_invite_teams_list(user):
 
 def _get_teammates(user):
     if user.team:
-        return user.team.customuser_set.all()
+        return user.team.user_set.all()
     else:
         return ''

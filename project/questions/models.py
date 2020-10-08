@@ -1,5 +1,5 @@
 from django.db import models
-from userK.models import CustomUser
+from userK.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 
@@ -12,7 +12,7 @@ class Tournament(models.Model):
         TRAIN_ER_LOTTO = 'TEL', _('Тренировка эрудит-лото')
         TOURNAMENT_WEEK_ER_LOTTO = 'TWEL', _('Турнир недели эрудит-лото')
     destination = models.CharField(verbose_name='Назначение', max_length=128, choices=Destinations.choices, default=Destinations.NONE)
-    author = models.ForeignKey(CustomUser, default=None, null=True, on_delete=models.SET_NULL, verbose_name="Автор турнира")
+    author = models.ForeignKey(User, default=None, null=True, on_delete=models.SET_NULL, verbose_name="Автор турнира")
     timer = models.IntegerField(verbose_name='Время таймера', default=30)
     date = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)
     create_date = models.DateField(verbose_name='Дата создания', default=timezone.now)
@@ -32,9 +32,11 @@ class Attempt(models.Model):
         TWO = 2, _('Две')
         THREE = 3, _('Три')
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, verbose_name='Турнир')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Игрок')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Игрок')
     attempt = models.IntegerField(verbose_name='Попыток совершено', choices=Attempts.choices, default=Attempts.ONE)
     lose_num_question = models.IntegerField(verbose_name='Номер, последнего вопроса', default=0)
+    attempt2 = models.BooleanField(verbose_name='Разрешить вторую попытку', default=False)
+    attempt3 = models.BooleanField(verbose_name='Разрешить третью попытку', default=False)
 
     def __str__(self):
         return f'T: {self.tournament}; P: {self.user}, A: {self.attempt}'
@@ -97,7 +99,7 @@ class Question(models.Model):
     for_tournament = models.ForeignKey(Tournament, default=None, on_delete=models.SET_NULL, verbose_name='Для турнира', null=True, blank=True)
     pos = models.CharField(choices=posChoices, max_length=10, verbose_name='Позиция вопроса в турнире', blank=True)
 
-    author = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, db_column='author', verbose_name='Автор',
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, db_column='author', verbose_name='Автор',
                                default=None, null=True)
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, default='0', db_column='category',
                                  verbose_name='Категория')

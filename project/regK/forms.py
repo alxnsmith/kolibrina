@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from userK.models import CustomUser
+from userK.models import User
 
 
 class RegForm(UserCreationForm):
@@ -10,7 +10,7 @@ class RegForm(UserCreationForm):
     }
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ('username', 'email', 'password1', 'password2', 'is_active')
 
     def clean_password2(self):
@@ -25,9 +25,9 @@ class RegForm(UserCreationForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        for user in CustomUser.objects.filter(email=email):
+        for user in User.objects.filter(email=email):
             if user.is_active:
                 raise forms.ValidationError(u'Пользователь с таким e-mail уже зарегестрирован.')
             elif user is not None:
-                CustomUser.objects.filter(email=email)[0].delete()
+                User.objects.filter(email=email)[0].delete()
         return email

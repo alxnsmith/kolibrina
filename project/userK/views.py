@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from . import services
-from stats.services import Score
+from stats.services import UserScore
 
 
 def account(request):

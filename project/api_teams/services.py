@@ -1,12 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Team
-from userK.models import CustomUser, InviteToTeam
+from userK.models import User, InviteToTeam
 
 
 def set_number_on_the_team(username, number):
-    user = CustomUser.objects.get(username=username)
+    user = User.objects.get(username=username)
     team_object = Team.objects.get(team_name=user.team)
-    occupied_player_numbers = [i['number_in_the_team'] for i in team_object.customuser_set.values('number_in_the_team')]
+    occupied_player_numbers = [i['number_in_the_team'] for i in team_object.user_set.values('number_in_the_team')]
     if number in occupied_player_numbers:
         return {'status': 'error', 'error': 'This number is occupied'}
     user.number_in_the_team = number
@@ -15,9 +15,9 @@ def set_number_on_the_team(username, number):
 
 
 def del_player_from_team(player, team):
-    exists = CustomUser.objects.filter(username=player).exists()
+    exists = User.objects.filter(username=player).exists()
     if exists:
-        player = CustomUser.objects.get(username=player)
+        player = User.objects.get(username=player)
         if player.team == team:
             player.team = None
             _reset_number_in_the_team(player)
@@ -34,7 +34,7 @@ def delete_team(user):
     team_name = user.team
     if Team.objects.filter(team_name=team_name).exists():
         team = Team.objects.get(team_name=team_name)
-        if team.customuser_set.filter(username=user.username).exists():
+        if team.user_set.filter(username=user.username).exists():
             if team_role == 'COMMANDER':
                 _reset_team_role(user)
                 _reset_number_in_the_team(user)
@@ -46,7 +46,7 @@ def add_player_to_invite_list(user_id, team_id):
     exists = InviteToTeam.objects.filter(team=team_id, user=user_id).exists()
     if not exists:
         team = Team.objects.get(id=team_id)
-        user = CustomUser.objects.get(id=user_id)
+        user = User.objects.get(id=user_id)
         InviteToTeam.objects.create(team=team, user=user)
         return {'status': 'OK'}
     return {'status': 'error', 'error': 'This invitation is already there'}
@@ -57,11 +57,11 @@ def get_team_info(team, user):
         team_object = Team.objects.get(team_name=team)
     except ObjectDoesNotExist:
         return {'Error': 'Нет такой команды'}
-    players_list = list(team_object.customuser_set.values('id', 'username', 'team_role', 'number_in_the_team'))
+    players_list = list(team_object.user_set.values('id', 'username', 'team_role', 'number_in_the_team'))
     players = _create_dict_with_user_models(players_list)
     if not str(user) in players['list']:
         return {'Error': 'Вы не состоите в этой команде, доступ закрыт.'}
-    score = team_object.old_score
+    score = team_object.score
     last_game_date = team_object.last_game_date
     data = {
         'team': team,
@@ -82,7 +82,7 @@ def _create_dict_with_user_models(players_list):
 
 def set_player_team_role(user, put):
     role = put['role']
-    teammate_list = user.team.customuser_set.all()
+    teammate_list = user.team.user_set.all()
     if user.team_role == 'COMMANDER':
         if 'username' in put:
             if teammate_list.filter(username=put['username']).exists():
@@ -103,7 +103,7 @@ def set_player_team_role(user, put):
 
 
 def join_player_to_team(user, team_name):
-    user = CustomUser.objects.get(username=user.username)
+    user = User.objects.get(username=user.username)
     invited = user.invitetoteam_set.all()
     if invited.filter(team__team_name=team_name).exists():
         team = Team.objects.get(team_name=team_name)

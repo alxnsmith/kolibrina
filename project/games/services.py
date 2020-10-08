@@ -6,11 +6,12 @@ from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.conf import settings
 
-from questions.models import Tournament, Attempt
+from questions.models import Attempt
 from questions.services import get_questions_from_tournament
 from stats.services import get_sum_score_user
 from userK import services as user_services
-from stats.services import Score as UserScore
+from stats.services import UserScore
+from .models import TournamentScoreUserLink
 
 
 def round3(func):
@@ -37,7 +38,7 @@ def create_render_data_for_tournament_week_el(request):
     #     return {'status': 'error', 'error': "This tournament doesn't exist"}
 
 
-def create_render_data_for_train_el(request):
+def create_render_data_for_train_el():
     quest_nums = [str(i).rjust(2, '0') for i in range(1, 13)]
     return {'status': 'OK',
             'quest_nums': quest_nums,
@@ -46,10 +47,11 @@ def create_render_data_for_train_el(request):
             }
 
 
-class Game:
+class TournamentWeekInstance:
     def __init__(self, tournament_instance, user, win_bonus=29, lose_question=0):
-        self.score = Score(question_score_equals=settings.QUESTION_SCORE_EQUALS,
-                           time_score_equals=settings.TIME_SCORE_EQUALS)
+        self.score = ScoreTournamentWeek(question_score_equals=settings.QUESTION_SCORE_EQUALS,
+                                         time_score_equals=settings.TIME_SCORE_EQUALS,
+                                         win_bonus=win_bonus)
         self.lose_question = lose_question
         self.tournament_instance = tournament_instance
         self.player_instance = user
@@ -69,6 +71,8 @@ class Game:
 
         self.current_question = None
         self.timer = None
+
+        self.is_started = False
 
     @property
     def correct_answer(self):
@@ -97,12 +101,35 @@ class Game:
         current_question_num = next(self.current_question_num_gen)
         return question, current_question_num
 
+    def end_game(self, score):
+        if self.is_started:
+            player_score_instance = self.player_score_instance
+            user = self.player_instance
+            tournament_instance = self.tournament_instance
+            score_link_instance = tournament_instance.tournamentscoreuserlink_set
+            score_link_query_set = score_link_instance.filter(user_instance=user)
+            if 8 < int(self.current_question_num):
+                if 8 < int(self.current_question_num):
+                    self.attempt_instance.attempt2 = True
+                if 12 < int(self.current_question_num):
+                    self.attempt_instance.attempt3 = True
+                self.attempt_instance.save()
+
+            if score_link_query_set.exists():
+                score_instance = score_link_query_set[0].score_instance
+                score_instance.score = score
+                score_instance.save()
+            else:
+                score_instance = player_score_instance.add(score)
+                score_link_instance.create(user_instance=user,
+                                           score_instance=score_instance,
+                                           tournament_instance=tournament_instance)
+
     def _get_next_question_number(self):
         quantity_questions = 25
         while int(self.current_question_num) < quantity_questions:
             yield self.current_question_num
             self.current_question_num = str(int(self.current_question_num) + 1).rjust(2, '0')
-
 
     def _get_tournament_author(self):
         user = self.tournament_instance.author
@@ -120,25 +147,24 @@ class Game:
 
     def init_attempt(self):
         self._get_attempt()
-        if self.attempt == 1:
-            self._get_attempt(changes=True)
-        else:
-            self._get_attempt(changes=True)
+        self._get_attempt(changes=True)
 
     def _get_attempt(self, changes=False):
         attempts = self.player_instance.attempt_set.filter(tournament=self.tournament_instance)
         if attempts.exists():
-            attempt = attempts[0]
+            attempt = self.attempt_instance = attempts[0]
+            self.attempt2 = attempts[0].attempt2
+            self.attempt3 = attempts[0].attempt3
             if changes:
                 self._increase_quantity_used_attempts(attempt)
             self.attempt = attempt.attempt
         else:
             self.attempt = 0
             if changes:
-                self._create_attempts()
+                self.attempt_instance = self._create_attempts()
 
     def _create_attempts(self):
-        Attempt.objects.create(tournament=self.tournament_instance, user=self.player_instance, attempt=1)
+        return Attempt.objects.create(tournament=self.tournament_instance, user=self.player_instance, attempt=1)
 
     @staticmethod
     def _increase_quantity_used_attempts(attempt):
@@ -182,8 +208,8 @@ class Game:
             yield i
 
 
-class Score:
-    def __init__(self, question_score_equals, time_score_equals, win=29):
+class ScoreTournamentWeek:
+    def __init__(self, question_score_equals, time_score_equals, win_bonus=29):
         self.question_score_equals = question_score_equals
         self.time_score_equals = time_score_equals
         self.quantity_saved_hints = 4
@@ -192,7 +218,9 @@ class Score:
         self.saved_time = 0
         self.combo = 0
         self.question_difficulty = 0
-        self.win_bonus = win
+        self.win_bonus = win_bonus
+
+        self.score_saves_left = 3
 
         self.combo_bonus = 0
         self.current_total_combo_bonus = 0
@@ -219,14 +247,14 @@ class Score:
             self.question_score += self.question_score_on_question
         return self.current_score
 
-    @round3
     def save_and_get_saved_score(self):
         self.saved_bonus_score += self.combo_bonus + self.time_bonus
         self.saved_question_score += self.question_score
         self.combo_bonus = 0
         self.time_bonus = 0
         self.question_score = 0
-        return self.saved_score + self.hint_bonus
+        self.score_saves_left -= 1
+        return {'saved_score': round(self.saved_score + self.hint_bonus, 3), 'saves_left': self.score_saves_left}
 
     def hint_used_and_get_saved_score(self):
         self.saved_bonus_score += self.combo_bonus + self.time_bonus
@@ -285,6 +313,5 @@ class Score:
     @property
     @round3
     def combo_bonus_on_question(self):
-        return (self.combo - 1) * (self.question_difficulty + int(self.question_pos.split('.')[-1])) / (
+        return (self.combo - 1) * (self.question_difficulty + int(str(self.question_pos).split('.')[-1])) / (
                 70 - self.question_difficulty)
-

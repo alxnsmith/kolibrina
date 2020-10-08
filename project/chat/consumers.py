@@ -24,7 +24,6 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-
         self.accept()
 
         for mes in json.loads(self.redis_instance.get(f'{self.room_group_name}_messages').decode()):
@@ -58,7 +57,6 @@ class ChatConsumer(WebsocketConsumer):
         message = {'message': text_data_json['message'],
                    'username': str(self.scope['user']),
                    'time': text_data_json['time']}
-
         self._message_buffer(message=message)  # save last 20 messages (not for room, for all sockets)
 
         # Send message to room group

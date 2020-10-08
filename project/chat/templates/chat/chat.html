@@ -99,6 +99,8 @@
             } else if (data.type === 'message') {
                 print_message(data)
                 scroll_to_bottom(document.querySelector('#wrapper-chat'))
+            } else if (data.type === 'log') {
+                console.log(data.data)
             }
 
         };
@@ -122,7 +124,6 @@
             let time = new Intl.DateTimeFormat("ru", options).format;
             chatSocket.send(JSON.stringify({
                 'message': message,
-                'username': userdata.username,
                 'time': time(),
             }));
             messageInputDom.value = '';
