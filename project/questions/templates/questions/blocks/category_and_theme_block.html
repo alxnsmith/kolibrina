@@ -1,0 +1,132 @@
+<div class="addquest_theme-category">
+    <div>
+        <select name="category_id" id="category_id" required>
+            <option value="">Категория темы</option>
+        </select>
+        <div class="addtheme_wrap">
+            <select name="theme_id" id="theme_id" required>
+                <option value="">Тема вопроса</option>
+            </select>
+            <div class="addtheme" title="Добавить свою тему"><span>+</span></div>
+        </div>
+        <div id="add_theme">
+            <input type="text" disabled><span class="btn">✔</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function add_theme_control() {
+        let open_add_theme_field = document.querySelector('.addtheme')
+        let addTheme = document.getElementById('add_theme')
+        let category_field = document.getElementById('category_id')
+        let add_theme_btn = document.getElementById('add_theme').querySelector('.btn')
+
+        function get_categories(category_field) {
+            let request_url = `{% url 'questions_api' %}?event=get_categories`
+            sendRequest('get', request_url).then((response) => {
+                let categories = response.categories
+                for (let i = 0; i < categories.length; i++) {
+                    let value_id = categories[i][0]
+                    let value_name = categories[i][1]
+                    let option = `<option value="${value_id}">${value_name}</option>`
+                    category_field.innerHTML += option
+                }
+            })
+        }
+
+        function clean_themes(themes, themes_field) {
+            for (let i = 0; i < themes.length; i++) {
+                themes[i].remove()
+            }
+            themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+        }
+
+        function get_themes(cat, func = null) {
+            let themes_field = document.getElementById('theme_id')
+            let themes_old = document.querySelectorAll('#theme_id option')
+            if (cat !== '') {
+                let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
+                sendRequest('get', requestURL)
+                    .then(result => {
+                        let themes = result.themes
+                        if (result.status === 'OK') {
+                            clean_themes(themes_old, themes_field)
+                            for (let theme in themes) {
+                                themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
+                            }
+                            if (func) {
+                                func()
+                            }
+                        } else {
+                            console.error(result.error)
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err)
+                    })
+
+            } else {
+                let addTheme = document.getElementById('add_theme')
+                addTheme.style.transform = 'scaleY(0)'
+                addTheme.style.height = '0'
+                clean_themes(themes_old, themes_field)
+            }
+        }
+
+        function add_theme(event) {
+            let category = document.getElementById('category_id')
+            let theme = event.target.parentElement.querySelector('input')
+            if (theme.value.length > 3) {
+                let request_url = '{% url 'questions_api' %}'
+                let body = {'event': 'add_theme_to_category', 'cat': category.value, 'theme': theme.value}
+                sendRequest('post', request_url, body).then(result => {
+                    setTimeout(() => {
+                        theme.style.backgroundColor = '#fff'
+                    }, 2000)
+                    let length = theme.value.length
+                    theme.style.backgroundColor = '#0f08'
+                    let cleaner = setInterval(() => {
+                        theme.value = theme.value.slice(0, length--)
+                        if (length < 0) {
+                            clearInterval(cleaner)
+                        }
+                    }, 10)
+                    category.value = ''
+                    get_themes(category.value)
+                }).catch(error => {
+                    show_modal_notification('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
+                    console.error(error)
+                })
+            }
+        }
+
+        function openAddThemeField() {
+            if (addTheme.style.transform === 'scaleY(0)') {
+                if (category_field.value) {
+                    addTheme.style.transform = 'scaleY(1)'
+                    addTheme.style.height = '35px'
+                    addTheme.querySelector('input').disabled = false
+
+                } else {
+                    show_modal_notification('Для добавления темы выберите категорию, к которой она относится.')
+                }
+            } else {
+                addTheme.style.transform = 'scaleY(0)'
+                addTheme.style.height = '0'
+                addTheme.querySelector('input').disabled = true
+            }
+        }
+
+        add_theme_btn.onclick = e => {
+            add_theme(e)
+        }
+        open_add_theme_field.onclick = openAddThemeField
+        category_field.onchange = e => {
+            get_themes(e.target.value)
+        }
+        get_categories(category_field)
+    }
+
+    add_theme_control()
+</script>

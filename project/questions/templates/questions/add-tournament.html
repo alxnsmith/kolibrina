@@ -289,26 +289,8 @@
             </tr>
             </tbody>
         </table>
-        <div class="addquest_theme-category">
-            <div class="">
-                <select id="category_id" onchange="get_themes(this.value)">
-                    <option value="">Категория темы</option>
-                    {% for category in categories %}
-                        <option value="{{ category.id }}">{{ category }}</option>
-                    {% endfor %}
-                </select>
-                <div class="addtheme_wrap">
-                    <select name="" id="theme_id">
-                        <option value="">Тема вопроса</option>
-                    </select>
-                    <div class="addtheme" title="Добавить свою тему"><span>+</span></div>
-                </div>
-                <div id="add_theme">
-                    <input type="text" disabled><span class="btn">✔</span>
-                </div>
-            </div>
 
-        </div>
+        {% include 'questions/blocks/category_and_theme_block.html' %}
 
         <textarea class="addquest_question" name="" id="question_text"
                   placeholder="Текст вопроса (не более 350 символов)"></textarea>

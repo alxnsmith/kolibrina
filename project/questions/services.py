@@ -29,8 +29,12 @@ def add_tournament_week(post):
     return {'status': 'OK'}
 
 
-def add_question(post):
-    pass
+def add_question(request):
+    items = request.POST.dict()
+    items['author_id'] = request.user.id
+    if 'csrfmiddlewaretoken' in items:
+        del items['csrfmiddlewaretoken']
+    models.Question.objects.create(**items)
 
 
 def _create_tournament(author_id, destination):
