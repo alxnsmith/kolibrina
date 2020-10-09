@@ -7,16 +7,18 @@ def api(request):
     sender_name = str(request.user)
     user = get_object_or_404(User, username=sender_name)
 
-    def value(req):
+    def get_contains(req):
         return req in request.GET
 
     response = {}
-    if value('username'):
+    if get_contains('username'):
         response['username'] = sender_name
-    if value('userstatus'):
+    if get_contains('userstatus'):
         response['userstatus'] = {}
         response['userstatus']['admin'] = user.is_staff
         response['userstatus']['is_active'] = user.is_active
+    if get_contains('balance'):
+        response['balance'] = user.balance
 
     if response != {}:
         return JsonResponse(response)

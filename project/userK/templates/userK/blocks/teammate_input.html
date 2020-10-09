@@ -1,10 +1,15 @@
-<div class="teammate line" id="teammate{% if forloop.counter < 6 %}{{ forloop.counter }}{% else %}{{ new_teammate_num }}{% endif %}">
-    <input type="text"  {% if teammate %}class="teammate_username"{% endif %} placeholder="Пригласить игрока" list="users" value="{{ teammate }}" {% if teammate %}disabled{% endif %} style="min-width: 210px; {% if request.user.team_role != "COMMANDER" %}min-width: 94%;{% endif %}">
+<div class="teammate line"
+     id="teammate{% if forloop.counter < 6 %}{{ forloop.counter }}{% else %}{{ new_teammate_num }}{% endif %}">
+    <input type="text" {% if teammate %}class="teammate_username"{% endif %} placeholder="Пригласить игрока"
+           list="users" value="{{ teammate }}" {% if teammate %}disabled{% endif %}
+           style="min-width: 210px; {% if request.user.team_role != "COMMANDER" %}min-width: 94%;{% endif %}">
     {% if request.user.team_role == 'COMMANDER' %}
         {% if teammate %}
-            <a id="del_teammate" href="javascript:void(0)" onclick="del_teammate('{{ teammate }}', this)">Удалить тиммейта</a>
+            <a id="del_teammate" href="javascript:void(0)" onclick="del_teammate('{{ teammate }}', this)">Удалить
+                тиммейта</a>
         {% else %}
-            <a id="add_teammate" href="javascript:void(0)" onclick="add_player_to_invite_list(this)" style="color: #0f74fe">Пригласить игрока</a>
+            <a id="add_teammate" href="javascript:void(0)" onclick="add_player_to_invite_list(this)"
+               style="color: #0f74fe">Пригласить игрока</a>
         {% endif %}
     {% endif %}
     <datalist id="users">
@@ -14,20 +19,28 @@
     </datalist>
     <div class="clear"></div>
     <div class="flex teammate_roles" style="justify-content: center">
-    {% if teammate.team_role != "COMMANDER" %}
-        {% if teammate %}
-        <div>
-            <label for="{{ teammate }}_basic" class="teammate_role"><input id="{{ teammate }}_basic" name="new_{{ teammate }}_status" type="radio" value="BASIC" {% if teammate.team_role == 'BASIC' %}checked{% endif %} {% if request.user.team_role != "COMMANDER" %}disabled{% endif %}>
-                Базовый<span>Готово! <span></span></span></label>
-        </div>
-        <div>
-            <label for="{{ teammate }}_legionary" class="teammate_role"><input id="{{ teammate }}_legionary" name="new_{{ teammate }}_status" type="radio" value="LEGIONARY" {% if teammate.team_role == 'LEGIONARY' %}checked{% endif %} {% if request.user.team_role != "COMMANDER" %}disabled{% endif %}>
-                Легионер<span>Готово! <span></span></span></label>
-        </div>
+        {% if teammate.team_role != "COMMANDER" %}
+            {% if teammate %}
+                <div>
+                    <label for="{{ teammate }}_basic" class="teammate_role"><input id="{{ teammate }}_basic"
+                                                                                   name="new_{{ teammate }}_status"
+                                                                                   type="radio" value="BASIC"
+                                                                                   {% if teammate.team_role == 'BASIC' %}checked{% endif %}
+                                                                                   {% if request.user.team_role != "COMMANDER" %}disabled{% endif %}>
+                        Базовый<span>Готово! <span></span></span></label>
+                </div>
+                <div>
+                    <label for="{{ teammate }}_legionary" class="teammate_role"><input id="{{ teammate }}_legionary"
+                                                                                       name="new_{{ teammate }}_status"
+                                                                                       type="radio" value="LEGIONARY"
+                                                                                       {% if teammate.team_role == 'LEGIONARY' %}checked{% endif %}
+                                                                                       {% if request.user.team_role != "COMMANDER" %}disabled{% endif %}>
+                        Легионер<span>Готово! <span></span></span></label>
+                </div>
+            {% endif %}
+        {% else %}
+            КАПИТАН
         {% endif %}
-    {% else %}
-        КАПИТАН
-    {% endif %}
     </div>
     <span class="teammate_num">#{% if teammate.number_in_the_team %}{{ teammate.number_in_the_team }}{% endif %}</span>
 </div>

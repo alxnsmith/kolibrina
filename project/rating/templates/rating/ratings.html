@@ -1,354 +1,354 @@
 <!DOCTYPE html>
 
 <html lang="ru">
-	<head>
-        {% load static %}
-		<meta charset="UTF-8">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<meta name="robots" content="index,follow">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-			<title>КОЛИБРИНА - Рейтинги</title>
+    <meta name="robots" content="index,follow">
 
-		<meta name="description" content="">
+    <title>КОЛИБРИНА - Рейтинги</title>
 
-		{% include 'main/headPiece.html' %}
+    <meta name="description" content="">
 
-		<link rel="stylesheet" href="{% static 'css/pages/ratings.css' %}">
+    {% include 'main/headPiece.html' %}
 
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/pages/ratings.css' %}">
 
-		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	    
-	    <!--[if lt IE 9]>
-	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	    <![endif]-->
-	</head>
-	<body>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-		{% include "main/header.html"%}
-		
-		<div class="container">
-			<div class="row">
-				<div class="col-md-8">
-					<h3>Рейтинг знатоков</h3>
-					<div class="nav-ratings develop" id="nav-r-1">
-						<a href="rating-tournament-week.php"><span>ЭЛ</span> Турнир недели</a>
-						<a href="rating-thematic.php"><span>ЭЛ</span> Турнир тематический</a>
-						<a href="rating-prize.php"><span>ЭЛ</span> Турнир призовой</a>
-						<a href="rating-marafon-week.php"><span>ЭЛ</span> Марафон недели</a>
-						<a href="rating-marafon-prize.php"><span>ЭЛ</span> Марафон призовой</a>
-						<a href="rating-raik-cup.php"><span>СИ</span> Кубок РАИК</a>
-						<a href="rating-personal-championship-season.php"><span>СИ</span> Личное первенство</a>
-						<a href="rating-prize-tournament.php"><span>СИ</span> Призовой турнир</a>
-						<a href="#"></a>
-						<a href="#"></a>
-						<a href="#"><span>ВС</span> Масс-Старт</a>
-						<a href="#"><span>ВС</span> Спринт <br>мужской</a>
-						<a href="#"><span>ВС</span> Спринт <br>женский</a>
-						<a href="#"><span>ВС</span> Микс</a>
-						<a href="#"><span>ВС</span> МиксТ</a>
-						<a href="#"><span>ИБ</span> Масс-Старт</a>
-						<a href="#"><span>ИБ</span> Спринт <br>мужской</a>
-						<a href="#"><span>ИБ</span> Спринт <br>женский</a>
-						<a href="#"><span>ИБ</span> Микс</a>
-						<a href="#"><span>ИБ</span> МиксТ</a>
-					</div>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 
-					<h3>Рейтинг команд</h3>
-					<div class="nav-ratings develop" id="nav-r-2">
-						<a href="rating-ek-raik.php"><span>ЭК</span> Кубок РАИК</a>
-						<a href="#"><span>ВС</span> Кубок РФ <br>online</a>
-						<a href="#"><span>ЧГП</span> Турнир призовой</a>
-						<a href="#"><span>ИБ</span> Чемпионат школьники</a>
-						<a href="#"><span>КQ</span> Кубок РФ <br>online</a>
-						<a href="rating-team-championship-season.php"><span>ЭК</span> Первенство сезона</a>
-						<a href="#"><span>ВС</span> Эстафета</a>
-						<a href="#"><span>ЧГП</span> Фестиваль снегопад</a>
-						<a href="#"><span>ИБ</span> Эстафета</a>
-						<a href="#"><span>КQ</span> Кубок РФ <br>online</a>
-					</div>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
 
-					<div class="row">
-						<div class="col-sm-12 col-md-7 col-lg-7">
-							<div class="row">
-								<div class="col-sm-6 col-md-6 col-lg-6">
-									<div class="flex-row b-table">
-										<h4 class="c333">Участников в лиге</h4>
+{% include "main/header.html" %}
 
-										<table class="table-padding">
-										  <tr>
-										    <th></th>
-										    <th></th>
-										  </tr>
-										  <tr>
-										    <td>Школьная лига</td>
-										    <td>- {{ league_count.l1 }}</td>
-										  </tr>
-										  <tr>
-										    <td>Лига колледжей</td>
-										    <td>- {{ league_count.l2 }}</td>
-										  </tr>
-										  <tr>
-										    <td>Студенческая лига</td>
-										    <td>- {{ league_count.l3 }}</td>
-										  </tr>
-										  <tr>
-										    <td>Высшая лига</td>
-										    <td>- {{ league_count.l4 }}</td>
-										  </tr>
-										  <tr>
-										    <td>Премьер-лига</td>
-										    <td>- {{ league_count.l5 }}</td>
-										  </tr>
-										  <tr>
-										    <td>Супер-лига</td>
-										    <td>- {{ league_count.l6 }}</td>
-										  </tr>
-										</table>
-									</div>
-									<div class="flex-row b-table develop">
-										<h4 class="c333">Лучшие <br>категории тем</h4>
-										<table class="table-padding">
-										  <tr>
-										    <th></th>
-										    <th></th>
-										  </tr>
-										  <tr>
-										    <td>Кино</td>
-										    <td>- 115</td>
-										  </tr>
-										  <tr>
-										    <td>Физика</td>
-										    <td>- 112</td>
-										  </tr>
-										  <tr>
-										    <td>Биология</td>
-										    <td>- 100</td>
-										  </tr>
-										  <tr>
-										    <td>Спорт</td>
-										    <td>- 99</td>
-										  </tr>
-										  <tr>
-										    <td>Медицина</td>
-										    <td>- 97</td>
-										  </tr>
-										</table>
-										<a href="#" class="alllist">Показать весь список</a>
-									</div>
-								</div>
-								<div class="col-sm-6 col-md-6 col-lg-6">
-									<div class="flex-row b-table">
-										<h4 class="c333">Участников на уровне</h4>
-										<table class="table-padding">
-										  <tr>
-										    <th></th>
-										    <th></th>
-										  </tr>
-										  <tr>
-										    <td>J (юниор)</td>
-										    <td>- {{ level.J }}</td>
-										  </tr>
-										  <tr>
-										    <td>L (любитель)</td>
-										    <td>- {{ level.L }}</td>
-										  </tr>
-										  <tr>
-										    <td>Z (знаток)</td>
-										    <td>- {{ level.Z }}</td>
-										  </tr>
-										  <tr>
-										    <td>M (мастер)</td>
-										    <td>- {{ level.M }}</td>
-										  </tr>
-										  <tr>
-										    <td>P (профи)</td>
-										    <td>- {{ level.P }}</td>
-										  </tr>
-										</table>
-									</div>
-								</div>
-							</div>
-						</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Рейтинг знатоков</h3>
+            <div class="nav-ratings develop" id="nav-r-1">
+                <a href="rating-tournament-week.php"><span>ЭЛ</span> Турнир недели</a>
+                <a href="rating-thematic.php"><span>ЭЛ</span> Турнир тематический</a>
+                <a href="rating-prize.php"><span>ЭЛ</span> Турнир призовой</a>
+                <a href="rating-marafon-week.php"><span>ЭЛ</span> Марафон недели</a>
+                <a href="rating-marafon-prize.php"><span>ЭЛ</span> Марафон призовой</a>
+                <a href="rating-raik-cup.php"><span>СИ</span> Кубок РАИК</a>
+                <a href="rating-personal-championship-season.php"><span>СИ</span> Личное первенство</a>
+                <a href="rating-prize-tournament.php"><span>СИ</span> Призовой турнир</a>
+                <a href="#"></a>
+                <a href="#"></a>
+                <a href="#"><span>ВС</span> Масс-Старт</a>
+                <a href="#"><span>ВС</span> Спринт <br>мужской</a>
+                <a href="#"><span>ВС</span> Спринт <br>женский</a>
+                <a href="#"><span>ВС</span> Микс</a>
+                <a href="#"><span>ВС</span> МиксТ</a>
+                <a href="#"><span>ИБ</span> Масс-Старт</a>
+                <a href="#"><span>ИБ</span> Спринт <br>мужской</a>
+                <a href="#"><span>ИБ</span> Спринт <br>женский</a>
+                <a href="#"><span>ИБ</span> Микс</a>
+                <a href="#"><span>ИБ</span> МиксТ</a>
+            </div>
 
-						<div class="col-sm-12 col-md-5 col-lg-5">
-							<div class="flex-row b-table develop">
-								<h4>Самые активные участники</h4>
-								<table class="">
-								  <tr>
-								    <th></th>
-								    <th></th>
-								  </tr>
-								  <tr>
-								    <td>1. Смирнов Алексей, Чебоксары</td>
-								    <td></td>
-								  </tr>
-								  <tr>
-								    <td>2. Пушкин Николай, Комсомольск</td>
-								    <td>= 2222</td>
-								  </tr>
-								  <tr>
-								    <td>3. Суматохин Пётр, Семипалатин</td>
-								    <td>= 2221</td>
-								  </tr>
-								   <tr>
-								    <td>4. Бубмнова Мария, Хантымансийск</td>
-								    <td>= 2220</td>
-								  </tr>
-								  <tr>
-								    <td>5. Карабарасов Семён, Углич</td>
-								    <td>= 2215</td>
-								  </tr>
-								  <tr>
-								    <td>1. Смирнов Алексей, Чебоксары</td>
-								    <td></td>
-								  </tr>
-								  <tr>
-								    <td>2. Пушкин Николай, Комсомольск</td>
-								    <td>= 2222</td>
-								  </tr>
-								  <tr>
-								    <td>3. Суматохин Пётр, Семипалатин</td>
-								    <td>= 2221</td>
-								  </tr>
-								   <tr>
-								    <td>4. Бубмнова Мария, Хантымансийск</td>
-								    <td>= 2220</td>
-								  </tr>
-								  <tr>
-								    <td>5. Карабарасов Семён, Углич</td>
-								    <td>= 2215</td>
-								  </tr>
-								  <tr>
-								    <td>1. Смирнов Алексей, Чебоксары</td>
-								    <td></td>
-								  </tr>
-								  <tr>
-								    <td>2. Пушкин Николай, Комсомольск</td>
-								    <td>= 2222</td>
-								  </tr>
-								  <tr>
-								    <td>3. Суматохин Пётр, Семипалатин</td>
-								    <td>= 2221</td>
-								  </tr>
-								   <tr>
-								    <td>4. Бубмнова Мария, Хантымансийск</td>
-								    <td>= 2220</td>
-								  </tr>
-								  <tr>
-								    <td>5. Карабарасов Семён, Углич</td>
-								    <td>= 2215</td>
-								  </tr>
-								</table>
-								<a href="#" class="alllist">Показать весь список</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="flex-row b-table develop">
-						<h3>Рейтинг <br> лучших авторов</h3>
-						<table>
-						  <tr>
-						    <th></th>
-						    <th></th>
-						  </tr>
-						  <tr>
-						    <td>1. Смирнов Алексей, Чебоксары</td>
-						    <td></td>
-						  </tr>
-						  <tr>
-						    <td>2. Пушкин Николай, Комсомольск</td>
-						    <td>= 2222</td>
-						  </tr>
-						  <tr>
-						    <td>3. Суматохин Пётр, Семипалатин</td>
-						    <td>= 2221</td>
-						  </tr>
-						   <tr>
-						    <td>4. Бубмнова Мария, Хантымансийск</td>
-						    <td>= 2220</td>
-						  </tr>
-						  <tr>
-						    <td>5. Карабарасов Семён, Углич</td>
-						    <td>= 2215</td>
-						  </tr>
-						  <tr>
-						    <td>1. Смирнов Алексей, Чебоксары</td>
-						    <td></td>
-						  </tr>
-						  <tr>
-						    <td>2. Пушкин Николай, Комсомольск</td>
-						    <td>= 2222</td>
-						  </tr>
-						  <tr>
-						    <td>3. Суматохин Пётр, Семипалатин</td>
-						    <td>= 2221</td>
-						  </tr>
-						   <tr>
-						    <td>4. Бубмнова Мария, Хантымансийск</td>
-						    <td>= 2220</td>
-						  </tr>
-						  <tr>
-						    <td>5. Карабарасов Семён, Углич</td>
-						    <td>= 2215</td>
-						  </tr>
-						  <tr>
-						    <td>1. Смирнов Алексей, Чебоксары</td>
-						    <td></td>
-						  </tr>
-						  <tr>
-						    <td>2. Пушкин Николай, Комсомольск</td>
-						    <td>= 2222</td>
-						  </tr>
-						  <tr>
-						    <td>3. Суматохин Пётр, Семипалатин</td>
-						    <td>= 2221</td>
-						  </tr>
-						   <tr>
-						    <td>4. Бубмнова Мария, Хантымансийск</td>
-						    <td>= 2220</td>
-						  </tr>
-						  <tr>
-						    <td>5. Карабарасов Семён, Углич</td>
-						    <td>= 2215</td>
-						  </tr>
-						</table>
-						<a href="#" class="alllist">Показать весь список</a>
-					</div>
-					<div class="flex-row b-table">
-						<h3>Рейтинг <br> лучших игроков</h3>
-						<table class="table-padding">
-                            {% for i in opLVL_top15 %}
-                                <tr>
-                                    <td>{{ i.lvl }}</td>
-                                    <td>{{ i.opLVL }}</td>
-                                    {% if i.hideMyName == False %}
-                                        <td style="text-align:left;">{{ i.firstName }} {{ i.lastName }}, {{ i.city }}</td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-						</table>
-						<a href="#" class="alllist develop">Показать весь список</a>
-					</div>
-				</div>
-			</div>
-		</div>
+            <h3>Рейтинг команд</h3>
+            <div class="nav-ratings develop" id="nav-r-2">
+                <a href="rating-ek-raik.php"><span>ЭК</span> Кубок РАИК</a>
+                <a href="#"><span>ВС</span> Кубок РФ <br>online</a>
+                <a href="#"><span>ЧГП</span> Турнир призовой</a>
+                <a href="#"><span>ИБ</span> Чемпионат школьники</a>
+                <a href="#"><span>КQ</span> Кубок РФ <br>online</a>
+                <a href="rating-team-championship-season.php"><span>ЭК</span> Первенство сезона</a>
+                <a href="#"><span>ВС</span> Эстафета</a>
+                <a href="#"><span>ЧГП</span> Фестиваль снегопад</a>
+                <a href="#"><span>ИБ</span> Эстафета</a>
+                <a href="#"><span>КQ</span> Кубок РФ <br>online</a>
+            </div>
 
-		<div class="mt20"></div>
+            <div class="row">
+                <div class="col-sm-12 col-md-7 col-lg-7">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div class="flex-row b-table">
+                                <h4 class="c333">Участников в лиге</h4>
 
-		{% include "main/footer.html" %}
+                                <table class="table-padding">
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <td>Школьная лига</td>
+                                        <td>- {{ league_count.l1 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Лига колледжей</td>
+                                        <td>- {{ league_count.l2 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Студенческая лига</td>
+                                        <td>- {{ league_count.l3 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Высшая лига</td>
+                                        <td>- {{ league_count.l4 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Премьер-лига</td>
+                                        <td>- {{ league_count.l5 }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Супер-лига</td>
+                                        <td>- {{ league_count.l6 }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="flex-row b-table develop">
+                                <h4 class="c333">Лучшие <br>категории тем</h4>
+                                <table class="table-padding">
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <td>Кино</td>
+                                        <td>- 115</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Физика</td>
+                                        <td>- 112</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Биология</td>
+                                        <td>- 100</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Спорт</td>
+                                        <td>- 99</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Медицина</td>
+                                        <td>- 97</td>
+                                    </tr>
+                                </table>
+                                <a href="#" class="alllist">Показать весь список</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6">
+                            <div class="flex-row b-table">
+                                <h4 class="c333">Участников на уровне</h4>
+                                <table class="table-padding">
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <td>J (юниор)</td>
+                                        <td>- {{ level.J }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>L (любитель)</td>
+                                        <td>- {{ level.L }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Z (знаток)</td>
+                                        <td>- {{ level.Z }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>M (мастер)</td>
+                                        <td>- {{ level.M }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>P (профи)</td>
+                                        <td>- {{ level.P }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-		<script>
-			$(document).ready(function() {
-				$("header nav a:nth-child(3) > span").addClass("select");
-				$(".title > h2 > strong").html("Рейтинги");
-			});
-		</script>
-		
-	</body>
+                <div class="col-sm-12 col-md-5 col-lg-5">
+                    <div class="flex-row b-table develop">
+                        <h4>Самые активные участники</h4>
+                        <table class="">
+                            <tr>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <td>1. Смирнов Алексей, Чебоксары</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>2. Пушкин Николай, Комсомольск</td>
+                                <td>= 2222</td>
+                            </tr>
+                            <tr>
+                                <td>3. Суматохин Пётр, Семипалатин</td>
+                                <td>= 2221</td>
+                            </tr>
+                            <tr>
+                                <td>4. Бубмнова Мария, Хантымансийск</td>
+                                <td>= 2220</td>
+                            </tr>
+                            <tr>
+                                <td>5. Карабарасов Семён, Углич</td>
+                                <td>= 2215</td>
+                            </tr>
+                            <tr>
+                                <td>1. Смирнов Алексей, Чебоксары</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>2. Пушкин Николай, Комсомольск</td>
+                                <td>= 2222</td>
+                            </tr>
+                            <tr>
+                                <td>3. Суматохин Пётр, Семипалатин</td>
+                                <td>= 2221</td>
+                            </tr>
+                            <tr>
+                                <td>4. Бубмнова Мария, Хантымансийск</td>
+                                <td>= 2220</td>
+                            </tr>
+                            <tr>
+                                <td>5. Карабарасов Семён, Углич</td>
+                                <td>= 2215</td>
+                            </tr>
+                            <tr>
+                                <td>1. Смирнов Алексей, Чебоксары</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>2. Пушкин Николай, Комсомольск</td>
+                                <td>= 2222</td>
+                            </tr>
+                            <tr>
+                                <td>3. Суматохин Пётр, Семипалатин</td>
+                                <td>= 2221</td>
+                            </tr>
+                            <tr>
+                                <td>4. Бубмнова Мария, Хантымансийск</td>
+                                <td>= 2220</td>
+                            </tr>
+                            <tr>
+                                <td>5. Карабарасов Семён, Углич</td>
+                                <td>= 2215</td>
+                            </tr>
+                        </table>
+                        <a href="#" class="alllist">Показать весь список</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="flex-row b-table develop">
+                <h3>Рейтинг <br> лучших авторов</h3>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td>1. Смирнов Алексей, Чебоксары</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>2. Пушкин Николай, Комсомольск</td>
+                        <td>= 2222</td>
+                    </tr>
+                    <tr>
+                        <td>3. Суматохин Пётр, Семипалатин</td>
+                        <td>= 2221</td>
+                    </tr>
+                    <tr>
+                        <td>4. Бубмнова Мария, Хантымансийск</td>
+                        <td>= 2220</td>
+                    </tr>
+                    <tr>
+                        <td>5. Карабарасов Семён, Углич</td>
+                        <td>= 2215</td>
+                    </tr>
+                    <tr>
+                        <td>1. Смирнов Алексей, Чебоксары</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>2. Пушкин Николай, Комсомольск</td>
+                        <td>= 2222</td>
+                    </tr>
+                    <tr>
+                        <td>3. Суматохин Пётр, Семипалатин</td>
+                        <td>= 2221</td>
+                    </tr>
+                    <tr>
+                        <td>4. Бубмнова Мария, Хантымансийск</td>
+                        <td>= 2220</td>
+                    </tr>
+                    <tr>
+                        <td>5. Карабарасов Семён, Углич</td>
+                        <td>= 2215</td>
+                    </tr>
+                    <tr>
+                        <td>1. Смирнов Алексей, Чебоксары</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>2. Пушкин Николай, Комсомольск</td>
+                        <td>= 2222</td>
+                    </tr>
+                    <tr>
+                        <td>3. Суматохин Пётр, Семипалатин</td>
+                        <td>= 2221</td>
+                    </tr>
+                    <tr>
+                        <td>4. Бубмнова Мария, Хантымансийск</td>
+                        <td>= 2220</td>
+                    </tr>
+                    <tr>
+                        <td>5. Карабарасов Семён, Углич</td>
+                        <td>= 2215</td>
+                    </tr>
+                </table>
+                <a href="#" class="alllist">Показать весь список</a>
+            </div>
+            <div class="flex-row b-table">
+                <h3>Рейтинг <br> лучших игроков</h3>
+                <table class="table-padding">
+                    {% for i in opLVL_top15 %}
+                        <tr>
+                            <td>{{ i.lvl }}</td>
+                            <td>{{ i.opLVL }}</td>
+                            {% if i.hideMyName == False %}
+                                <td style="text-align:left;">{{ i.firstName }} {{ i.lastName }}, {{ i.city }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+                <a href="#" class="alllist develop">Показать весь список</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt20"></div>
+
+{% include "main/footer.html" %}
+
+<script>
+    $(document).ready(function () {
+        $("header nav a:nth-child(3) > span").addClass("select");
+        $(".title > h2 > strong").html("Рейтинги");
+    });
+</script>
+
+</body>
 </html>

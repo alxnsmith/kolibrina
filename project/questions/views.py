@@ -1,11 +1,14 @@
+import json
+
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+
+from main.services import check_fill_profile
 from . import forms, services
 from .models import Category, Theme
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
-from main.services import check_fill_profile
-import json
 
 
 @login_required(login_url='login')
@@ -45,7 +48,6 @@ def questions_api(request):  # url: questions_api
                 else:
                     return JsonResponse({'status': 'error', 'error': result})
             if event == 'add_tournament_week':
-                print(request.body)
                 if 'tournament' not in post:
                     return JsonResponse({'status': 'error', 'error': 'Error! Need "tournament"'})
                 result = services.add_tournament_week(post)
@@ -96,7 +98,6 @@ def add_question(request):
         return result_check_fill_profile['response']
     if request.POST:
         services.add_question(post=request.POST)
-        print(request.POST)
         return redirect('add-question')
     else:
         data = {
@@ -104,3 +105,17 @@ def add_question(request):
             'categories': Category.objects.all(),
         }
         return render(request, template, data)
+
+
+class AddThemeBlocksMarafonWeek(View):
+    template_name = 'questions/add-theme-blocks.html'
+
+    def get(self, request):
+        q = ''
+        for i in request.__dict__:
+            q += f'\n\n\n {i} ==== {request.__dict__[i]}'
+        data = {
+            'qwe': q
+        }
+        return render(request, self.template_name, data)
+

@@ -1,400 +1,419 @@
 <!DOCTYPE html>
 
 <html lang="ru">
-	<head>
-        {% load static %}
-		<meta charset="UTF-8">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<meta name="robots" content="index,follow">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-			<title>КОЛИБРИНА - Личный Кабинет</title>
+    <meta name="robots" content="index,follow">
 
-		<meta name="description" content="">
-		
-        {% include 'main/headPiece.html' %}
+    <title>КОЛИБРИНА - Личный Кабинет</title>
 
-		<link rel="stylesheet" href="{% static "css/pages/account.css" %}">
+    <meta name="description" content="">
 
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    {% include 'main/headPiece.html' %}
 
-		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	    
-	    <!--[if lt IE 9]>
-	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	    <![endif]-->
-	</head>
-	<body>
+    <link rel="stylesheet" href="{% static "css/pages/account.css" %}">
 
-		{% include "main/header.html"%}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-		<div class="mt20"></div>
-        <div class="row" style="margin: 0;">
-			<div class="col-sm-9 col-md-9 col-lg-9">
-				<div class="row">
-					<div class="col-sm-4 col-md-4 col-lg-4">
-						<div id="avatar" class="flex-row">
-							<h3>ID {{ userID }}</h3>
-							<div class="clear"></div>
-							<img src="{% if AvatarImage != False %}{{ AvatarImage }}{% else %}{% static 'img/default/defaultAvatar.jpg' %}{% endif %}" alt="">
-                            <div class="clear"></div>
-                            <div style="margin-top: 10px"><button class="set-av" style="background-color: #9089ff; border: none; padding: 5px; color: #ffffff;">Сменить аватар</button></div>
-							<form action="/media/" method="POST" enctype="multipart/form-data" style="display: none"> {% csrf_token %}
-                                    <input type="file" name="image" accept=".jpg, .jpeg, .png, .bmp, .webp" required="" id="id_image">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 
-                                    <input type="hidden" name="user" value="{{ request.user }}" id="id_user">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
 
-                                <button class="av-btn" value="submit">Загрузить новое фото</button>
-							</form>
-						</div>
-						<div id="rating">
-							<strong>Рейтинг игрока</strong>
-							<span> {{ level.rating }} </span>
-						</div>
-						<div class="mt40"></div>
-						<div id="level">
-							<strong>Уровень игрока</strong>
-							<span style="color: #5752FF;">{{ level.level }} / {{ level.numLevel }}</span>
-							<span>J;L;Z;M;P / 1-10</span>
-						</div>
-					</div>
-					<div class="col-sm-8 col-md-8 col-lg-8" id="data">
-						<form action="" method="POST"> {% csrf_token %}
-							<div class="row">
+{% include "main/header.html" %}
+
+<div class="mt20"></div>
+<div class="row" style="margin: 0;">
+    <div class="col-sm-9 col-md-9 col-lg-9">
+        <div class="row">
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <div id="avatar" class="flex-row">
+                    <h3>ID {{ userID }}</h3>
+                    <div class="clear"></div>
+                    <img src="
+                            {% if AvatarImage != False %}{{ AvatarImage }}{% else %}{% static 'img/default/defaultAvatar.jpg' %}{% endif %}"
+                         alt="">
+                    <div class="clear"></div>
+                    <div style="margin-top: 10px">
+                        <button class="set-av"
+                                style="background-color: #9089ff; border: none; padding: 5px; color: #ffffff;">Сменить
+                            аватар
+                        </button>
+                    </div>
+                    <form action="/media/" method="POST" enctype="multipart/form-data"
+                          style="display: none"> {% csrf_token %}
+                        <input type="file" name="image" accept=".jpg, .jpeg, .png, .bmp, .webp" required=""
+                               id="id_image">
+
+                        <input type="hidden" name="user" value="{{ request.user }}" id="id_user">
+
+                        <button class="av-btn" value="submit">Загрузить новое фото</button>
+                    </form>
+                </div>
+                <div id="rating">
+                    <strong>Рейтинг игрока</strong>
+                    <span> {{ level.rating }} </span>
+                </div>
+                <div class="mt40"></div>
+                <div id="level">
+                    <strong>Уровень игрока</strong>
+                    <span style="color: #5752FF;">{{ level.level }} / {{ level.numLevel }}</span>
+                    <span>J;L;Z;M;P / 1-10</span>
+                </div>
+            </div>
+            <div class="col-sm-8 col-md-8 col-lg-8" id="data">
+                <form action="" method="POST"> {% csrf_token %}
+                    <div class="row">
 
 
-                                <div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока" value="{{ request.user.firstName }}" {% if request.user.firstName != '' %}disabled{% endif %}></div>
+                        <div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока"
+                                                     value="{{ request.user.firstName }}"
+                                                     {% if request.user.firstName != '' %}disabled{% endif %}></div>
 
 
-                                <div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока" value="{{ request.user.lastName }}" {% if request.user.lastName != '' %}disabled{% endif %}></div>
+                        <div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока"
+                                                     value="{{ request.user.lastName }}"
+                                                     {% if request.user.lastName != '' %}disabled{% endif %}></div>
 
-							</div>
-							<div>
-								<label for="hyde_my_name"><input type="checkbox" id='hyde_my_name' name="hideMyName" style="width: auto;" {% if request.user.hideMyName == 1 %}checked{% endif %}> Не отображать моё имя и фамилию</label><br>
-							</div>
-							<input id='username' type="text" placeholder="Ник / псевдоним, под которым будет играть участник" value="{{ request.user }}" disabled>
-                            <div class="row">
-                                <div class="col-md-6" id="birth">
-                                    <span>Дата рождения</span>
-                                    <br>
-                                        <input type="date" name="birthday" value="{{ form.birthday.value }}" required="" id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}" {% if request.user.birthday != None %}disabled{% endif %}>
+                    </div>
+                    <div>
+                        <label for="hyde_my_name"><input type="checkbox" id='hyde_my_name' name="hideMyName"
+                                                         style="width: auto;"
+                                                         {% if request.user.hideMyName == 1 %}checked{% endif %}> Не
+                            отображать моё имя и фамилию</label><br>
+                    </div>
+                    <input id='username' type="text" placeholder="Ник / псевдоним, под которым будет играть участник"
+                           value="{{ request.user }}" disabled>
+                    <div class="row">
+                        <div class="col-md-6" id="birth">
+                            <span>Дата рождения</span>
+                            <br>
+                            <input type="date" name="birthday" value="{{ form.birthday.value }}" required=""
+                                   id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}"
+                                   {% if request.user.birthday != None %}disabled{% endif %}>
+                        </div>
+                        <div class="col-md-6" id="gender">
+                            <div class="flex-row">
+                                <span>Пол</span>
+                                <br>
+                                <label for="male"><input id="male" type="radio" name="gender" value="Male"
+                                                         {% if gender == 'Male' %}checked
+                                                         disabled{% elif gender == 'Female' %}disabled{% endif %}>
+                                    Мужской</label>
+                                <label for="female"><input id="female" type="radio" name="gender" value="Female"
+                                                           {% if gender == 'Male' %}disabled{% elif gender == 'Female' %}checked
+                                                           disabled{% endif %}> Женский</label>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <label for="country">Страна проживания: </label>
+                    {{ form.country }}
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.area }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.city }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес"
+                                                     value="{{ request.user.email }}" maxlength="200" required=""
+                                                     id="id_email" {% if request.user.email != '' %}disabled{% endif %}>
+                        </div>
+                        <div class="col-md-6"><input type="tel" name="phoneNumber" id="phoneNumber"
+                                                     placeholder="Номер телефона"
+                                                     {% if request.user.phoneNumber %}value="{{ request.user.phoneNumber }}"
+                                                     disabled{% endif %}></div>
+                    </div>
+
+                    <input type="text" name="swPlace" placeholder="Место работы / учёбы: ВУЗ / колледж / школа - класс"
+                           value="{{ request.user.swPlace }}">
+                    <div class="mt5"></div>
+                    <div class="line"></div>
+                    <div class="mt5"></div>
+                    <div id="leagues" class="flex-row">
+                        <span>Принадлежность к лиге</span>
+                        {% for choice in form.league %}
+                            <div class="league" style="margin: 2px">{{ choice }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt10"></div>
+                    <div class="line"></div>
+                    <div class="mt5"></div>
+                    <button hidden id="SAVE" value="submit">SAVE</button>
+                </form>
+                <form action="javascript:void(0)">
+                    <div class="row" id="panel-captain">
+                        <div class="col-md-6">
+                            <div class="flex-row">
+                                <span style="text-align: center;">Ваша команда</span>
+                                <div>
+                                    <input id="team" type="text" list="team_list" placeholder="Название команды / ID"
+                                           value="{{ team }}" style="min-width: 210px;"
+                                           {% if request.user.team_role != "COMMANDER" and request.user.team %}disabled{% endif %}>
+                                    <datalist id="team_list">
+                                        {% for team in invite_teams_list %}
+                                            <option value="{{ team.team }}"></option>
+                                        {% endfor %}
+                                    </datalist>
+                                    {% if team %}
+                                        {% if request.user.team_role == "COMMANDER" %}
+                                            <a id="del_team" href="javascript:void(0)" onclick="del_team()">Удалить
+                                                команду</a>
+                                        {% else %}
+                                            <a id="leave_team" href="javascript:void(0)"
+                                               onclick="leave_from_team(this)">Покинуть команду</a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a id="add_team" href="javascript:void(0)" style="color: #0f74fe">Добавить
+                                            команду</a>
+                                    {% endif %}
                                 </div>
-                                <div class="col-md-6" id="gender">
-                                    <div class="flex-row">
-                                        <span>Пол</span>
-                                        <br>
-                                            <label for="male"><input id="male" type="radio" name="gender" value="Male" {% if gender == 'Male' %}checked disabled{% elif gender == 'Female' %}disabled{% endif %}> Мужской</label>
-                                            <label for="female"><input id="female" type="radio" name="gender" value="Female" {% if gender == 'Male' %}disabled{% elif gender == 'Female' %}checked disabled{% endif %}> Женский</label>
+
+                                {% for teammate in team_players_list %}
+                                    {% if teammate != request.user %}
+                                        {% include 'userK/blocks/teammate_input.html' %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if team_players_list|length < 6 and team and request.user.team_role == 'COMMANDER' %}
+                                    {% include 'userK/blocks/teammate_input.html' %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if request.user.team %}
+                            <div class="col-md-6">
+                                <div class="flex-row">
+                                    <span style="text-align: center;">Ваш статус в команде</span>
+                                    <div class="roles flex">
+                                        <div>
+                                            <label class="role" for="captain"><input id="captain"
+                                                                                     name="your_team_status"
+                                                                                     type="radio" value="CAPTAIN"
+                                                                                     {% if request.user.team_role == 'COMMANDER' %}checked{% endif %}
+                                                                                     {% if request.user.team %}disabled{% endif %}>
+                                                Капитан
+                                                <span>Готово! <span></span></span></label>
+                                        </div>
+                                        <div>
+                                            <label class="role" for="basic"><input id="basic" name="your_team_status"
+                                                                                   type="radio" value="BASIC"
+                                                                                   {% if request.user.team_role == 'COMMANDER' %}disabled{% endif %}
+                                                                                   {% if request.user.team_role == 'BASIC' %}checked{% endif %}>
+                                                Базовый
+                                                <span>Готово! <span></span></span></label>
+                                        </div>
+                                        <div>
+                                            <label class="role" for="legionary"><input id="legionary"
+                                                                                       name="your_team_status"
+                                                                                       type="radio" value="LEGIONARY"
+                                                                                       {% if request.user.team_role == 'COMMANDER' %}disabled{% endif %}
+                                                                                       {% if request.user.team_role == 'LEGIONARY' %}checked{% endif %}>
+                                                Легионер
+                                                <span>Готово! <span></span></span></label>
+                                        </div>
+                                    </div>
+
+                                    <span class="nums"
+                                          style="text-align: center; display: none">Ваш номер в команде</span>
+                                    <div class="nums flex" style="display: none">
+                                        {% for num in team_number %}
+                                            <div>
+                                                <label class="number_in_the_team" for="num{% cycle 1 2 3 4 5 6 %}">
+                                                    <input id="num{% cycle 1 2 3 4 5 6 %}" class="num" name="team_pos"
+                                                           type="radio"
+                                                           value="{% cycle 1 2 3 4 5 6 %}"> {% cycle 1 2 3 4 5 6 %}
+                                                    <span>Готово! <span></span></span></label>
+                                            </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
-
-
                             </div>
-                            <label for="country">Страна проживания: </label>
-                            {{ form.country }}
-                            <br>
-                            <div class="row">
-								<div class="col-md-6">
-                                    {{ form.area }}
-								</div>
-								<div class="col-md-6">
-                                    {{ form.city }}
-								</div>
-							</div>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+            <div class="clear"></div>
+            <div class="mt40"></div>
+            <div id="tournaments" class="develop">
+                <div id="wrap-title">
+                    <hr>
+                    <div id="text1"><span>Открыта регистрация на турниры</span></div>
+                </div>
+                <table>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Время</th>
+                        <th>Код турнира</th>
+                        <th>Кол-во туров</th>
+                        <th>Сумма взноса (руб)</th>
+                        <th>Название мероприятия</th>
+                    </tr>
+                    <tr>
+                        <td>25.05.20</td>
+                        <td>17:00</td>
+                        <td>ЭЛМН0001</td>
+                        <td>1</td>
+                        <td>100</td>
+                        <td>Эрудит-лото / Марафон недели</td>
+                    </tr>
+                    <tr>
+                        <td>25.05.20</td>
+                        <td>17:00</td>
+                        <td>ЭЛТП0003</td>
+                        <td>3</td>
+                        <td>300</td>
+                        <td>Эрудит-лото / Турнир призовой</td>
+                    </tr>
+                    <tr>
+                        <td>27.05.20</td>
+                        <td>б/в</td>
+                        <td>ЭЛМП0001</td>
+                        <td>5</td>
+                        <td>400</td>
+                        <td>Эрудит-лото / Марафон призовой</td>
+                    </tr>
+                    <tr>
+                        <td>28.05.20</td>
+                        <td>19:00</td>
+                        <td>СИКРАИК0002</td>
+                        <td>3/50</td>
+                        <td>300</td>
+                        <td>Своя игра / Кубок РАНК</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3 col-md-3 col-lg-3">
+        {% include 'payment/payment_form.html' %}
+        <div class="banner">
+            {% include "main/banner.html" %}
+        </div>
+    </div>
+</div>
+<div class="mt20"></div>
 
-							<div class="row">
+{% include "main/footer.html" %}
 
-    								<div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес" value="{{ request.user.email }}"  maxlength="200" required="" id="id_email" {% if request.user.email != ''%}disabled{% endif %}></div>
-                                    <div class="col-md-6"><input type="tel" name="phoneNumber" id="phoneNumber"  placeholder="Номер телефона" {% if request.user.phoneNumber %}value="{{ request.user.phoneNumber }}" disabled{% endif %}></div>
-							</div>
+<style>
+    footer {
+        margin-bottom: 20px;
+    }
+</style>
+<script src="{% static 'js/fetch.js' %}"></script>
+<script src="{% static 'js/account/remote_team.js' %}"></script>
+<script>
+    function format(elem) {
+        elem.bind('input', function () {
+            let num = this.value.replace('+7', '').replace(/\D/g, '').split(/(?=.)/), i = num.length;
+            if (0 <= i) num.unshift('+7');
+            if (1 <= i) num.splice(1, 0, ' ');
+            if (4 <= i) num.splice(5, 0, ' ');
+            if (7 <= i) num.splice(9, 0, '-');
+            if (9 <= i) num.splice(12, 0, '-');
+            if (11 <= i) num.splice(15, num.length - 15);
+            this.value = num.join('');
+        });
+    };
+    format($('#phoneNumber'))
+    let phoneInput = document.getElementById('phoneNumber')
+    phoneInput.onclick = (e) => e.target.value = '+7 '
+</script>
 
-							<input type="text" name="swPlace" placeholder="Место работы / учёбы: ВУЗ / колледж / школа - класс" value="{{ request.user.swPlace }}">
-							<div class="mt5"></div>
-							<div class="line"></div>
-							<div class="mt5"></div>
-							<div id="leagues" class="flex-row">
-								<span>Принадлежность к лиге</span>
-                                {% for choice in form.league %}
-                                    <div class="league" style="margin: 2px">{{ choice }}</div>
-                                {% endfor %}
-							</div>
-							<div class="mt10"></div>
-							<div class="line"></div>
-                            <div class="mt5"></div>
-                            <button hidden id="SAVE" value="submit">SAVE</button>
-						</form>
-                        <form action="javascript:void(0)">
-                            <div class="row" id="panel-captain">
-								<div class="col-md-6">
-									<div class="flex-row">
-										<span style="text-align: center;">Ваша команда</span>
-										<div>
-											<input id="team" type="text" list="team_list" placeholder="Название команды / ID" value="{{ team }}" style="min-width: 210px;" {% if request.user.team_role != "COMMANDER" and request.user.team %}disabled{% endif %}>
-                                                <datalist id="team_list">
-                                                    {% for team in invite_teams_list %}
-                                                    <option value="{{ team.team }}"></option>
-                                                    {% endfor %}
-                                                </datalist>
-                                            {% if team %}
-                                                {% if request.user.team_role == "COMMANDER" %}
-                                                    <a id="del_team" href="javascript:void(0)" onclick="del_team()">Удалить команду</a>
-                                                {% else %}
-                                                    <a id="leave_team" href="javascript:void(0)" onclick="leave_from_team(this)">Покинуть команду</a>
-                                                {% endif %}
-                                            {% else %}
-                                                <a id="add_team" href="javascript:void(0)" style="color: #0f74fe">Добавить команду</a>
-                                            {% endif %}
-										</div>
+<script>
+    $(document).ready(function () {
+        $("header nav a:nth-child(1) > span").addClass("select");
+        $(".title > h2 > strong").html("Личный Кабинет");
+        $(".footer__buttons").append('<a onclick="$(\'#SAVE\').click()">Сохранить изменения</a>');
+        $(".footer__buttons").append('<a href="#">Скачать бланк на обработку ПД</a>');
+        {#$(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');#}
+    });
+</script>
+<script>
+    function get_lower_threshold(rating) {
+        if (rating < 1000) {
+            return ''
+        } else if (rating < 3000) {
+            return ['l1', 'l2']
+        } else if (rating < 6000) {
+            return ['l1', 'l2', 'l3']
+        } else if (rating < 10000) {
+            return ['l1', 'l2', 'l3', 'l4']
+        } else if (rating >= 10000) {
+            return ['l1', 'l2', 'l3', 'l5']
+        }
+    }
 
-                                        {% for teammate in team_players_list %}
-                                            {% if teammate != request.user %}
-                                                {% include 'userK/blocks/teammate_input.html' %}
-                                            {% endif %}
-                                        {% endfor %}
-                                        {% if team_players_list|length < 6 and team and request.user.team_role == 'COMMANDER' %}
-                                            {% include 'userK/blocks/teammate_input.html' %}
-                                        {% endif %}
-									</div>
-								</div>
-								{% if request.user.team %}
-                                <div class="col-md-6">
-									<div class="flex-row">
-										<span style="text-align: center;">Ваш статус в команде</span>
-										<div  class="roles flex">
-                                            <div>
-                                                <label class="role" for="captain"><input id="captain" name="your_team_status" type="radio" value="CAPTAIN" {% if request.user.team_role == 'COMMANDER' %}checked{% endif %} {% if request.user.team %}disabled{% endif %}> Капитан
-                                                <span>Готово! <span></span></span></label>
-                                            </div>
-                                            <div>
-                                                <label class="role" for="basic"><input id="basic" name="your_team_status" type="radio" value="BASIC" {% if request.user.team_role == 'COMMANDER' %}disabled{% endif %} {% if request.user.team_role == 'BASIC' %}checked{% endif %}> Базовый
-                                                <span>Готово! <span></span></span></label>
-                                            </div>
-                                            <div>
-                                                <label class="role" for="legionary"><input id="legionary" name="your_team_status" type="radio" value="LEGIONARY" {% if request.user.team_role == 'COMMANDER' %}disabled{% endif %} {% if request.user.team_role == 'LEGIONARY' %}checked{% endif %}> Легионер
-                                                <span>Готово! <span></span></span></label>
-                                            </div>
-                                        </div>
-
-                                        <span class="nums" style="text-align: center; display: none" >Ваш номер в команде</span>
-                                        <div class="nums flex" style="display: none">
-										{% for num in team_number %}
-                                            <div>
-											    <label class="number_in_the_team" for="num{% cycle 1 2 3 4 5 6 %}">
-                                                    <input id="num{% cycle 1 2 3 4 5 6 %}" class="num" name="team_pos" type="radio" value="{% cycle 1 2 3 4 5 6 %}"> {% cycle 1 2 3 4 5 6 %}
-                                                <span>Готово! <span></span></span></label>
-										    </div>
-                                        {% endfor %}
-                                        </div>
-									</div>
-								</div>
-                                {% endif %}
-							</div>
-                        </form>
-					</div>
-					<div class="clear"></div>
-					<div class="mt40"></div>
-					<div id="tournaments" class="develop">
-						<div id="wrap-title">
-							<hr>
-							<div id="text1"><span>Открыта регистрация на турниры</span></div>
-						</div>
-						<table>
-						  <tr>
-						    <th>Дата</th>
-						    <th>Время</th>
-						    <th>Код турнира</th>
-						    <th>Кол-во туров</th>
-						    <th>Сумма взноса (руб)</th>
-						    <th>Название мероприятия</th>
-						  </tr>
-						  <tr>
-						    <td>25.05.20</td>
-						    <td>17:00</td>
-						    <td>ЭЛМН0001</td>
-						    <td>1</td>
-						    <td>100</td>
-						    <td>Эрудит-лото / Марафон недели</td>
-						  </tr>
-						  <tr>
-						    <td>25.05.20</td>
-						    <td>17:00</td>
-						    <td>ЭЛТП0003</td>
-						    <td>3</td>
-						    <td>300</td>
-						    <td>Эрудит-лото / Турнир призовой</td>
-						  </tr>
-						  <tr>
-						    <td>27.05.20</td>
-						    <td>б/в</td>
-						    <td>ЭЛМП0001</td>
-						    <td>5</td>
-						    <td>400</td>
-						    <td>Эрудит-лото / Марафон призовой</td>
-						  </tr>
-						   <tr>
-						    <td>28.05.20</td>
-						    <td>19:00</td>
-						    <td>СИКРАИК0002</td>
-						    <td>3/50</td>
-						    <td>300</td>
-						    <td>Своя игра / Кубок РАНК</td>
-						  </tr>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-3 col-md-3 col-lg-3">
-				<form action="" method="POST" class=" develop" id="pay">
-					<div class="row">
-						<div class="col-md-6">
-							<strong>Код турнира</strong>
-							<select id="turnir">
-								<option label="СИРАИК 002" value="СИРАИК 002" selected>СИРАИК 002</option>
-								<option value="Название2">Название2</option>
-								<option value="Название3">Название3</option>							
-							</select>
-						</div>
-						<div class="col-md-6">
-							<strong>Сумма (руб)</strong>
-							<input type="number" value="300">
-						</div>
-						<div class="clear"></div>
-						<strong style="padding-top: 10px;">Оплатить</strong>
-						<div id="services">
-							<label>
-								<input type="radio" name="bank" value="sber" checked>
-								Банковской картой СберБанка
-								<span></span>
-							</label>
-							<label>
-								<input type="radio" name="bank" value="tel">
-								Со счёта мобильного телефона
-								<span></span>
-							</label>
-							<label>
-								<input type="radio" name="bank" value="qiwi">
-								QIWI Wallet
-								<span></span>
-							</label>
-							<label>
-								<input type="radio" name="bank" value="yandex">
-								Яндекс.Деньги
-								<span></span>
-							</label>
-							<label>
-								<input type="radio" name="bank" value="webmoney">
-								WebMoney
-								<span></span>
-							</label>
-						</div>
-						<div style="padding: 0 15px;">
-							<a href="#" id="pay__button">Оплатить</a>
-						</div>
-					</div>
-				</form>
-				<div class="banner">
-		            {% include "main/banner.html" %}
-				</div>
-			</div>
-		</div>
-		<div class="mt20"></div>
-
-		            {% include "main/footer.html" %}
-
-		<style>
-			footer {
-				margin-bottom: 20px;
-			}
-		</style>
-        <script src="{% static 'js/fetch.js' %}"></script>
-        <script src="{% static 'js/account/remote_team.js' %}"></script>
-        <script>
-            function format (elem){
-                    elem.bind('input', function(){
-                        let num = this.value.replace( '+7' , '' ).replace( /\D/g, '' ).split( /(?=.)/ ), i = num.length;
-                        if ( 0 <= i ) num.unshift( '+7' );
-                        if ( 1 <= i ) num.splice( 1, 0, ' ' );
-                        if ( 4 <= i ) num.splice( 5, 0, ' ' );
-                        if ( 7 <= i ) num.splice( 9, 0, '-' );
-                        if ( 9 <= i ) num.splice( 12, 0, '-' );
-                        if ( 11 <= i ) num.splice( 15, num.length - 15 );
-                        this.value = num.join( '' );
-                    });
-            };
-            format($('#phoneNumber'))
-            let phoneInput = document.getElementById('phoneNumber')
-            phoneInput.onclick = (e)=>e.target.value='+7 '
-        </script>
-
-		<script>
-			$(document).ready(function() {
-				$("header nav a:nth-child(1) > span").addClass("select");
-				$(".title > h2 > strong").html("Личный Кабинет");
-				$(".footer__buttons").append('<a onclick="$(\'#SAVE\').click()">Сохранить изменения</a>');
-				$(".footer__buttons").append('<a href="#">Скачать бланк на обработку ПД</a>');
-				{#$(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');#}
-			});
-		</script>
-        <script>
-            function get_lower_threshold(rating){
-                if (rating < 1000){return ''}
-                else if(rating < 3000){return ['l1', 'l2']}
-                else if(rating < 6000){return ['l1', 'l2', 'l3']}
-                else if(rating < 10000){return ['l1', 'l2', 'l3', 'l4']}
-                else if(rating >= 10000){return ['l1', 'l2', 'l3', 'l5']}
-                }
-
-            function disable_league({l1=false, l2=false, l3=false, l4=false, l5=false, l6=false}){
-                let rating = parseInt(document.getElementById('rating').querySelector('span').innerText.split('/')[0])
-                let threshold = get_lower_threshold(rating)
-                let leagues = {'l1': l1, 'l2': l2, 'l3':l3, 'l4':l4, 'l5':l5, 'l6':l6,}
-                for (let i = 0; threshold.length > i; i++){
-                    leagues[threshold[i]] = true
-                }
-                document.querySelector('#id_league_0').disabled = leagues['l1']
-                document.querySelector('#id_league_1').disabled = leagues['l2']
-                document.querySelector('#id_league_2').disabled = leagues['l3']
-                document.querySelector('#id_league_3').disabled = leagues['l4']
-                document.querySelector('#id_league_4').disabled = leagues['l5']
-                document.querySelector('#id_league_5').disabled = leagues['l6']
+    function disable_league({l1 = false, l2 = false, l3 = false, l4 = false, l5 = false, l6 = false}) {
+        let rating = parseInt(document.getElementById('rating').querySelector('span').innerText.split('/')[0])
+        let threshold = get_lower_threshold(rating)
+        let leagues = {'l1': l1, 'l2': l2, 'l3': l3, 'l4': l4, 'l5': l5, 'l6': l6,}
+        for (let i = 0; threshold.length > i; i++) {
+            leagues[threshold[i]] = true
+        }
+        document.querySelector('#id_league_0').disabled = leagues['l1']
+        document.querySelector('#id_league_1').disabled = leagues['l2']
+        document.querySelector('#id_league_2').disabled = leagues['l3']
+        document.querySelector('#id_league_3').disabled = leagues['l4']
+        document.querySelector('#id_league_4').disabled = leagues['l5']
+        document.querySelector('#id_league_5').disabled = leagues['l6']
+    }
+</script>
+<script>
+    function initLeagues() {
+        let yearBirthday = document.querySelector('#id_birthday').value.split('-')[0]
+        let date = new Date()
+        let currentYear = date.getFullYear()
+        let age = currentYear - yearBirthday
+        if (age > 0 && age < 100) {
+            if (age > 0 && age < 18) {
+            } else if (age < 22) {
+                disable_league({l1: true})
+            } else if (age < 25) {
+                disable_league({l1: true, l2: true})
+            } else if (age > 25) {
+                disable_league({l1: true, l2: true, l3: true})
             }
-        </script>
-        <script>
-            function initLeagues(){
-                let yearBirthday = document.querySelector('#id_birthday').value.split('-')[0]
-                let date = new Date()
-                let currentYear = date.getFullYear()
-                let age = currentYear - yearBirthday
-                if (age > 0 && age < 100) {
-                    if (age > 0 && age < 18) {}
-                    else if (age < 22) {
-                        disable_league({l1: true})
-                    } else if (age < 25) {
-                        disable_league({l1: true, l2: true})
-                    } else if (age > 25) {
-                        disable_league({l1: true, l2: true, l3: true})
-                    }
-                }
+        }
 
-                let leagues = document.querySelectorAll('.league')
-                for (let i=0; i<leagues.length; i++){
-                    if (leagues[i].querySelector('input').value === '{{ league }}') {
-                        leagues[i].querySelector('input').checked = true
-                    }
-                }
+        let leagues = document.querySelectorAll('.league')
+        for (let i = 0; i < leagues.length; i++) {
+            if (leagues[i].querySelector('input').value === '{{ league }}') {
+                leagues[i].querySelector('input').checked = true
             }
-            initLeagues()
-            document.querySelector('#id_birthday').oninput = function() {initLeagues()}
-        </script>
-        <script>
-            let inpAvatar = document.querySelector('#id_image')
-            let btn = document.querySelector('button.av-btn')
-            inpAvatar.oninput = function() {btn.click()}
-            document.querySelector('.set-av').onclick = function () {inpAvatar.click()}
-        </script>
+        }
+    }
 
-	</body>
+    initLeagues()
+    document.querySelector('#id_birthday').oninput = function () {
+        initLeagues()
+    }
+</script>
+<script>
+    let inpAvatar = document.querySelector('#id_image')
+    let btn = document.querySelector('button.av-btn')
+    inpAvatar.oninput = function () {
+        btn.click()
+    }
+    document.querySelector('.set-av').onclick = function () {
+        inpAvatar.click()
+    }
+</script>
+
+</body>
 </html>

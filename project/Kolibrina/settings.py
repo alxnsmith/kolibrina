@@ -54,6 +54,8 @@ INSTALLED_APPS = [
 
     'API',
 
+    'payment',
+
     'channel_common',
 ]
 

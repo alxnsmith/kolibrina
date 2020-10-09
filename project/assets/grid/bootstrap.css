@@ -1,8 +1,4 @@
 header > .header-gradient > .container {display: flex}
-#online {
-  margin-left: auto;
-  margin-top: 35px;
-}
 .caption{
     display: flex;
     flex-direction: column;

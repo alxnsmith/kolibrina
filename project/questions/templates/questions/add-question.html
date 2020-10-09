@@ -1,193 +1,203 @@
 <!DOCTYPE html>
 
 <html lang="ru">
-	<head>
-        {% load static %}
-		<meta charset="UTF-8">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<meta name="robots" content="index,follow">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-			<title>КОЛИБРИНА - Добавить вопрос | Добавить авторский турни</title>
+    <meta name="robots" content="index,follow">
 
-		<meta name="description" content="">
-		
-		{% include 'main/headPiece.html' %}
+    <title>КОЛИБРИНА - Добавить вопрос | Добавить авторский турни</title>
 
-		<link rel="stylesheet" href="{% static 'css/pages/addquestion.css' %}">
+    <meta name="description" content="">
 
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    {% include 'main/headPiece.html' %}
 
-		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	    
-	    <!--[if lt IE 9]>
-	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	    <![endif]-->
-	</head>
-	<body>
-		{% include "main/header.html" %}
-        {% if not errors %}
-		<div class="addquest_info"><p>Внимание авторам!<a class="red" href="#"> Обязательно к прочтению!</a></p></div>
-		<form class="container addquest_wrap" method="post">{% csrf_token %}
+    <link rel="stylesheet" href="{% static 'css/pages/addquestion.css' %}">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+{% include "main/header.html" %}
+{% if not errors %}
+    <div class="addquest_info"><p>Внимание авторам!<a class="red" href="#"> Обязательно к прочтению!</a></p></div>
+    <form class="container addquest_wrap" method="post">{% csrf_token %}
         {% include "questions/blocks/userinfo.html" %}
-            {{ form.author }}
-            <div class="addquest_theme-category">
-                <div class="">
-					<select name="category" id="category" onchange="get_themes($('#category').val())" required>
-                        <option value="">Категория темы</option>
-                        {% for category in categories %}
-    						<option value="{{ category.id }}">{{ category }}</option>
-                        {% endfor %}
-					</select>
-					<div class="addtheme_wrap">
-						<select name="theme" id="theme" required>
-							<option value="">Тема вопроса</option>
-						</select>
-						<div class="addtheme" title="Добавить свою тему"><span>+</span></div>
-					</div>
-                    <div id="add_theme">
-                        <input type="text"><span class="btn">✔</span>
-                    </div>
-				</div>
-			<div class="addquest_complexity">
-				<span>Уровень сложности:</span>
+        {{ form.author }}
+        <div class="addquest_theme-category">
+            <div class="">
+                <select name="category" id="category" onchange="get_themes($('#category').val())" required>
+                    <option value="">Категория темы</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+                <div class="addtheme_wrap">
+                    <select name="theme" id="theme" required>
+                        <option value="">Тема вопроса</option>
+                    </select>
+                    <div class="addtheme" title="Добавить свою тему"><span>+</span></div>
+                </div>
+                <div id="add_theme">
+                    <input type="text"><span class="btn">✔</span>
+                </div>
+            </div>
+            <div class="addquest_complexity">
+                <span>Уровень сложности:</span>
                 {% for radio in form.difficulty %}
-				<div class="complexity_btn">
-                    {{ radio }}
-				</div>
+                    <div class="complexity_btn">
+                        {{ radio }}
+                    </div>
                 {% endfor %}
-			</div>
-			</div>
+            </div>
+        </div>
 
-			<textarea name="question" maxlength="350" required id="id_question" class="addquest_question" placeholder="Текст вопроса (не более 350 символов)"></textarea>
-			<div class="reply_var">
-				<span>Варианты ответов:</span>
-				<input type="text" name="corectAnsw" maxlength="64" required="" id="id_corectAnsw" placeholder="Правильный ответ" class="correct_ans">
-				<input type="text" name="answer2" maxlength="64" required="" id="id_answer2" placeholder="Вариант">
-				<input type="text" name="answer3" maxlength="64" required="" id="id_answer3" placeholder="Вариант">
-				<input type="text" name="answer4" maxlength="64" required="" id="id_answer4" placeholder="Вариант">
-			</div>
-			<div class="tournir_list">
-				<span>Куда вносится список турниров:</span>
-				<div class="addquest_table">
-					<table>
-					  <tr>
-					    <th>00.00.0000</th>
-					    <th>00.00</th>
-					    <th>просто в базу</th>
-					    <th>на усмотрение редактора</th>
-					  </tr>
-					  <tr>
-					    <td>25.05.2020</td>
-					    <td>17.00</td>
-					    <td>ЭЛМН0001</td>
-					    <td>Эрудит лото/Марафон недели</td>
-					  </tr>
-					  <tr>
-					    <td>25.05.2020</td>
-					    <td>17.00</td>
-					    <td>ЭЛМН0001</td>
-					    <td>Эрудит лото/Марафон недели</td>
-					  </tr>
-					  <tr>
-					    <td>25.05.2020</td>
-					    <td>17.00</td>
-					    <td>ЭЛМН0001</td>
-					    <td>Эрудит лото/Марафон недели</td>
-					  </tr>
-					   <tr>
-					    <td>25.05.2020</td>
-					    <td>17.00</td>
-					    <td>ЭЛМН0001</td>
-					    <td>Эрудит лото/Марафон недели</td>
-					  </tr>
-					</table>
-				</div>
-			</div>
-			<div class="addquest_btns">
-				<button class="addquest_btn">Добавить вопрос</button>
-				<a class="addquest_btn">Добавить вопрос и продолжить добавление</a>
-			</div>
-		</form>
-        {% endif %}
-		{% include "main/footer.html" %}
+        <textarea name="question" maxlength="350" required id="id_question" class="addquest_question"
+                  placeholder="Текст вопроса (не более 350 символов)"></textarea>
+        <div class="reply_var">
+            <span>Варианты ответов:</span>
+            <input type="text" name="corectAnsw" maxlength="64" required="" id="id_corectAnsw"
+                   placeholder="Правильный ответ" class="correct_ans">
+            <input type="text" name="answer2" maxlength="64" required="" id="id_answer2" placeholder="Вариант">
+            <input type="text" name="answer3" maxlength="64" required="" id="id_answer3" placeholder="Вариант">
+            <input type="text" name="answer4" maxlength="64" required="" id="id_answer4" placeholder="Вариант">
+        </div>
+        <div class="tournir_list">
+            <span>Куда вносится список турниров:</span>
+            <div class="addquest_table">
+                <table>
+                    <tr>
+                        <th>00.00.0000</th>
+                        <th>00.00</th>
+                        <th>просто в базу</th>
+                        <th>на усмотрение редактора</th>
+                    </tr>
+                    <tr>
+                        <td>25.05.2020</td>
+                        <td>17.00</td>
+                        <td>ЭЛМН0001</td>
+                        <td>Эрудит лото/Марафон недели</td>
+                    </tr>
+                    <tr>
+                        <td>25.05.2020</td>
+                        <td>17.00</td>
+                        <td>ЭЛМН0001</td>
+                        <td>Эрудит лото/Марафон недели</td>
+                    </tr>
+                    <tr>
+                        <td>25.05.2020</td>
+                        <td>17.00</td>
+                        <td>ЭЛМН0001</td>
+                        <td>Эрудит лото/Марафон недели</td>
+                    </tr>
+                    <tr>
+                        <td>25.05.2020</td>
+                        <td>17.00</td>
+                        <td>ЭЛМН0001</td>
+                        <td>Эрудит лото/Марафон недели</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="addquest_btns">
+            <button class="addquest_btn">Добавить вопрос</button>
+            <a class="addquest_btn">Добавить вопрос и продолжить добавление</a>
+        </div>
+    </form>
+{% endif %}
+{% include "main/footer.html" %}
 
-		<script>
-			$(document).ready(function() {
-				$("header nav a:nth-child(4) > span").addClass("select");
-				$(".title > h2 > strong").html("Добавить вопрос");
-			});
-		</script>
-        {% if not errors %}
-        <script src="{% static 'js/fetch.js' %}"></script>
-        <script>
-            function add_theme(event){
-                let cat = document.getElementById('category').value
-                let theme = event.target.parentElement.querySelector('input').value
-                if (theme.length > 3){
-                    let request_url = '{% url 'questions_api' %}'
-                    let body = {'event': 'add_theme_to_category', 'cat': cat, 'theme': theme}
-                    sendRequest('post', request_url, body).then(result=>{
-                        window.location.reload()
-                    }).catch(error=>{
-                        alert('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
-                        console.error(error)
-                    })
-                }
+<script>
+    $(document).ready(function () {
+        $("header nav a:nth-child(4) > span").addClass("select");
+        $(".title > h2 > strong").html("Добавить вопрос");
+    });
+</script>
+{% if not errors %}
+    <script src="{% static 'js/fetch.js' %}"></script>
+    <script>
+        function add_theme(event) {
+            let cat = document.getElementById('category').value
+            let theme = event.target.parentElement.querySelector('input').value
+            if (theme.length > 3) {
+                let request_url = '{% url 'questions_api' %}'
+                let body = {'event': 'add_theme_to_category', 'cat': cat, 'theme': theme}
+                sendRequest('post', request_url, body).then(result => {
+                    window.location.reload()
+                }).catch(error => {
+                    alert('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
+                    console.error(error)
+                })
             }
-            let add_theme_btn = document.getElementById('add_theme').querySelector('.btn')
-            add_theme_btn.onclick = e =>{add_theme(e)}
-        </script>
-        <script>
-            function clean_themes(themes, themes_field){
-                for (let i = 0; i < themes.length; i++) {themes[i].remove()}
-                    themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+        }
+
+        let add_theme_btn = document.getElementById('add_theme').querySelector('.btn')
+        add_theme_btn.onclick = e => {
+            add_theme(e)
+        }
+    </script>
+    <script>
+        function clean_themes(themes, themes_field) {
+            for (let i = 0; i < themes.length; i++) {
+                themes[i].remove()
             }
-            function get_themes(cat) {
-                let themes_field = document.querySelector('#theme')
-                let themes_old = document.querySelectorAll('#theme option')
-                if (cat !== ''){
-                    let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
-                    sendRequest('get', requestURL)
-                        .then(result => {
-                            let themes = result.themes
-                            if (result.status === 'OK') {
-                                clean_themes(themes_old, themes_field)
-                                for (let theme in themes) {
-                                    themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
-                                }
-                            }else{
-                                console.error(result.error)
+            themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+        }
+
+        function get_themes(cat) {
+            let themes_field = document.querySelector('#theme')
+            let themes_old = document.querySelectorAll('#theme option')
+            if (cat !== '') {
+                let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
+                sendRequest('get', requestURL)
+                    .then(result => {
+                        let themes = result.themes
+                        if (result.status === 'OK') {
+                            clean_themes(themes_old, themes_field)
+                            for (let theme in themes) {
+                                themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
                             }
-                        })
-                        .catch(err => {console.error(err)})
+                        } else {
+                            console.error(result.error)
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err)
+                    })
 
-                } else {
-                    let addTheme = document.getElementById('add_theme')
-                    addTheme.style.transform = 'scaleY(0)'
-                    addTheme.style.height = '0'
-                    clean_themes(themes_old, themes_field)
-                }
+            } else {
+                let addTheme = document.getElementById('add_theme')
+                addTheme.style.transform = 'scaleY(0)'
+                addTheme.style.height = '0'
+                clean_themes(themes_old, themes_field)
             }
-        </script>
-        <script>
-            let addtheme = document.querySelector('.addtheme')
-            let addTheme = document.getElementById('add_theme')
-            let category = document.getElementById('category')
-            addtheme.onclick = ()=>{
-                if (addTheme.style.transform === 'scaleY(0)' && category.value){
-                    addTheme.style.transform = 'scaleY(1)'
-                    addTheme.style.height = '35px'
-                }else{
-                    addTheme.style.transform = 'scaleY(0)'
-                    addTheme.style.height = '0'
-                }
+        }
+    </script>
+    <script>
+        let addtheme = document.querySelector('.addtheme')
+        let addTheme = document.getElementById('add_theme')
+        let category = document.getElementById('category')
+        addtheme.onclick = () => {
+            if (addTheme.style.transform === 'scaleY(0)' && category.value) {
+                addTheme.style.transform = 'scaleY(1)'
+                addTheme.style.height = '35px'
+            } else {
+                addTheme.style.transform = 'scaleY(0)'
+                addTheme.style.height = '0'
             }
+        }
 
-        </script>
-    {% endif %}
-	</body>
+    </script>
+{% endif %}
+</body>
 </html>

@@ -3,5 +3,6 @@ django==3.1.1
 channels-redis==3.1.0
 redis==3.5.3
 Pillow==7.2.0
+yandex_checkout==1.6.4
 
 asgiref~=3.2.10

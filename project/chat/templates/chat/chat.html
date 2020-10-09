@@ -1,150 +1,151 @@
 <!DOCTYPE html>
 
 <html lang="ru">
-	<head>
-        {% load static %}
-		<meta charset="UTF-8">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<meta name="robots" content="index,follow">
+    <meta name="robots" content="index,follow">
 
-			<title>КОЛИБРИНА - ЧАТ | Общение</title>
+    <title>КОЛИБРИНА - ЧАТ | Общение</title>
 
-		<meta name="description" content="">
+    <meta name="description" content="">
 
-        {% include 'main/headPiece.html' %}
+    {% include 'main/headPiece.html' %}
 
-        <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
-		<link rel="stylesheet" href="{% static 'css/pages/chat.css' %}">
-
-
-		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-
-	    <!--[if lt IE 9]>
-	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	    <![endif]-->
-	</head>
-	<body>
-
-		{% include "main/header.html"%}
-
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-9 col-md-9 col-lg-9">
-					<div id="wrapper-chat">
-						<div class="wrapper-messages">
-
-                        </div>
-					</div>
-					<form action="" method="POST" id="chat-userPanel">
-						<textarea name="" id="mes" placeholder="Введите сообщение..."></textarea>
-						<div class="space-between flex">
-                            <div>В чате: <span id="chat-online"></span></div>
-                            <a onclick="web_send_msg()" id="tosend">Отправить</a>
-                        </div>
-
-					</form>
-				</div>
-				<div class="col-sm-3 col-md-3 col-lg-3">
-					{% include "main/banner.html"%}
-				</div>
-			</div>
-		</div>
-
-        <script>
-
-            function print_message (data) {
-
-                if (data.username === '{{ request.user }}') {
-                    document.querySelector('.wrapper-messages').innerHTML +=
-                        '<div class="wrapper-messages__item my-message"><div class="message">'
-                        + data.message
-                        + '</div><div class="date">'
-                        + data.time
-                        + '</div></div>'
-                } else {
-                    document.querySelector('.wrapper-messages').innerHTML +=
-                        '<div class="wrapper-messages__item friend-message"><div class="name">'
-                        + data.username
-                        + '</div><div class="message">'
-                        + data.message
-                        + '</div><div class="date">'
-                        + data.time
-                        + '</div></div>'
-                }
-            }
-        </script>
-        <script>
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages/chat.css' %}">
 
 
-        const roomName = 'mainROOM'; // get room name
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+{% include "main/header.html" %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9 col-md-9 col-lg-9">
+            <div id="wrapper-chat">
+                <div class="wrapper-messages">
+
+                </div>
+            </div>
+            <form action="" method="POST" id="chat-userPanel">
+                <textarea name="" id="mes" placeholder="Введите сообщение..."></textarea>
+                <div class="space-between flex">
+                    <div>В чате: <span id="chat-online"></span></div>
+                    <a onclick="web_send_msg()" id="tosend">Отправить</a>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-sm-3 col-md-3 col-lg-3">
+            {% include "main/banner.html" %}
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function print_message(data) {
+
+        if (data.username === '{{ request.user }}') {
+            document.querySelector('.wrapper-messages').innerHTML +=
+                '<div class="wrapper-messages__item my-message"><div class="message">'
+                + data.message
+                + '</div><div class="date">'
+                + data.time
+                + '</div></div>'
+        } else {
+            document.querySelector('.wrapper-messages').innerHTML +=
+                '<div class="wrapper-messages__item friend-message"><div class="name">'
+                + data.username
+                + '</div><div class="message">'
+                + data.message
+                + '</div><div class="date">'
+                + data.time
+                + '</div></div>'
+        }
+    }
+</script>
+<script>
 
 
+    const roomName = 'mainROOM'; // get room name
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
-        );
 
-        chatSocket.onmessage = (e) => {
-            let data = JSON.parse(e.data)
-            if (data.type === 'online'){
-                document.querySelector('#chat-online').textContent = data.online
-            } else if (data.type === 'message') {
-                print_message(data)
-                scroll_to_bottom(document.querySelector('#wrapper-chat'))
-            } else if (data.type === 'log') {
-                console.log(data.data)
-            }
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+    );
 
-        };
+    chatSocket.onmessage = (e) => {
+        let data = JSON.parse(e.data)
+        if (data.type === 'online') {
+            document.querySelector('#chat-online').textContent = data.online
+        } else if (data.type === 'message') {
+            print_message(data)
+            scroll_to_bottom(document.querySelector('#wrapper-chat'))
+        } else if (data.type === 'log') {
+            console.log(data.data)
+        }
 
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+    };
 
-        document.querySelector('#mes').focus();
-        document.querySelector('#mes').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#mes').focus();
+    document.querySelector('#mes').onkeyup = function (e) {
+        if (e.keyCode === 13) {  // enter, return
             document.querySelector('#mes').value = document.querySelector('#mes').value.replace(/\r?\n/g, "")
-                document.querySelector('#tosend').click();
-            }
-        };
+            document.querySelector('#tosend').click();
+        }
+    };
 
-        document.querySelector('#tosend').onclick = function() {
-            const messageInputDom = document.querySelector('#mes');
-            const message = messageInputDom.value;
-            const options = {hour: "2-digit", minute: "2-digit"};
-            let time = new Intl.DateTimeFormat("ru", options).format;
-            chatSocket.send(JSON.stringify({
-                'message': message,
-                'time': time(),
-            }));
-            messageInputDom.value = '';
-        };
-    </script>
-        <script>
-            function scroll_to_bottom (elem) {
-                elem.scrollTo(
-                    {top: elem.scrollHeight,
-                     behavior: 'smooth'})
-            }
-        </script>
+    document.querySelector('#tosend').onclick = function () {
+        const messageInputDom = document.querySelector('#mes');
+        const message = messageInputDom.value;
+        const options = {hour: "2-digit", minute: "2-digit"};
+        let time = new Intl.DateTimeFormat("ru", options).format;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'time': time(),
+        }));
+        messageInputDom.value = '';
+    };
+</script>
+<script>
+    function scroll_to_bottom(elem) {
+        elem.scrollTo(
+            {
+                top: elem.scrollHeight,
+                behavior: 'smooth'
+            })
+    }
+</script>
 
-		<div class="mt20"></div>
-		{% include "main/footer.html"%}
+<div class="mt20"></div>
+{% include "main/footer.html" %}
 
-		<script>
-			document.addEventListener('DOMContentLoaded', () => {
-				document.querySelector("header nav a:nth-child(6) > span").classList.add("select");
-				document.querySelector(".title > h2 > strong").innerHTML = ("ЧАТ | Общение");
-			});
-		</script>
-	</body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector("header nav a:nth-child(6) > span").classList.add("select");
+        document.querySelector(".title > h2 > strong").innerHTML = ("ЧАТ | Общение");
+    });
+</script>
+</body>
 </html>

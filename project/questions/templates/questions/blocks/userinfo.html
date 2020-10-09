@@ -1,2 +1,9 @@
-<div class="addquest_author">{% if request.user.hideMyName == 0 %}{{ request.user.firstName|upper }} {{ request.user.lastName|upper }}, {{ request.user.city|upper }}, {{ request.user.email }}{% else %}{{ request.user }}{% endif %}</div>
+<div class="addquest_author">
+    {% if request.user.hideMyName == 0 %}
+        {{ request.user.firstName|upper }} {{ request.user.lastName|upper }}, {{ request.user.city|upper }},
+        {{ request.user.email }}
+    {% else %}
+        {{ request.user }}
+    {% endif %}
+</div>
 

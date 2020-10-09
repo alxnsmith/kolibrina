@@ -1,519 +1,601 @@
 <!DOCTYPE html>
 
 <html lang="ru">
-	<head>
-        {% load static %}
-		<meta charset="UTF-8">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
-		<meta name="robots" content="index,follow">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-			<title>КОЛИБРИНА - Добавить авторский турнир</title>
+    <meta name="robots" content="index,follow">
 
-		<meta name="description" content="">
+    <title>КОЛИБРИНА - Добавить авторский турнир</title>
 
-		{% include 'main/headPiece.html' %}
+    <meta name="description" content="">
 
-		<link rel="stylesheet" href="{% static 'css/pages/addquestion.css' %}">
+    {% include 'main/headPiece.html' %}
 
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/pages/addquestion.css' %}">
 
-		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	    
-	    <!--[if lt IE 9]>
-	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	    <![endif]-->
-	</head>
-	<body>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-		        {% include "main/header.html"%}
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 
-		<div class="addquest_info"><p>Внимание авторам! <a href="#">Обязательно к прочтению!</a></p></div>
-        {% if not errors %}
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
 
-        <div class="container addquest_wrap">
-            {% include "questions/blocks/userinfo.html" %}
-            <input type="hidden" id="user_id" value="{{ request.user.id }}">
-			<div class="add_in_tourn">
-				<span>Внесение вопросов турнира ЭЛТН <span class="rrd">0000*</span> Эрудит-лото/Турнир недели <br><span class="rrd">(*номер присваиваеться редактором)</span></span>
+{% include "main/header.html" %}
 
-			</div>
-<table>
-	<tbody>
-		<tr class="fcolt tm_row" >
-			<td>Уровень сложности</td>
-			<td>Номера вопросов первой попытки</td>
-			<td>Номера вопросов 1 и 2 попытки</td>
-			<td>Вопрос замены</td>
-		</tr>
-		<tr class="sv_row">
-			<td class="fc"><span>10</span></td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td><div class="circle_btn act"><span>01</span></div></td>
-						<td><div class="circle_btn"><span>02</span></div></td>
-						<td><div class="circle_btn"><span>03</span></div></td>
-						<td><div class="circle_btn"><span>04</span></div></td>
-						<td><div class="circle_btn"><span>05</span></div></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr class="tm_row">
-			<td class="fc"><span>20</span></td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td><div class="circle_btn"><span>06</span></div></td>
-						<td><div class="circle_btn"><span>07</span></div></td>
-						<td><div class="circle_btn"><span>08</span></div></td>
-						<td><div class="circle_btn"><span>09</span></div></td>
-						<td><div class="circle_btn"><span>10</span></div></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr class="sv_row">
-			<td class="fc"><span>30</span></td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td><div class="circle_btn"><span>11</span></div></td>
-						<td><div class="circle_btn"><span>12</span></div></td>
-						<td><div class="circle_btn"><span>13</span></div></td>
-						<td><div class="circle_btn"><span>14</span></div></td>
-						<td><div class="circle_btn"><span>15</span></div></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td><div class="circle_btn"><span>д1.1</span></div></td>
-						<td><div class="circle_btn"><span>д1.2</span></div></td>
-						<td><div class="circle_btn"><span>д1.3</span></div></td>
-						<td><div class="circle_btn"><span>д1.4</span></div></td>
-						<td><div class="circle_btn"><span>д1.5</span></div></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td><div class="circle_btn zamena"><span>замена</span></div></td>
-						<td></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr class="tm_row">
-			<td class="fc"><span>40</span></td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td><div class="circle_btn"><span>16</span></div></td>
-						<td><div class="circle_btn"><span>17</span></div></td>
-						<td><div class="circle_btn"><span>18</span></div></td>
-						<td><div class="circle_btn"><span>19</span></div></td>
-						<td><div class="circle_btn"><span>20</span></div></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td><div class="circle_btn"><span>д2.1</span></div></td>
-						<td><div class="circle_btn"><span>д2.2</span></div></td>
-						<td><div class="circle_btn"><span>д2.3</span></div></td>
-						<td><div class="circle_btn"><span>д2.4</span></div></td>
-						<td><div class="circle_btn"><span>д2.5</span></div></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td></td>
-						<td></td>
+<div class="addquest_info"><p>Внимание авторам! <a href="#">Обязательно к прочтению!</a></p></div>
+{% if not errors %}
 
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr class="sv_row">
-			<td class="fc"><span>50</span></td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td><div class="circle_btn"><span>21</span></div></td>
-						<td><div class="circle_btn"><span>22</span></div></td>
-						<td><div class="circle_btn"><span>23</span></div></td>
-						<td><div class="circle_btn"><span>24</span></div></td>
-						<td></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-			</td>
-			<td class="vntr">
-				<table>
-					<tr>	
-						<td></td>
-						<td></td>
+    <div class="container addquest_wrap">
+        {% include "questions/blocks/userinfo.html" %}
+        <input type="hidden" id="user_id" value="{{ request.user.id }}">
+        <div class="add_in_tourn">
+            <span>Внесение вопросов турнира ЭЛТН <span class="rrd">0000*</span> Эрудит-лото/Турнир недели <br><span
+                    class="rrd">(*номер присваиваеться редактором)</span></span>
 
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</tbody>
-</table>
-			<div class="addquest_theme-category">
-				<div class="">
-					<select id="category_id" onchange="get_themes(this.value)">
-						<option value="">Категория темы</option>
-                        {% for category in categories %}
-    						<option value="{{ category.id }}">{{ category }}</option>
-                        {% endfor %}
-					</select>
-					<div class="addtheme_wrap">
-						<select name="" id="theme_id">
-							<option value="">Тема вопроса</option>
-						</select>
-						<div class="addtheme" title="Добавить свою тему"><span>+</span></div>
-					</div>
-                    <div id="add_theme">
-                        <input type="text" disabled><span class="btn">✔</span>
-                    </div>
-				</div>
+        </div>
+        <table>
+            <tbody>
+            <tr class="fcolt tm_row">
+                <td>Уровень сложности</td>
+                <td>Номера вопросов первой попытки</td>
+                <td>Номера вопросов 1 и 2 попытки</td>
+                <td>Вопрос замены</td>
+            </tr>
+            <tr class="sv_row">
+                <td class="fc"><span>10</span></td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="circle_btn act"><span>01</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>02</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>03</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>04</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>05</span></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="tm_row">
+                <td class="fc"><span>20</span></td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="circle_btn"><span>06</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>07</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>08</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>09</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>10</span></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="sv_row">
+                <td class="fc"><span>30</span></td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="circle_btn"><span>11</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>12</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>13</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>14</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>15</span></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="circle_btn"><span>д1.1</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>д1.2</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>д1.3</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>д1.4</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>д1.5</span></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="circle_btn zamena"><span>замена</span></div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="tm_row">
+                <td class="fc"><span>40</span></td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="circle_btn"><span>16</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>17</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>18</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>19</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>20</span></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="circle_btn"><span>д2.1</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>д2.2</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>д2.3</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>д2.4</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>д2.5</span></div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
 
-			</div>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="sv_row">
+                <td class="fc"><span>50</span></td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="circle_btn"><span>21</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>22</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>23</span></div>
+                            </td>
+                            <td>
+                                <div class="circle_btn"><span>24</span></div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="vntr">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
 
-			<textarea class="addquest_question" name="" id="question_text" placeholder="Текст вопроса (не более 350 символов)"></textarea>
-			<div class="reply_var">
-				<span>Варианты ответов:</span>
-				<input type="text" placeholder="Правильный ответ" class="correct_ans" id="correct_answer">
-				<input type="text" placeholder="Вариант" id="answer2">
-				<input type="text" placeholder="Вариант" id="answer3">
-				<input type="text" placeholder="Вариант" id="answer4">
-			</div>
-			<div class="addquest_btns">
-				<div class="addtour_btn" id="add_tournament">Добавить турнир в базу</div>
-			</div>
-		</div>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="addquest_theme-category">
+            <div class="">
+                <select id="category_id" onchange="get_themes(this.value)">
+                    <option value="">Категория темы</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+                <div class="addtheme_wrap">
+                    <select name="" id="theme_id">
+                        <option value="">Тема вопроса</option>
+                    </select>
+                    <div class="addtheme" title="Добавить свою тему"><span>+</span></div>
+                </div>
+                <div id="add_theme">
+                    <input type="text" disabled><span class="btn">✔</span>
+                </div>
+            </div>
 
-						{% include "main/footer.html" %}
+        </div>
 
-                {% endif %}
+        <textarea class="addquest_question" name="" id="question_text"
+                  placeholder="Текст вопроса (не более 350 символов)"></textarea>
+        <div class="reply_var">
+            <span>Варианты ответов:</span>
+            <input type="text" placeholder="Правильный ответ" class="correct_ans" id="correct_answer">
+            <input type="text" placeholder="Вариант" id="answer2">
+            <input type="text" placeholder="Вариант" id="answer3">
+            <input type="text" placeholder="Вариант" id="answer4">
+        </div>
+        <div class="addquest_btns">
+            <div class="addtour_btn" id="add_tournament">Добавить турнир в базу</div>
+        </div>
+    </div>
 
-		<script>
-			$(document).ready(function() {
-				$("header nav a:nth-child(4) > span").addClass("select");
-				$(".title > h2 > strong").html("Добавить авторский турнир");
-			});
-		</script>
-                    {% if not errors %}
+    {% include "main/footer.html" %}
 
-        <script src="{% static 'js/fetch.js' %}"></script>
-                <script>
-                    {# init quetion difficults in table an write to attribute "difficulty" in circle_buttons span #}
-                    let difficults = document.querySelectorAll('.fc')
-                    for (let i=0; i<difficults.length; i++){
-                        let row = difficults[i].parentElement
-                        let difficulty = row.querySelector('span').innerText
-                        let circle_buttons = row.querySelectorAll('.circle_btn')
-                        for (let i=0; i<circle_buttons.length; i++){
-                            circle_buttons[i].querySelector('span').setAttribute('difficulty', difficulty)
-                        }
-                    }
-                </script>
-        <script>
-            {# question model #}
-            class question{
-                constructor(author_id, category_id, theme_id, difficulty, question_text, correct_answer, a2, a3, a4, position) {
-                    this.author_id = author_id
-                    this.category_id = category_id
-                    this.theme_id = theme_id
-                    this.difficulty = difficulty
-                    this.question = question_text
-                    this.correct_answer = correct_answer
-                    this.answer2 = a2
-                    this.answer3 = a3
-                    this.answer4 = a4
-                    this.position = position
+{% endif %}
 
-                }
+<script>
+    $(document).ready(function () {
+        $("header nav a:nth-child(4) > span").addClass("select");
+        $(".title > h2 > strong").html("Добавить авторский турнир");
+    });
+</script>
+{% if not errors %}
+
+    <script src="{% static 'js/fetch.js' %}"></script>
+    <script>
+        {# init quetion difficults in table an write to attribute "difficulty" in circle_buttons span #}
+        let difficults = document.querySelectorAll('.fc')
+        for (let i = 0; i < difficults.length; i++) {
+            let row = difficults[i].parentElement
+            let difficulty = row.querySelector('span').innerText
+            let circle_buttons = row.querySelectorAll('.circle_btn')
+            for (let i = 0; i < circle_buttons.length; i++) {
+                circle_buttons[i].querySelector('span').setAttribute('difficulty', difficulty)
             }
+        }
+    </script>
+    <script>
+        {# question model #}
 
-            let user_id = document.getElementById('user_id').value
-            let list_questions = {}
+        class question {
+            constructor(author_id, category_id, theme_id, difficulty, question_text, correct_answer, a2, a3, a4, position) {
+                this.author_id = author_id
+                this.category_id = category_id
+                this.theme_id = theme_id
+                this.difficulty = difficulty
+                this.question = question_text
+                this.correct_answer = correct_answer
+                this.answer2 = a2
+                this.answer3 = a3
+                this.answer4 = a4
+                this.position = position
 
-            function init_question(){
-                let current_question = document.querySelector('.act>span')
-                let category_id = document.getElementById('category_id').value
-                let theme_id = document.getElementById('theme_id').value
-                let difficulty = current_question.getAttribute('difficulty')
-                let question_text = document.getElementById('question_text').value
-                let correct_answer = document.getElementById('correct_answer').value
-                let a2 = document.getElementById('answer2').value
-                let a3 = document.getElementById('answer3').value
-                let a4 = document.getElementById('answer4').value
-                list_questions[`${current_question.innerHTML}`] = new question(
-                    user_id,
-                    category_id,
-                    theme_id,
-                    difficulty,
-                    question_text,
-                    correct_answer,
-                    a2,
-                    a3,
-                    a4,
-                    current_question.innerHTML
-                )
             }
+        }
 
-        </script>
-        <script>
-            function clear_fields(){
-                document.getElementById('category_id').value = ''
-                document.getElementById('theme_id').value = ''
-                document.getElementById('question_text').value = ''
-                document.getElementById('correct_answer').value = ''
-                document.getElementById('answer2').value = ''
-                document.getElementById('answer3').value = ''
-                document.getElementById('answer4').value = ''
-                get_themes(category.value)
-            }
-            function check_fields(){
-                return(document.getElementById('category_id').value !== '' &&
+        let user_id = document.getElementById('user_id').value
+        let list_questions = {}
+
+        function init_question() {
+            let current_question = document.querySelector('.act>span')
+            let category_id = document.getElementById('category_id').value
+            let theme_id = document.getElementById('theme_id').value
+            let difficulty = current_question.getAttribute('difficulty')
+            let question_text = document.getElementById('question_text').value
+            let correct_answer = document.getElementById('correct_answer').value
+            let a2 = document.getElementById('answer2').value
+            let a3 = document.getElementById('answer3').value
+            let a4 = document.getElementById('answer4').value
+            list_questions[`${current_question.innerHTML}`] = new question(
+                user_id,
+                category_id,
+                theme_id,
+                difficulty,
+                question_text,
+                correct_answer,
+                a2,
+                a3,
+                a4,
+                current_question.innerHTML
+            )
+        }
+
+    </script>
+    <script>
+        function clear_fields() {
+            document.getElementById('category_id').value = ''
+            document.getElementById('theme_id').value = ''
+            document.getElementById('question_text').value = ''
+            document.getElementById('correct_answer').value = ''
+            document.getElementById('answer2').value = ''
+            document.getElementById('answer3').value = ''
+            document.getElementById('answer4').value = ''
+            get_themes(category.value)
+        }
+
+        function check_fields() {
+            return (document.getElementById('category_id').value !== '' &&
                 document.getElementById('theme_id').value !== '' &&
                 document.getElementById('question_text').value !== '' &&
                 document.getElementById('correct_answer').value !== '' &&
                 document.getElementById('answer2').value !== '' &&
                 document.getElementById('answer3').value !== '' &&
                 document.getElementById('answer4').value !== '')
-            }
-            {# switch questions #}
-            let questions = document.querySelectorAll('.circle_btn')
-            for (let i = 0; i<questions.length; i++){
-                questions[i].onclick = e=>{
-                    init_question()
-                    if (check_fields()){
-                        let current_question = document.querySelector('.act')
-                        current_question.classList.remove('act')
-                        current_question.classList.add('ok')
-                        let new_question = e.target
-                        new_question.parentElement.classList.add('act')
-                        clear_fields()
+        }
 
-                        if (new_question.parentElement.classList.contains('ok')) {
-                            let question_data = list_questions[`${new_question.innerHTML}`]
-                            let question_keys = Object.keys(question_data)
-                            for (let i = 0; i<question_keys.length; i++){
+        {# switch questions #}
+        let questions = document.querySelectorAll('.circle_btn')
+        for (let i = 0; i < questions.length; i++) {
+            questions[i].onclick = e => {
+                init_question()
+                if (check_fields()) {
+                    let current_question = document.querySelector('.act')
+                    current_question.classList.remove('act')
+                    current_question.classList.add('ok')
+                    let new_question = e.target
+                    new_question.parentElement.classList.add('act')
+                    clear_fields()
 
-                                let key = `${question_keys[i]}`
+                    if (new_question.parentElement.classList.contains('ok')) {
+                        let question_data = list_questions[`${new_question.innerHTML}`]
+                        let question_keys = Object.keys(question_data)
+                        for (let i = 0; i < question_keys.length; i++) {
 
-                                function init_field(){
-                                    if (key !== 'position' && key !== 'author_id' && key !== 'difficulty' && question_data[`${key}`]){
+                            let key = `${question_keys[i]}`
+
+                            function init_field() {
+                                if (key !== 'position' && key !== 'author_id' && key !== 'difficulty' && question_data[`${key}`]) {
                                     let key_value = question_data[`${key}`]
-                                    if (key === 'question'){key = 'question_text'}
+                                    if (key === 'question') {
+                                        key = 'question_text'
+                                    }
                                     document.getElementById(`${key}`).value = key_value
-                                }}
-                                if (key !== 'theme_id'){
-                                    init_field()
-                                }else{
-                                    get_themes(question_data[`category_id`], init_field)
                                 }
+                            }
+
+                            if (key !== 'theme_id') {
+                                init_field()
+                            } else {
+                                get_themes(question_data[`category_id`], init_field)
                             }
                         }
-                    }else{
-                    show_modal_notification('Заполните все поля, категорию и тему!')
                     }
+                } else {
+                    show_modal_notification('Заполните все поля, категорию и тему!')
                 }
             }
-        </script>
+        }
+    </script>
 
-        <script>
-            function clean_themes(themes, themes_field){
-                for (let i = 0; i < themes.length; i++) {themes[i].remove()}
-                    themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+    <script>
+        function clean_themes(themes, themes_field) {
+            for (let i = 0; i < themes.length; i++) {
+                themes[i].remove()
             }
-            function get_themes(cat, func=null) {
-                let themes_field = document.getElementById('theme_id')
-                let themes_old = document.querySelectorAll('#theme_id option')
-                if (cat !== ''){
-                    let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
-                    sendRequest('get', requestURL)
-                        .then(result => {
-                            let themes = result.themes
-                            if (result.status === 'OK') {
-                                clean_themes(themes_old, themes_field)
-                                for (let theme in themes) {
-                                    themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
-                                }
-                            if (func){func()}
-                            }else{
-                                console.error(result.error)
+            themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+        }
+
+        function get_themes(cat, func = null) {
+            let themes_field = document.getElementById('theme_id')
+            let themes_old = document.querySelectorAll('#theme_id option')
+            if (cat !== '') {
+                let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
+                sendRequest('get', requestURL)
+                    .then(result => {
+                        let themes = result.themes
+                        if (result.status === 'OK') {
+                            clean_themes(themes_old, themes_field)
+                            for (let theme in themes) {
+                                themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
                             }
-                        })
-                        .catch(err => {console.error(err)})
+                            if (func) {
+                                func()
+                            }
+                        } else {
+                            console.error(result.error)
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err)
+                    })
+
+            } else {
+                let addTheme = document.getElementById('add_theme')
+                addTheme.style.transform = 'scaleY(0)'
+                addTheme.style.height = '0'
+                clean_themes(themes_old, themes_field)
+            }
+        }
+    </script>
+
+    <script>
+        let add_tournament_btn = document.getElementById('add_tournament')
+
+        function check_tournament() {
+            if (check_fields() && Object.keys(list_questions).length === 35) {  {# Здесь нужно будет указать === 35, для проверки заполненности турнира #}
+                let request_url = '{% url 'questions_api' %}'
+                let body = {
+                    'event': 'add_tournament_week',
+                    'tournament': list_questions
+                }
+                sendRequest('post', request_url, body).then(result => {
+                    if (result.error === 'Not full tournament') {
+                        show_modal_notification('Турнир не заполнен до конца! Перестаньте баловаться с кодом!')
+                    } else {
+                        document.getElementById('add_tournament').onclick = null
+                        show_modal_notification('Готово')
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 2000)
+                    }
+                })
+            } else {
+                show_modal_notification('Для добавления турнира в базу - заполните все вопросы!')
+            }
+
+        }
+
+        function add_tournament() {
+            check_tournament()
+        }
+
+        add_tournament_btn.onclick = () => {
+            init_question()
+            add_tournament()
+        }
+    </script>
+
+    <script>
+        function add_theme(event) {
+            let cat = document.getElementById('category_id')
+            let theme = event.target.parentElement.querySelector('input')
+            if (theme.value.length > 3) {
+                let request_url = '{% url 'questions_api' %}'
+                let body = {'event': 'add_theme_to_category', 'cat': cat.value, 'theme': theme.value}
+                sendRequest('post', request_url, body).then(result => {
+                    setTimeout(() => {
+                        theme.style.backgroundColor = '#fff'
+                    }, 2000)
+                    let length = theme.value.length
+                    theme.style.backgroundColor = '#0f08'
+                    let cleaner = setInterval(() => {
+                        theme.value = theme.value.slice(0, length--)
+                        if (length < 0) {
+                            clearInterval(cleaner)
+                        }
+                    }, 10)
+                    cat.value = ''
+                    get_themes(cat.value)
+                }).catch(error => {
+                    show_modal_notification('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
+                    console.error(error)
+                })
+            }
+        }
+
+        let add_theme_btn = document.getElementById('add_theme').querySelector('.btn')
+        add_theme_btn.onclick = e => {
+            add_theme(e)
+        }
+    </script>
+
+    <script>
+        let addtheme = document.querySelector('.addtheme')
+        let addTheme = document.getElementById('add_theme')
+        let category = document.getElementById('category_id')
+        addtheme.onclick = () => {
+            if (addTheme.style.transform === 'scaleY(0)') {
+                if (category.value) {
+                    addTheme.style.transform = 'scaleY(1)'
+                    addTheme.style.height = '35px'
+                    addTheme.querySelector('input').disabled = false
 
                 } else {
-                    let addTheme = document.getElementById('add_theme')
-                    addTheme.style.transform = 'scaleY(0)'
-                    addTheme.style.height = '0'
-                    clean_themes(themes_old, themes_field)
+                    show_modal_notification('Для добавления темы выберите категорию, к которой она относится.')
                 }
+            } else {
+                addTheme.style.transform = 'scaleY(0)'
+                addTheme.style.height = '0'
+                addTheme.querySelector('input').disabled = true
             }
-        </script>
+        }
 
-        <script>
-            let add_tournament_btn = document.getElementById('add_tournament')
-
-            function check_tournament(){
-                if (check_fields() && Object.keys(list_questions).length === 35){  {# Здесь нужно будет указать === 35, для проверки заполненности турнира #}
-                    let request_url = '{% url 'questions_api' %}'
-                    let body = {
-                        'event': 'add_tournament_week',
-                        'tournament': list_questions
-                    }
-                    sendRequest('post', request_url, body).then(result=>{
-                        if (result.error === 'Not full tournament'){
-                            show_modal_notification('Турнир не заполнен до конца! Перестаньте баловаться с кодом!')
-                        }else {
-                            document.getElementById('add_tournament').onclick = null
-                            show_modal_notification('Готово')
-                            setTimeout(()=>{window.location.reload()}, 2000)
-                        }
-                    })
-                }else{
-                    show_modal_notification('Для добавления турнира в базу - заполните все вопросы!')
-                }
-
-            }
-
-            function add_tournament(){
-                check_tournament()
-            }
-
-            add_tournament_btn.onclick = ()=> {
-                init_question()
-                add_tournament()
-            }
-            {# init cuurent question class #}
-            {#document.getElementById('question_text').oninput = init_question#}
-            {#document.getElementById('correct_answer').oninput = init_question#}
-            {#document.getElementById('answer2').oninput = init_question#}
-            {#document.getElementById('answer3').oninput = init_question#}
-            {#document.getElementById('answer4').oninput = init_question#}
-
-        </script>
-
-
-
-        <script>
-            function add_theme(event){
-                let cat = document.getElementById('category_id')
-                let theme = event.target.parentElement.querySelector('input')
-                if (theme.value.length > 3){
-                    let request_url = '{% url 'questions_api' %}'
-                    let body = {'event': 'add_theme_to_category', 'cat': cat.value, 'theme': theme.value}
-                    sendRequest('post', request_url, body).then(result=>{
-                        setTimeout(() => {
-                            theme.style.backgroundColor = '#fff'
-                        }, 2000)
-                        let length = theme.value.length
-                        theme.style.backgroundColor = '#0f08'
-                        let cleaner = setInterval(() => {
-                            theme.value = theme.value.slice(0, length--)
-                            if (length < 0) {
-                                clearInterval(cleaner)
-                            }
-                        }, 10)
-                        cat.value = ''
-                        get_themes(cat.value)
-                    }).catch(error=>{
-                        show_modal_notification('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
-                        console.error(error)
-                    })
-                }
-            }
-            let add_theme_btn = document.getElementById('add_theme').querySelector('.btn')
-            add_theme_btn.onclick = e =>{add_theme(e)}
-        </script>
-
-        <script>
-            let addtheme = document.querySelector('.addtheme')
-            let addTheme = document.getElementById('add_theme')
-            let category = document.getElementById('category_id')
-            addtheme.onclick = ()=>{
-                if (addTheme.style.transform === 'scaleY(0)'){
-                     if (category.value) {
-                         addTheme.style.transform = 'scaleY(1)'
-                         addTheme.style.height = '35px'
-                         addTheme.querySelector('input').disabled = false
-
-                     }else{
-                         show_modal_notification('Для добавления темы выберите категорию, к которой она относится.')
-                     }
-                }else{
-                    addTheme.style.transform = 'scaleY(0)'
-                    addTheme.style.height = '0'
-                    addTheme.querySelector('input').disabled = true
-                }
-            }
-
-        </script>
+    </script>
 {% endif %}
-	</body>
+</body>
 </html>

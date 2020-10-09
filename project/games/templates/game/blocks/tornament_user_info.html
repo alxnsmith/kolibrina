@@ -1,59 +1,65 @@
 <style>
 
-.points_block-points small{
-    font-size: 10px;
-}
+    .points_block-points small {
+        font-size: 10px;
+    }
 
-.per-game.points_block:nth-child(1){
-    min-width: 150px;
-}
-.points_block{
-    padding: 0 5px;
-}
+    .per-game.points_block:nth-child(1) {
+        min-width: 150px;
+    }
+
+    .points_block {
+        padding: 0 5px;
+    }
 </style>
 
 <div class="user-stat">
-	<div class="user-avatar user_div">
-		<div class="user_img">{% if AvatarImage != False %}<img class="user_img" src="{{ AvatarImage }}" alt="">{% endif %}</div>
-		<div class="user-name">
-			<span>{{ request.user.lastName }}</span>
-			<span>{{ request.user.firstName }}</span>
-			<span><b>г.{{ request.user.city }}</b></span>
-		</div>
-	</div>
-	<div class="user-points user_div">
-		<span class="points-title">Баллы</span>
-		<div class="user-points_points">
-			<div class="per-game points_block">
-				<div class="points_block-title">за игру</div>
-				<div id="points_per_game" class="points_block-points"><small>Сохранено: </small><span>{% if score %}{{ score }}{% else %}00{% endif %}</span></div>
-            {% if not request.GET.status %}
-				<div id="not_saved_points_per_game" class="points_block-points"><small>Текущий: </small><span>00</span></div>
-            {% endif %}
-			</div>
-			<div class="per-game points_block">
-				<div class="points_block-title">за месяц</div>
-				<div id="points_per_month" class="points_block-points">{{ month_score }}</div>
-			</div>
-			<div class="per-game points_block">
-				<div class="points_block-title">всего</div>
-				<div id="points_in_total" class="points_block-points">00</div>
-			</div>
-		</div>
-	</div>
-	<div class="league_place user_div">
-		<span><b>Место <br>в лиге</b></span>
-		<div class="league_count">123 / 878</div>
-	</div>
-	<div class="author user_div marafon_author">
-		<span class="marafon_author-title">Автор турнира</span>
-		<span class="marafon_author-name" id="tournament_author">{% if  tournament_author  %}{{ tournament_author }}{% else %}____________________{% endif %}</span>
-	</div>
-	<div class="marafon_league">
-		<span style="color: #B658B0;">{{ league }}</span>
-	</div>
-	<div class="user-lvl user_div">
-		<span>Уровень игрока</span>
-		<div class="lvl">{{ level.level }} / {{ level.numLevel }}</div>
-	</div>
+    <div class="user-avatar user_div">
+        <div class="user_img">{% if AvatarImage != False %}
+            <img class="user_img" src="{{ AvatarImage }}" alt="">{% endif %}
+        </div>
+        <div class="user-name">
+            <span>{{ request.user.lastName }}</span>
+            <span>{{ request.user.firstName }}</span>
+            <span><b>г.{{ request.user.city }}</b></span>
+        </div>
+    </div>
+    <div class="user-points user_div">
+        <span class="points-title">Баллы</span>
+        <div class="user-points_points">
+            <div class="per-game points_block">
+                <div class="points_block-title">за игру</div>
+                <div id="points_per_game" class="points_block-points"><small>Сохранено: </small><span>{% if score %}
+                    {{ score }}{% else %}00{% endif %}</span></div>
+                {% if not request.GET.status %}
+                    <div id="not_saved_points_per_game" class="points_block-points">
+                        <small>Текущий: </small><span>00</span></div>
+                {% endif %}
+            </div>
+            <div class="per-game points_block">
+                <div class="points_block-title">за месяц</div>
+                <div id="points_per_month" class="points_block-points">{{ month_score }}</div>
+            </div>
+            <div class="per-game points_block">
+                <div class="points_block-title">всего</div>
+                <div id="points_in_total" class="points_block-points">00</div>
+            </div>
+        </div>
+    </div>
+    <div class="league_place user_div">
+        <span><b>Место <br>в лиге</b></span>
+        <div class="league_count">123 / 878</div>
+    </div>
+    <div class="author user_div marafon_author">
+        <span class="marafon_author-title">Автор турнира</span>
+        <span class="marafon_author-name" id="tournament_author">{% if  tournament_author %}
+            {{ tournament_author }}{% else %}____________________{% endif %}</span>
+    </div>
+    <div class="marafon_league">
+        <span style="color: #B658B0;">{{ league }}</span>
+    </div>
+    <div class="user-lvl user_div">
+        <span>Уровень игрока</span>
+        <div class="lvl">{{ level.level }} / {{ level.numLevel }}</div>
+    </div>
 </div>
