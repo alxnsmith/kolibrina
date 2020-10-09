@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="robots" content="index,follow">
+
+    <title>КОЛИБРИНА - Добавить вопрос | Добавить авторский турни</title>
+
+    <meta name="description" content="">
+
+    {% include 'main/headPiece.html' %}
+
+    <link rel="stylesheet" href="{% static 'css/pages/addquestion.css' %}">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+{% include "main/header.html" %}
+
+<div class="addquest_info"><p>Внимание авторам! <a href="#">Обязательно к прочтению!</a></p></div>
+<div class="container addquest_wrap">
+    <div class="addquest_author">СЕРГЕЙ ЗАДОРОЖНЫЙ, МОСКВА, spartak2903@yandex.ru</div>
+    <div class="add_in_tourn">
+        <span>Внесение вопросов турнира ЭЛТН <span class="rrd">0000*</span> Эрудит-лото/Турнир недели <br><span
+                class="rrd">(*номер присваиваеться редактором)</span></span>
+        <div class="addtour_btn">Добавить турнир в базу</div>
+    </div>
+    <div class="table_add_marafon">
+        <table class="addmarafon">
+            <tbody id="add_marafon_table">
+            <tr class="fcolt tm_row">
+                <td>Название темы</td>
+                <td>10</td>
+                <td>20</td>
+                <td>30</td>
+                <td>40</td>
+                <td>50</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    {% include 'questions/blocks/category_and_theme_block.html' %}
+    <div class="addquest_btns addtheme_btn add_theme_to_table_button">
+        <div class="addquest_btn" id="add_theme_to_table_button">Добавить тему на турнир</div>
+    </div>
+    <div id="add_question">
+        <textarea class="addquest_question" name="" id=""
+                  placeholder="Текст вопроса (не более 350 символов)"></textarea>
+        <div class="reply_var">
+            <span>Варианты ответов:</span>
+            <input type="text" placeholder="Правильный ответ" class="correct_ans">
+            <input type="text" placeholder="Вариант">
+            <input type="text" placeholder="Вариант">
+            <input type="text" placeholder="Вариант">
+        </div>
+    </div>
+</div>
+
+{% include "main/footer.html" %}
+
+
+<script>
+    document.querySelector('.title > h2 > strong').innerText = "Добавить вопрос | Добавить авторский турнир"
+    document.querySelector('#href_questions > span').classList.add('select')
+</script>
+<script src="{% static 'js/game/row_constructor_for_adding_marafon_table.js' %}"></script>
+<script>
+    let table_constructor = new row_constructor_for_marafon_table()
+    document.getElementById('add_theme_to_table_button').onclick = () => {
+        let theme_field = document.getElementById('theme_id')
+        let theme = {'id': theme_field.value, 'text': theme_field.options[theme_field.selectedIndex].text}
+        if (table_constructor.get_table_row_count() === 3) {
+            add_theme_to_table_button.innerText = 'OK'
+        }
+        if (table_constructor.get_table_row_count() === 4) {
+            let add_theme_to_table_button = document.getElementById('add_theme_to_table_button')
+            if (add_theme_to_table_button.innerText === 'OK') {
+                alert('OK')
+                let theme_and_category = document.querySelector('.addquest_theme-category')
+                theme_and_category.style.opacity = '0'
+                theme_and_category.style.top = '-10px'
+                add_theme_to_table_button.style.opacity = '0'
+                add_theme_to_table_button.style.top = '-10px'
+                setTimeout(() => {
+                    document.querySelector('.add_theme_to_table_button').style.display = 'none'
+                    document.querySelector('.addquest_theme-category').style.display = 'none'
+                    document.getElementById('add_question').style.display = 'block'
+                    setTimeout(() => {
+                        document.getElementById('add_question').style.opacity = '1'
+                    }, 100)
+                }, 600)
+            }
+        } else {
+            let errors = table_constructor.add_row(theme.id, theme.text)
+            if (errors) {
+                show_modal_notification(errors.error)
+            }
+        }
+    }
+
+
+    {# DEVELOP BLOCK #}
+    {#let i = 0#}
+    {#let interval = setInterval(() => {#}
+    {#    table_constructor.add_row(1, `theme.text${i}`)#}
+    {#    i++#}
+    {#    console.log(i)#}
+    {#    if (i === 4) {clearInterval(interval)}}, 1000)#}
+    {#document.querySelector('.add_theme_to_table_button').style.display = 'none'#}
+    {#document.querySelector('.addquest_theme-category').style.display = 'none'#}
+    {#document.getElementById('add_question').style.display = 'block'#}
+    {#document.getElementById('add_question').style.opacity = '1'#}
+    {# DEVELOP BLOCK #}
+</script>
+
+</body>
+</html>

@@ -78,10 +78,9 @@ class QuestionAPI(View):
 @login_required(login_url='login')
 def add_tournament_week(request):
     template = 'questions/add-tournament.html'
-    result_check_fill_profile = check_fill_profile(request, template)
-    if result_check_fill_profile['status'] == 'error':
-        return result_check_fill_profile['response']
-    data = {'categories': Category.objects.all()}
+    data = {'errors': []}
+    if errors := check_fill_profile(request):
+        data['errors'] += errors
     return render(request, template, data)
 
 
@@ -89,8 +88,7 @@ class AddQuestion(View):
     template_name = 'questions/add-question.html'
 
     def get(self, request):
-        data = {'form': forms.AddQuestionForm(initial={'author': request.user.id}),
-                'categories': Category.objects.all(), 'errors': []}
+        data = {'form': forms.AddQuestionForm(initial={'author': request.user.id}), 'errors': []}
         if errors := check_fill_profile(request):
             data['errors'] += errors
         return render(request, self.template_name, data)
@@ -102,7 +100,7 @@ class AddQuestion(View):
 
 
 class AddThemeBlocksMarafonWeek(View):
-    template_name = 'questions/add-theme-blocks.html'
+    template_name = 'questions/add-themes-blocks.html'
 
     def get(self, request):
         data = {}
