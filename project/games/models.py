@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 class TournamentScoreUserLink(models.Model):
     user_instance = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Игрок')
     score_instance = models.ForeignKey(ScoreHistoryElement, on_delete=models.CASCADE, verbose_name='Счет')
-    tournament_instance = models.ForeignKey(Tournament, on_delete=models.DO_NOTHING, verbose_name='Турнир')
+    tournament_instance = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, verbose_name='Турнир')
 
     class Meta:
         verbose_name = _('Связь между турниром, игроком и счетом')

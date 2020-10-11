@@ -48,7 +48,7 @@ class QuestionAPI(View):
                 return JsonResponse({'status': 'OK', 'result': result})
             else:
                 return self._status_error(result)
-        if event == 'add_theme_to_category':
+        elif event == 'add_theme_to_category':
             if result := self._exists_in(('cat', 'theme'), post):
                 return result
             result = services.add_theme_to_category(post)
@@ -56,11 +56,27 @@ class QuestionAPI(View):
                 return JsonResponse({'status': 'OK', 'result': result})
             else:
                 return self._status_error(result)
-        if event == 'add_tournament_week':
+        elif event == 'add_tournament_week':
             if result := self._exists_in(('tournament',), post):
                 return result
             result = services.add_tournament_week(post)
             return JsonResponse(result)
+        elif event == 'add_marafon_week':
+            # if result := self._exists_in(('tournament',), post):
+            #     return result
+            # result = services.add_tournament_week(post)
+            # return JsonResponse(result)
+            question_list = post['question_list']
+            for i in question_list:
+                if str(i).startswith('1'):
+                    print(question_list[i])
+                if str(i).startswith('2'):
+                    print(question_list[i])
+                if str(i).startswith('3'):
+                    print(question_list[i])
+                if str(i).startswith('4'):
+                    print(question_list[i])
+            return JsonResponse({'status': 'OK'})
         else:
             return self._status_error('Error! Unknown event.')
 

@@ -37,7 +37,7 @@
     <div class="add_in_tourn">
         <span>Внесение вопросов турнира ЭЛТН <span class="rrd">0000*</span> Эрудит-лото/Турнир недели <br><span
                 class="rrd">(*номер присваиваеться редактором)</span></span>
-        <div class="addtour_btn">Добавить турнир в базу</div>
+        <div class="addtour_btn" id="add_marafon">Добавить турнир в базу</div>
     </div>
     <div class="table_add_marafon">
         <table class="addmarafon">
@@ -58,15 +58,7 @@
         <div class="addquest_btn" id="add_theme_to_table_button">Добавить тему на турнир</div>
     </div>
     <div id="add_question">
-        <textarea class="addquest_question" name="" id=""
-                  placeholder="Текст вопроса (не более 350 символов)"></textarea>
-        <div class="reply_var">
-            <span>Варианты ответов:</span>
-            <input type="text" placeholder="Правильный ответ" class="correct_ans">
-            <input type="text" placeholder="Вариант">
-            <input type="text" placeholder="Вариант">
-            <input type="text" placeholder="Вариант">
-        </div>
+        {% include 'game/blocks/questionText_answers.html' %}
     </div>
 </div>
 
@@ -78,54 +70,140 @@
     document.querySelector('#href_questions > span').classList.add('select')
 </script>
 <script src="{% static 'js/game/row_constructor_for_adding_marafon_table.js' %}"></script>
+<script src="{% static 'js/game/question_list_constructor_on_classes.js' %}"></script>
+
+</body>
+</html>
+
 <script>
     let table_constructor = new row_constructor_for_marafon_table()
+    let filling_status = 'themes'
+
+    function read_question() {
+        let current_question = document.querySelector('.act>span')
+        let author_id = parseInt('{{ request.user.id }}')
+        let category_id = current_question.parentElement.dataset['categoryId']
+        let theme_id = current_question.parentElement.dataset['themeId']
+        let difficulty = current_question.parentElement.dataset['difficulty']
+        let question_text = document.getElementById('question_text').value
+        let correct_answer = document.getElementById('correct_answer').value
+        let answer2 = document.getElementById('answer2').value
+        let answer3 = document.getElementById('answer3').value
+        let answer4 = document.getElementById('answer4').value
+        let position = current_question.innerHTML
+        let pk = current_question.parentElement.dataset['rowNum'] + position
+        if (pk && author_id && category_id && theme_id && difficulty && question_text && correct_answer && answer2 && answer3 && answer4 && position) {
+            return {
+                'pk': pk, 'author_id': author_id, 'category_id': category_id,
+                'theme_id': theme_id, 'difficulty': difficulty, 'question_text': question_text,
+                'correct_answer': correct_answer, 'answer2': answer2, 'answer3': answer3,
+                'answer4': answer4, 'position': position
+            };
+        } else {
+            show_modal_notification('Для продолжения заполните все поля.')
+            return false
+        }
+    }
+
     document.getElementById('add_theme_to_table_button').onclick = () => {
         let theme_field = document.getElementById('theme_id')
+        let category_field = document.getElementById('category_id')
         let theme = {'id': theme_field.value, 'text': theme_field.options[theme_field.selectedIndex].text}
+        let category = {'id': category_field.value}
+        let add_theme_to_table_button = document.getElementById('add_theme_to_table_button')
+
+
+        function switch_to_filling_with_questions() {
+            filling_status = 'questions'
+            let theme_and_category = document.querySelector('.addquest_theme-category')
+            theme_and_category.style.opacity = '0'
+            theme_and_category.style.top = '-10px'
+            add_theme_to_table_button.style.opacity = '0'
+            add_theme_to_table_button.style.top = '-10px'
+            setTimeout(() => {
+                document.querySelector('.add_theme_to_table_button').style.display = 'none'
+                document.querySelector('.addquest_theme-category').style.display = 'none'
+                document.getElementById('add_question').style.display = 'block'
+                setTimeout(() => {
+                    document.getElementById('add_question').style.opacity = '1'
+                }, 100)
+            }, 600)
+        }
+
         if (table_constructor.get_table_row_count() === 3) {
             add_theme_to_table_button.innerText = 'OK'
         }
         if (table_constructor.get_table_row_count() === 4) {
-            let add_theme_to_table_button = document.getElementById('add_theme_to_table_button')
             if (add_theme_to_table_button.innerText === 'OK') {
-                alert('OK')
-                let theme_and_category = document.querySelector('.addquest_theme-category')
-                theme_and_category.style.opacity = '0'
-                theme_and_category.style.top = '-10px'
-                add_theme_to_table_button.style.opacity = '0'
-                add_theme_to_table_button.style.top = '-10px'
-                setTimeout(() => {
-                    document.querySelector('.add_theme_to_table_button').style.display = 'none'
-                    document.querySelector('.addquest_theme-category').style.display = 'none'
-                    document.getElementById('add_question').style.display = 'block'
-                    setTimeout(() => {
-                        document.getElementById('add_question').style.opacity = '1'
-                    }, 100)
-                }, 600)
+                switch_to_filling_with_questions()
+
+                let questions = document.querySelectorAll('.circle_btn')
+                questions[0].classList.add('act')
+
+                list_questions.start_event_listener_for_circle_buttons(read_question)
+
+                {% comment %}let result = confirm('Проверьте выбранные темы, при заполнении вопросов изменить темы нельзя. Продолжить?')
+                if (result) {
+                    switch_to_filling_with_questions()
+                }{% endcomment %}
             }
         } else {
-            let errors = table_constructor.add_row(theme.id, theme.text)
+            let errors = table_constructor.add_row(theme.id, theme.text, category.id)
             if (errors) {
                 show_modal_notification(errors.error)
             }
         }
     }
 
+    function send_marafon() {
+        let request_url = '{% url "questions_api" %}'
+        let data = {
+            'event': 'add_marafon_week',
+            'question_list': list_questions.list
+        }
+        sendRequest('post', request_url, data).then(e=>{
+            console.log(e)
+        })
+    }
 
-    {# DEVELOP BLOCK #}
-    {#let i = 0#}
-    {#let interval = setInterval(() => {#}
-    {#    table_constructor.add_row(1, `theme.text${i}`)#}
-    {#    i++#}
-    {#    console.log(i)#}
-    {#    if (i === 4) {clearInterval(interval)}}, 1000)#}
-    {#document.querySelector('.add_theme_to_table_button').style.display = 'none'#}
-    {#document.querySelector('.addquest_theme-category').style.display = 'none'#}
-    {#document.getElementById('add_question').style.display = 'block'#}
-    {#document.getElementById('add_question').style.opacity = '1'#}
-    {# DEVELOP BLOCK #}
+    const user_id = parseInt({{ request.user.id }})
+    const quantity_questions = 32
+
+    let list_questions = new QuestionList(quantity_questions)
+    {% comment %}list_questions.start_event_listener_for_circle_buttons((e)=>{
+        read_question()
+    }){% endcomment %}
+
+
+    document.getElementById('add_marafon').onclick = () => {
+        if (filling_status === 'themes') {
+            show_modal_notification('Чтобы сохранить турнир- выберите четыре темы и заполните все вопросы.')
+        } else if (filling_status === 'questions') {
+            let question = read_question()
+            console.log(question)
+            console.log(question !== false)
+            if (question !== false || list_questions.quantity_questions < list_questions.enough_questions) {
+                list_questions.write_question(question)
+                if (list_questions.check_enough_questions()) {
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                    {#++++++++++++++++++++++++++++++++++=#}
+                } else {
+                    show_modal_notification('Для сохранения турнира заполните все вопросы.')
+                }
+            } else {
+                show_modal_notification('Для сохранения турнира заполните все поля')
+            }
+        }
+    }
 </script>
-
-</body>
-</html>

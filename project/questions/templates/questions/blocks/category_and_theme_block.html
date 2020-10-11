@@ -16,6 +16,45 @@
 </div>
 
 <script>
+    function load_themes(cat, func = null) {
+        let themes_field = document.getElementById('theme_id')
+        let themes_old = document.querySelectorAll('#theme_id option')
+
+        function clean_themes(themes, themes_field) {
+            for (let i = 0; i < themes.length; i++) {
+                themes[i].remove()
+            }
+            themes_field.innerHTML += '<option value="">Тема вопроса</option>'
+        }
+
+        if (cat !== '') {
+            let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
+            sendRequest('get', requestURL)
+                .then(result => {
+                    let themes = result.themes
+                    if (result.status === 'OK') {
+                        clean_themes(themes_old, themes_field)
+                        for (let theme in themes) {
+                            themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
+                        }
+                    } else {
+                        console.error(result.error)
+                    }
+                }).then(() => {
+                    if (func) {
+                        func()
+                    }
+                }).catch(err => {
+                    console.error(err)
+                })
+        } else {
+            let addTheme = document.getElementById('add_theme')
+            addTheme.style.transform = 'scaleY(0)'
+            addTheme.style.height = '0'
+            clean_themes(themes_old, themes_field)
+        }
+    }
+
     function add_theme_control() {
         let open_add_theme_field = document.querySelector('.addtheme')
         let addTheme = document.getElementById('add_theme')
@@ -33,45 +72,6 @@
                     category_field.innerHTML += option
                 }
             })
-        }
-
-        function clean_themes(themes, themes_field) {
-            for (let i = 0; i < themes.length; i++) {
-                themes[i].remove()
-            }
-            themes_field.innerHTML += '<option value="">Тема вопроса</option>'
-        }
-
-        function get_themes(cat, func = null) {
-            let themes_field = document.getElementById('theme_id')
-            let themes_old = document.querySelectorAll('#theme_id option')
-            if (cat !== '') {
-                let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
-                sendRequest('get', requestURL)
-                    .then(result => {
-                        let themes = result.themes
-                        if (result.status === 'OK') {
-                            clean_themes(themes_old, themes_field)
-                            for (let theme in themes) {
-                                themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
-                            }
-                            if (func) {
-                                func()
-                            }
-                        } else {
-                            console.error(result.error)
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err)
-                    })
-
-            } else {
-                let addTheme = document.getElementById('add_theme')
-                addTheme.style.transform = 'scaleY(0)'
-                addTheme.style.height = '0'
-                clean_themes(themes_old, themes_field)
-            }
         }
 
         function add_theme(event) {
@@ -93,7 +93,7 @@
                         }
                     }, 10)
                     category.value = ''
-                    get_themes(category.value)
+                    load_themes(category.value)
                 }).catch(error => {
                     show_modal_notification('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
                     console.error(error)
@@ -123,7 +123,7 @@
         }
         open_add_theme_field.onclick = openAddThemeField
         category_field.onchange = e => {
-            get_themes(e.target.value)
+            load_themes(e.target.value)
         }
         get_categories(category_field)
     }

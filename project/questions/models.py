@@ -11,6 +11,7 @@ class Tournament(models.Model):
         NONE = 'NONE', _('Не указано')
         TRAIN_ER_LOTTO = 'TEL', _('Тренировка эрудит-лото')
         TOURNAMENT_WEEK_ER_LOTTO = 'TWEL', _('Турнир недели эрудит-лото')
+        MARAFON_WEEK_ER_LOTTO = 'MWEL', _('Марафон недели эрудит-лото')
     destination = models.CharField(verbose_name='Назначение', max_length=128, choices=Destinations.choices, default=Destinations.NONE)
     author = models.ForeignKey(User, default=None, null=True, on_delete=models.SET_NULL, verbose_name="Автор турнира")
     timer = models.IntegerField(verbose_name='Время таймера', default=30)

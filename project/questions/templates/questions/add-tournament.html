@@ -36,7 +36,6 @@
 
     <div class="container addquest_wrap">
         {% include "questions/blocks/userinfo.html" %}
-        <input type="hidden" id="user_id" value="{{ request.user.id }}">
         <div class="add_in_tourn">
             <span>Внесение вопросов турнира ЭЛТН <span class="rrd">0000*</span> Эрудит-лото/Турнир недели <br><span
                     class="rrd">(*номер присваиваеться редактором)</span></span>
@@ -292,15 +291,7 @@
 
         {% include 'questions/blocks/category_and_theme_block.html' %}
 
-        <textarea class="addquest_question" name="" id="question_text"
-                  placeholder="Текст вопроса (не более 350 символов)"></textarea>
-        <div class="reply_var">
-            <span>Варианты ответов:</span>
-            <input type="text" placeholder="Правильный ответ" class="correct_ans" id="correct_answer">
-            <input type="text" placeholder="Вариант" id="answer2">
-            <input type="text" placeholder="Вариант" id="answer3">
-            <input type="text" placeholder="Вариант" id="answer4">
-        </div>
+        {% include 'game/blocks/questionText_answers.html' %}
         <div class="addquest_btns">
             <div class="addtour_btn" id="add_tournament">Добавить турнир в базу</div>
         </div>
@@ -320,7 +311,7 @@
 
     <script src="{% static 'js/fetch.js' %}"></script>
     <script>
-        {# init quetion difficults in table an write to attribute "difficulty" in circle_buttons span #}
+        {# init quetion difficults in table and write to attribute "difficulty" in circle_buttons span #}
         let difficults = document.querySelectorAll('.fc')
         for (let i = 0; i < difficults.length; i++) {
             let row = difficults[i].parentElement
@@ -346,11 +337,10 @@
                 this.answer3 = a3
                 this.answer4 = a4
                 this.position = position
-
             }
         }
 
-        let user_id = document.getElementById('user_id').value
+        let user_id = parseInt({{ request.user.id }})
         let list_questions = {}
 
         function init_question() {
@@ -363,7 +353,8 @@
             let a2 = document.getElementById('answer2').value
             let a3 = document.getElementById('answer3').value
             let a4 = document.getElementById('answer4').value
-            list_questions[`${current_question.innerHTML}`] = new question(
+            let position = current_question.innerHTML
+            list_questions[`${position}`] = new question(
                 user_id,
                 category_id,
                 theme_id,
@@ -373,7 +364,7 @@
                 a2,
                 a3,
                 a4,
-                current_question.innerHTML
+                position
             )
         }
 
@@ -387,7 +378,7 @@
             document.getElementById('answer2').value = ''
             document.getElementById('answer3').value = ''
             document.getElementById('answer4').value = ''
-            get_themes(category.value)
+            load_themes(document.getElementById('category_id').value)
         }
 
         function check_fields() {
@@ -433,7 +424,7 @@
                             if (key !== 'theme_id') {
                                 init_field()
                             } else {
-                                get_themes(question_data[`category_id`], init_field)
+                                load_themes(question_data[`category_id`], init_field)
                             }
                         }
                     }
@@ -450,38 +441,6 @@
                 themes[i].remove()
             }
             themes_field.innerHTML += '<option value="">Тема вопроса</option>'
-        }
-
-        function get_themes(cat, func = null) {
-            let themes_field = document.getElementById('theme_id')
-            let themes_old = document.querySelectorAll('#theme_id option')
-            if (cat !== '') {
-                let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
-                sendRequest('get', requestURL)
-                    .then(result => {
-                        let themes = result.themes
-                        if (result.status === 'OK') {
-                            clean_themes(themes_old, themes_field)
-                            for (let theme in themes) {
-                                themes_field.innerHTML += `<option value="${themes[theme][1]}">${themes[theme][0]}</option>`
-                            }
-                            if (func) {
-                                func()
-                            }
-                        } else {
-                            console.error(result.error)
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err)
-                    })
-
-            } else {
-                let addTheme = document.getElementById('add_theme')
-                addTheme.style.transform = 'scaleY(0)'
-                addTheme.style.height = '0'
-                clean_themes(themes_old, themes_field)
-            }
         }
     </script>
 
@@ -509,7 +468,6 @@
             } else {
                 show_modal_notification('Для добавления турнира в базу - заполните все вопросы!')
             }
-
         }
 
         function add_tournament() {
@@ -520,63 +478,6 @@
             init_question()
             add_tournament()
         }
-    </script>
-
-    <script>
-        function add_theme(event) {
-            let cat = document.getElementById('category_id')
-            let theme = event.target.parentElement.querySelector('input')
-            if (theme.value.length > 3) {
-                let request_url = '{% url 'questions_api' %}'
-                let body = {'event': 'add_theme_to_category', 'cat': cat.value, 'theme': theme.value}
-                sendRequest('post', request_url, body).then(result => {
-                    setTimeout(() => {
-                        theme.style.backgroundColor = '#fff'
-                    }, 2000)
-                    let length = theme.value.length
-                    theme.style.backgroundColor = '#0f08'
-                    let cleaner = setInterval(() => {
-                        theme.value = theme.value.slice(0, length--)
-                        if (length < 0) {
-                            clearInterval(cleaner)
-                        }
-                    }, 10)
-                    cat.value = ''
-                    get_themes(cat.value)
-                }).catch(error => {
-                    show_modal_notification('Что-то пошло не так! Проверьте интернет соединение и попробуйте еще раз.')
-                    console.error(error)
-                })
-            }
-        }
-
-        let add_theme_btn = document.getElementById('add_theme').querySelector('.btn')
-        add_theme_btn.onclick = e => {
-            add_theme(e)
-        }
-    </script>
-
-    <script>
-        let addtheme = document.querySelector('.addtheme')
-        let addTheme = document.getElementById('add_theme')
-        let category = document.getElementById('category_id')
-        addtheme.onclick = () => {
-            if (addTheme.style.transform === 'scaleY(0)') {
-                if (category.value) {
-                    addTheme.style.transform = 'scaleY(1)'
-                    addTheme.style.height = '35px'
-                    addTheme.querySelector('input').disabled = false
-
-                } else {
-                    show_modal_notification('Для добавления темы выберите категорию, к которой она относится.')
-                }
-            } else {
-                addTheme.style.transform = 'scaleY(0)'
-                addTheme.style.height = '0'
-                addTheme.querySelector('input').disabled = true
-            }
-        }
-
     </script>
 {% endif %}
 </body>
