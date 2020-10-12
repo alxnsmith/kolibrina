@@ -62,21 +62,11 @@ class QuestionAPI(View):
             result = services.add_tournament_week(post)
             return JsonResponse(result)
         elif event == 'add_marafon_week':
-            # if result := self._exists_in(('tournament',), post):
-            #     return result
-            # result = services.add_tournament_week(post)
-            # return JsonResponse(result)
-            question_list = post['question_list']
-            for i in question_list:
-                if str(i).startswith('1'):
-                    print(question_list[i])
-                if str(i).startswith('2'):
-                    print(question_list[i])
-                if str(i).startswith('3'):
-                    print(question_list[i])
-                if str(i).startswith('4'):
-                    print(question_list[i])
-            return JsonResponse({'status': 'OK'})
+            if result := self._exists_in(('question_list',), post):
+                return result
+            post['purpose'] = 'MWEL'
+            result = services.add_marafon(post, request.user)
+            return JsonResponse(result)
         else:
             return self._status_error('Error! Unknown event.')
 

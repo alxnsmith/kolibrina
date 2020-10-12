@@ -90,14 +90,14 @@
         let answer2 = document.getElementById('answer2').value
         let answer3 = document.getElementById('answer3').value
         let answer4 = document.getElementById('answer4').value
-        let position = current_question.innerHTML
-        let pk = current_question.parentElement.dataset['rowNum'] + position
-        if (pk && author_id && category_id && theme_id && difficulty && question_text && correct_answer && answer2 && answer3 && answer4 && position) {
+        let pos = current_question.innerHTML
+        let pk = current_question.parentElement.dataset['rowNum'] + pos
+        if (pk && author_id && category_id && theme_id && difficulty && question_text && correct_answer && answer2 && answer3 && answer4 && pos !== undefined) {
             return {
                 'pk': pk, 'author_id': author_id, 'category_id': category_id,
                 'theme_id': theme_id, 'difficulty': difficulty, 'question_text': question_text,
                 'correct_answer': correct_answer, 'answer2': answer2, 'answer3': answer3,
-                'answer4': answer4, 'position': position
+                'answer4': answer4, 'pos': pos
             };
         } else {
             show_modal_notification('Для продолжения заполните все поля.')
@@ -180,24 +180,13 @@
             show_modal_notification('Чтобы сохранить турнир- выберите четыре темы и заполните все вопросы.')
         } else if (filling_status === 'questions') {
             let question = read_question()
-            console.log(question)
-            console.log(question !== false)
+            console.log(list_questions.check_enough_questions())
             if (question !== false || list_questions.quantity_questions < list_questions.enough_questions) {
                 list_questions.write_question(question)
                 if (list_questions.check_enough_questions()) {
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
-                    {#++++++++++++++++++++++++++++++++++=#}
+                    send_marafon()
+                    show_modal_notification('Готово!')
+                    setTimeout(()=>{window.location.reload()},1000)
                 } else {
                     show_modal_notification('Для сохранения турнира заполните все вопросы.')
                 }

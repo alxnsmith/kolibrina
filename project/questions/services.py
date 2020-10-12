@@ -13,11 +13,9 @@ def add_tournament_week(post):
     if len(question_list) != 35:
         return {'status': 'error', 'error': 'Not full tournament'}
     author_id = post['tournament']['01']['author_id']
-    author = models.User.objects.get(id=author_id)
-    _create_tournament(author_id, models.Tournament.Destinations.TOURNAMENT_WEEK_ER_LOTTO)
-    tournament = author.tournament_set.all().order_by('create_date').last()
+    tournament = _create_tournament(author_id, models.Tournament.Purposes.TOURNAMENT_WEEK_ER_LOTTO)
+    question_list_models = []
     for q in question_list:
-        print(question_list[q]['position'])
         pos = question_list[q]['position']
         if pos.startswith('0'):
             question_list[q]['position'] = pos[1:]
@@ -25,7 +23,9 @@ def add_tournament_week(post):
             question_list[q]['position'] = f'd{pos[1:]}'
         elif pos.startswith('замена'):
             question_list[q]['position'] = 'zamena'
-        _add_question_to_db(**question_list[q], tournament=tournament)
+        question_list_models.append(_add_question_to_db(**question_list[q]))
+    for i in question_list_models:
+        tournament.questions.add(i)
     return {'status': 'OK'}
 
 
@@ -38,23 +38,59 @@ def add_question(request):
 
 
 def _create_tournament(author_id, destination):
-    models.Tournament.objects.create(author_id=author_id, destination=destination)
+    return models.Tournament.objects.create(author_id=author_id, destination=destination)
 
 
 def _add_question_to_db(author_id, category_id, theme_id, difficulty,
-                        question, correct_answer, answer2, answer3, answer4, position, tournament):
-    models.Question.objects.create(author_id=author_id,
-                                   category_id=category_id,
-                                   theme_id=theme_id,
-                                   difficulty=difficulty,
-                                   question=question.strip(),
-                                   correct_answer=correct_answer.strip(),
-                                   answer2=answer2.strip(),
-                                   answer3=answer3.strip(),
-                                   answer4=answer4.strip(),
-                                   pos=position,
-                                   for_tournament=tournament)
+                        question, correct_answer, answer2, answer3, answer4, pos):
+    return models.Question.objects.create(author_id=author_id,
+                                          category_id=category_id,
+                                          theme_id=theme_id,
+                                          difficulty=difficulty,
+                                          question=question.strip(),
+                                          correct_answer=correct_answer.strip(),
+                                          answer2=answer2.strip(),
+                                          answer3=answer3.strip(),
+                                          answer4=answer4.strip(),
+                                          pos=pos, )
 
 
 def get_questions_from_tournament(tournament):
-    return tournament.question_set.all()
+    return tournament.questions.all()
+
+
+def add_marafon_theme_block(author: object, questions: list):
+    themes_check = set()
+    for i in questions:
+        themes_check.add(i.theme_id)
+    if len(themes_check) == 1:
+        theme_id = questions[0].theme_id
+    else:
+        return False
+
+    block = models.MarafonThemeBlock.objects.create(author=author, theme_id=theme_id)
+
+    for i in questions:
+        block.questions.add(i)
+    return block
+
+
+def add_marafon(post, author: object):
+    question_list = post['question_list']
+    question_blocks = {1: [], 2: [], 3: [], 4: []}
+    for i in question_list:
+        question_model = _add_question_to_db(**question_list[i])
+        if str(i).startswith('1'):
+            question_blocks[1].append(question_model)
+        if str(i).startswith('2'):
+            question_blocks[2].append(question_model)
+        if str(i).startswith('3'):
+            question_blocks[3].append(question_model)
+        if str(i).startswith('4'):
+            question_blocks[4].append(question_model)
+    for i in question_blocks:
+        question_blocks[i] = add_marafon_theme_block(author, question_blocks[i])
+    marafon_instance = models.Marafon.objects.create(purpose=post['purpose'], author=author)
+    for i in question_blocks:
+        marafon_instance.question_blocks.add(question_blocks[i].id)
+    return {'status': 'OK'}

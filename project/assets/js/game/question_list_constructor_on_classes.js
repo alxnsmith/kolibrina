@@ -1,7 +1,7 @@
 class Question {
-    constructor(author_id, category_id, theme_id, difficulty, question_text, correct_answer, answer2, answer3, answer4, position) {
+    constructor(author_id, category_id, theme_id, difficulty, question_text, correct_answer, answer2, answer3, answer4, pos) {
         this.author_id = author_id
-        this.position = position
+        this.pos = pos
         this.category_id = category_id
         this.theme_id = theme_id
         this.difficulty = difficulty
@@ -22,8 +22,8 @@ class QuestionList {
     }
 
     write_question(args) {
-        if (args.pk && args.author_id && args.category_id && args.theme_id && args.difficulty && args.question_text && args.correct_answer && args.answer2 && args.answer3 && args.answer4 && args.position) {
-            this._list[args.pk] = new Question(args.author_id, args.category_id, args.theme_id, args.difficulty, args.question_text, args.correct_answer, args.answer2, args.answer3, args.answer4, args.position)
+        if (args.pk && args.author_id && args.category_id && args.theme_id && args.difficulty && args.question_text && args.correct_answer && args.answer2 && args.answer3 && args.answer4 && args.pos) {
+            this._list[args.pk] = new Question(args.author_id, args.category_id, args.theme_id, args.difficulty, args.question_text, args.correct_answer, args.answer2, args.answer3, args.answer4, args.pos)
             return true
         } else {
             return false
@@ -100,6 +100,6 @@ class QuestionList {
         return this._quantity_questions
     }
     check_enough_questions() {
-        return this._list.length === this._quantity_questions
+        return Object.keys(this._list).length === this._quantity_questions
     }
 }

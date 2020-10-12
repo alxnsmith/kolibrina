@@ -196,7 +196,7 @@ class TournamentWeek(WebsocketConsumer):
 def _get_tournament_instance(tournament_shortname):
     date_range = (timezone.now() - timezone.timedelta(days=7), timezone.now())  # last 7 days
     active_tournaments_list = Tournament.objects.filter(
-        is_active=True, destination=tournament_shortname,
+        is_active=True, purposes=tournament_shortname,
         date__range=date_range)
     tournament_model = active_tournaments_list.order_by('date')[0]
     return tournament_model
