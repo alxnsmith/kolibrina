@@ -96,8 +96,8 @@ class Tournament(models.Model):
         TRAIN_ER_LOTTO = 'TEL', _('Тренировка эрудит-лото')
         TOURNAMENT_WEEK_ER_LOTTO = 'TWEL', _('Турнир недели эрудит-лото')
 
-    purposes = models.CharField(verbose_name='Назначение', max_length=128, choices=Purposes.choices,
-                                default=Purposes.NONE)
+    purpose = models.CharField(verbose_name='Назначение', max_length=128, choices=Purposes.choices,
+                               default=Purposes.NONE)
     author = models.ForeignKey(User, default=None, null=True, on_delete=models.SET_NULL,
                                verbose_name="Автор турнира")
     timer = models.IntegerField(verbose_name='Время таймера', default=30)
@@ -139,6 +139,7 @@ class MarafonThemeBlock(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True)
     questions = models.ManyToManyField(Question)
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Theme: {self.theme}; Author: {self.author};'
@@ -159,6 +160,7 @@ class Marafon(models.Model):
                                default=Purposes.NONE)
     author = models.ForeignKey(User, default=None, null=True, on_delete=models.SET_NULL,
                                verbose_name="Автор марафона")
+    official = models.BooleanField(default=False)
     question_blocks = models.ManyToManyField(MarafonThemeBlock)
     timer = models.IntegerField(verbose_name='Время таймера', default=30)
     date = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)

@@ -16,13 +16,13 @@ def add_tournament_week(post):
     tournament = _create_tournament(author_id, models.Tournament.Purposes.TOURNAMENT_WEEK_ER_LOTTO)
     question_list_models = []
     for q in question_list:
-        pos = question_list[q]['position']
+        pos = question_list[q]['pos']
         if pos.startswith('0'):
-            question_list[q]['position'] = pos[1:]
+            question_list[q]['pos'] = pos[1:]
         elif pos.startswith('д'):
-            question_list[q]['position'] = f'd{pos[1:]}'
+            question_list[q]['pos'] = f'd{pos[1:]}'
         elif pos.startswith('замена'):
-            question_list[q]['position'] = 'zamena'
+            question_list[q]['pos'] = 'zamena'
         question_list_models.append(_add_question_to_db(**question_list[q]))
     for i in question_list_models:
         tournament.questions.add(i)
@@ -37,8 +37,8 @@ def add_question(request):
     models.Question.objects.create(**items)
 
 
-def _create_tournament(author_id, destination):
-    return models.Tournament.objects.create(author_id=author_id, destination=destination)
+def _create_tournament(author_id, purpose):
+    return models.Tournament.objects.create(author_id=author_id, purpose=purpose)
 
 
 def _add_question_to_db(author_id, category_id, theme_id, difficulty,

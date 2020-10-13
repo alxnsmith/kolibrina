@@ -54,8 +54,7 @@
         'ws://' + window.location.host + '/ws/online/'
     );
     onlineSocket.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        document.querySelector('#online span').textContent = data
+        document.querySelector('#online span').textContent = JSON.parse(e.data)
     }
     onlineSocket.onclose = function (e) {
         console.error('Online socket closed unexpectedly.', e);
