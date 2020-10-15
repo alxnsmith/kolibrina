@@ -30,7 +30,6 @@ ALLOWED_HOSTS = ['kolibrina.noproblempc32.ru', '127.0.0.1', '0.0.0.0', '192.168.
 
 INSTALLED_APPS = [
     'channels',
-    'django_extensions',
 
     'django.contrib.admin',
     'django.contrib.auth',

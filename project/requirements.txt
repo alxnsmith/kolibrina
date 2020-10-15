@@ -6,6 +6,3 @@ Pillow==8.0.0
 yandex_checkout==1.6.4
 
 asgiref~=3.3.0
-
-#dev https ~ python manage.py runserver_plus --cert-file cert.crt 0.0.0.0:8080
-django-extensions==3.0.9
