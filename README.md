@@ -1,5 +1,6 @@
 # kolibrinaMain
 <h1>To start project:</h1>
+(used python3.9)
 <ul>
   <li>Install&Run docker + redis docker</li>
   <li>docker run -p 6379:6379 redis</li> #run redis
