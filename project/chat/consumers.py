@@ -25,13 +25,13 @@ class ChatConsumer(WebsocketConsumer):
             self.channel_name
         )
         self.accept()
-
-        for mes in json.loads(self.redis_instance.get(f'{self.room_group_name}_messages').decode()):
-            message = {'type': 'message',
-                       'message': mes['message'],
-                       'username': mes['username'],
-                       'time': mes['time']}
-            self.send(json.dumps(message))
+        if history := self.redis_instance.get(f'{self.room_group_name}_messages'):
+            for mes in json.loads(history.decode()):
+                message = {'type': 'message',
+                           'message': mes['message'],
+                           'username': mes['username'],
+                           'time': mes['time']}
+                self.send(json.dumps(message))
 
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
