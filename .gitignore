@@ -9,3 +9,4 @@ project/static/mediacontent/
 project/static/admin/
 !project/static/mediacontent/users/user_admin/Avatar.png
 !project/static/mediacontent/banners/banner.png
+venv/
