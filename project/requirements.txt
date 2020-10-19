@@ -1,8 +1,6 @@
-channels==2.4.0
 django==3.1.2
-channels-redis==3.1.0
-redis==3.5.3
 Pillow==8.0.0
 yandex_checkout==1.6.4
-
-asgiref~=3.3.0
+redis==3.5.3
+channels==2.4.0
+channels-redis==3.1.0
