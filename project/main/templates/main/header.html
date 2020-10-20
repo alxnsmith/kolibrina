@@ -51,7 +51,7 @@
 </script>
 <script>
     const onlineSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/online/'
+        'wss://' + window.location.host + '/ws/online/'
     );
     onlineSocket.onmessage = (e) => {
         document.querySelector('#online span').textContent = JSON.parse(e.data)

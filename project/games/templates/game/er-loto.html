@@ -86,7 +86,7 @@
         let question_text
         const t = "TWEL"
         const tournament_socket = new WebSocket(
-            'ws://' + window.location.host + `/ws/tournament-week-${t}/`
+            'wss://' + window.location.host + `/ws/tournament-week-${t}/`
         );
         tournament_socket.onmessage = (event) => {
             let data = JSON.parse(event.data)
