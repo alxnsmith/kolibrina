@@ -89,269 +89,279 @@
     let result_game = '{% url 'result-game' %}'
     request_url = '{% url 'api_train' %}?games=train'
     sendRequest('GET', request_url).then(data => {
-        let quest_list = data.quest_list
-        let league = data.league.split(' ')[0]
-        let quest_template = data.quest_template
-        let q_nums = document.querySelectorAll('a.q_num')
-        let q_act = 0
-        let score = 0
-        let tmpScore = 0
-        let deltaScore
+        function game_logic(data) {
+            let quest_list = data.quest_list
+            let league = data.league.split(' ')[0]
+            let quest_template = data.quest_template
+            let q_nums = document.querySelectorAll('a.q_num')
+            let q_act = 0
+            let score = 0
+            let tmpScore = 0
+            let deltaScore
 
-        let bonus = 0
-        let combo = 0
-        let attempts
-        let bf_cor = false
-        let bf_dif
-        let beforeQuest
-        let count_dif = 5
-        let scoreSaveCounter = 3
-        let hintsCounter = {askMaster: 1, twoAnswers: 1, skipQuest: 1, secondAttempt: 1}
-        let inp
-        let hintsBonus
-        let hintSum
+            let bonus = 0
+            let combo = 0
+            let attempts
+            let bf_cor = false
+            let bf_dif
+            let beforeQuest
+            let count_dif = 5
+            let scoreSaveCounter = 3
+            let hintsCounter = {askMaster: 1, twoAnswers: 1, skipQuest: 1, secondAttempt: 1}
+            let inp
+            let hintsBonus
+            let hintSum
 
-        let currentQuest
+            let currentQuest
 
-        function hintsBonusCalc() {
-            hintSum = hintsCounter["askMaster"] + hintsCounter['twoAnswers'] + hintsCounter['skipQuest'] + hintsCounter['secondAttempt']
-            hintsBonus = 0.2 * beforeQuest['difficulty'] * hintSum
-        }
-
-        function shuffle(array) {
-            array.sort(() => Math.random() - 0.5);
-        }
-
-        function losePage() {
-            window.location.replace(`${result_game}?status=lose&` +
-                `question=${encodeURIComponent(quest_list[q_act - 1]['question'])}&` +
-                `correctAnswer=${encodeURIComponent(quest_list[q_act - 1]['correct_answer'])}&` +
-                `score=${score}&` + `author=${encodeURIComponent(quest_list[1]['author'])}&` +
-                `newGame=${window.location.href}&` + `questID=${encodeURIComponent(quest_list[1]['id'])}`)
-        }
-
-        function getInp() {
-            let inputs = document.getElementsByName('answer');
-            for (let i = 0; i < inputs.length; i++) {
-                if (inputs[i].type === "radio" && inputs[i].checked) {
-                    inp = inputs[i];
-                }
-            }
-        }
-
-        function aVoidConstructor(value) {
-            return `<a href="javascript:void(0)">${value}</a>`
-        }
-
-        function divHintConstructor(value, cls) {
-            return `<div class="${cls}" style="background: #86859e; font-size: 18px; text-shadow: 3px -3px 3px #000;` +
-                `color: #ffffff; width: 100%; box-shadow: inset 8px -8px 20px -10px black;` +
-                'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +
-                `">${value}</div>`
-        }
-
-        function checkAnswer() {
-            if (check() === undefined) {
-                show_modal_notification('Выберите один из предложенных вариантов ответа.')
-            } else if (check() === quest_list[q_act - 1]['correct_answer']) {
-                bf_dif = parseInt(bf_dif)
-                currentQuest['difficulty'] = parseInt(currentQuest['difficulty'])
-                attempts = 1
-                if (bf_dif === currentQuest['difficulty']) {
-                    count_dif++
-                } else if (!isNaN(bf_dif)) {
-                    count_dif = 5 - quest_template.filter(item => item === bf_dif).length + 1
-                } else {
-                    bf_dif = currentQuest['difficulty']
-                    count_dif = 5 - quest_template.filter(item => item === bf_dif).length + 1
-                }
-                bonus = (combo - 1) * (currentQuest['difficulty'] + count_dif) / (70 - currentQuest['difficulty'])
-                hintsBonusCalc()
-                tmpScore += Math.round(deltaScore[q_act - 1] + bonus + hintsBonus)
-                bf_dif = currentQuest['difficulty']
-                bf_cor = true
-                if (bf_cor) {
-                    combo++
-                }
-                if (q_act < 12) {
-                    initGameField()
-                } else {
-                    tmpScore += 290
-                    tmpScore = tmpScore / 10
-                    window.location.replace(`${result_game}?status=win&score=${score}&newGame=${window.location.href}`)
-                }
-            } else if (attempts > 1) {
-                attempts = 1
-                getInp()
-                inp.nextSibling.nextSibling.style['backgroundColor'] = 'red'
-                inp.remove()
-            } else {
-                bf_cor = false
-                combo = 0
-                losePage()
-            }
-            inp = undefined
-            {#log()#}
-        }
-
-        function initHints() {
-            if (hintsCounter['askMaster'] === 0) {
-                document.querySelector('.hint1').outerHTML = divHintConstructor('Спросить у мастера', 'hint1')
-            }
-            if (hintsCounter['twoAnswers'] === 0) {
-                document.querySelector('.hint2').outerHTML = divHintConstructor('Убрать 2 ответа', 'hint2')
-            }
-            if (hintsCounter['skipQuest'] === 0) {
-                document.querySelector('.hint3').outerHTML = divHintConstructor('Пропустить вопрос', 'hint3')
-            }
-            if (hintsCounter['secondAttempt'] === 0) {
-                document.querySelector('.hint4').outerHTML = divHintConstructor('Ответ со второй попытки', 'hint4')
-            }
-        }
-
-        {#function log() {#}
-        {#    console.log('---------------------------------------------------------------')#}
-        {#    console.log(`Score delta: ${deltaScore}`)#}
-        {#    console.log(`Before score: ${Math.round(tmpScore)}`)#}
-        {#    console.log('Template difficulty: ', quest_template)#}
-        {#    console.log('Hints bonus: ', hintsBonus)#}
-        {#    console.log('Counter difficulty: ', count_dif)#}
-        {#    console.log('Before difficulty: ', bf_dif)#}
-        {#    console.log('Current difficulty: ', currentQuest['difficulty'])#}
-        {#    console.log('Current question: ', q_act)#}
-        {#    console.log('Combo: ', combo)#}
-        {#    console.log('B0nus: ', Math.round(bonus))#}
-        {#    console.log('+ Score: ', Math.round(deltaScore[q_act-1]+bonus))#}
-        {#    console.log(`tmpScore: ${tmpScore}`)#}
-        {#    console.log(`Score: ${score}`)}#}
-        {#    console.log('Current question: ', q_act)#}
-        {#    console.log('---------------------------------------------------------------')#}
-
-        function initGameField(a = 2) {
-
-            initHints()
-            attempts = 1
-            document.querySelector('.game__options').style['height'] = '114px'
-            hintSum = hintsCounter["askMaster"] + hintsCounter['twoAnswers'] + hintsCounter['skipQuest'] + hintsCounter['secondAttempt']
-            if (q_act > 0) {
-                q_nums[q_act - 1].classList.remove('act')
-            }
-            currentQuest = quest_list[q_act]
-            if (quest_list[q_act - 1]) {
-                beforeQuest = quest_list[q_act - 1]
-            } else {
-                beforeQuest = {'difficulty': 0}
-            }
-            q_nums[q_act].classList.add('act')
-            document.querySelector('.text-author span').innerHTML = `Автор вопроса: ${currentQuest['author']}`
-            document.querySelector('.game__question').innerHTML = `${currentQuest['question']}`
-            let answers = document.querySelectorAll('label.answer')
-            for (let i = 0; i < answers['length']; i++) {
-                answers[i].remove()
-            }
-            answers = document.querySelector('.game__options')
-            let answersArray = []
-            for (let i = 0; i < 4; i++) {
-                if (i !== 0) {
-                    answersArray.splice(3, 1, `<label class="answer"><input type="radio" name="answer" value="${currentQuest[`answer${a}`]}">${currentQuest[`answer${a}`]}<span></span></label>`)
-                    a++
-                } else {
-                    answersArray.splice(3, 1, `<label class="answer"><input type="radio" name="answer" value="${quest_list[q_act]['correct_answer']}">${currentQuest['correct_answer']}<span></span></label>`)
-                }
-            }
-            shuffle(answersArray)
-            for (let i = 0; i < 4; i++) {
-                answers.innerHTML += answersArray[i]
-                a++
-            }
-            q_act++
-        }
-
-        function startDeltaScore() {
-            if (league === 'J') {
-                deltaScore = [3, 5, 7, 9, 15, 18, 21, 24, 32, 37, 41, 45]
-            } else if (league === 'L') {
-                deltaScore = [5, 7, 9, 18, 21, 24, 37, 41, 45, 65, 70, 100]
-            } else if (league === 'Z') {
-                deltaScore = [7, 9, 18, 21, 24, 37, 41, 45, 65, 70, 91, 100]
-            } else if (league === 'M') {
-                deltaScore = [18, 21, 24, 32, 37, 41, 45, 60, 65, 70, 91, 100]
-            } else if (league === 'P') {
-                deltaScore = [32, 37, 41, 45, 55, 60, 65, 70, 77, 84, 91, 100]
-            }
-        }
-
-        function check() {
-            getInp()
-            if (inp !== undefined) {
-                return inp.value
-            } else {
-                return undefined
+            function hintsBonusCalc() {
+                hintSum = hintsCounter["askMaster"] + hintsCounter['twoAnswers'] + hintsCounter['skipQuest'] + hintsCounter['secondAttempt']
+                hintsBonus = 0.2 * beforeQuest['difficulty'] * hintSum
             }
 
-        }
-
-
-        startDeltaScore()
-        initGameField()
-
-        document.querySelector('.game__button').onclick = function () {
-            if (attempts === 1) {
-                checkAnswer()
-            } else if (attempts > 1) {
-                checkAnswer()
+            function shuffle(array) {
+                array.sort(() => Math.random() - 0.5);
             }
-        }
-        document.querySelector('.hint1').onclick = function () {
-            document.querySelector('.hint1').outerHTML = divHintConstructor('спросить у мастера', 'hint1')
-            {#'<div class="hint1" style="background: #d2d2d2; font-size: 18px;' +#}
-            {#'color: #6b6b6b; text-shadow: 1px 1px 1px black; width: 100%;' +#}
-            {#'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +#}
-            {#`">Мастер: Я считаю, что правильный ответ - "<span style="text-transform: none">${currentQuest['correct_answer']}</span>"</div>`#}
-            show_modal_notification(`Мастер: Я считаю, что правильный ответ - ${currentQuest['correct_answer']}`)
-            hintsCounter['askMaster'] = 0
-            hintsBonusCalc()
-        }
-        document.querySelector('.hint2').onclick = function () {
-            hintsCounter['twoAnswers'] = 0
-            initHints()
-            hintsBonusCalc()
-            let c = 0
-            let currentAnswers = document.getElementsByName('answer')
-            for (let i = 0; i < 4; i++) {
-                if (c < 2) {
-                    if (currentAnswers[i].value !== currentQuest['correct_answer']) {
-                        currentAnswers[i].parentElement.remove()
-                        c++
+
+            function losePage() {
+                window.location.replace(`${result_game}?status=lose&` +
+                    `question=${encodeURIComponent(quest_list[q_act - 1]['question'])}&` +
+                    `correctAnswer=${encodeURIComponent(quest_list[q_act - 1]['correct_answer'])}&` +
+                    `score=${score}&` + `author=${encodeURIComponent(quest_list[1]['author'])}&` +
+                    `newGame=${window.location.href}&` + `questID=${encodeURIComponent(quest_list[1]['id'])}`)
+            }
+
+            function getInp() {
+                let inputs = document.getElementsByName('answer');
+                for (let i = 0; i < inputs.length; i++) {
+                    if (inputs[i].type === "radio" && inputs[i].checked) {
+                        inp = inputs[i];
                     }
                 }
             }
-            document.querySelector('.game__options').style['height'] = '52px'
-        }
-        document.querySelector('.hint3').onclick = function () {
-            hintsCounter['skipQuest'] = 0
-            initHints()
-            hintsBonusCalc()
+
+            function aVoidConstructor(value) {
+                return `<a href="javascript:void(0)">${value}</a>`
+            }
+
+            function divHintConstructor(value, cls) {
+                return `<div class="${cls}" style="background: #86859e; font-size: 18px; text-shadow: 3px -3px 3px #000;` +
+                    `color: #ffffff; width: 100%; box-shadow: inset 8px -8px 20px -10px black;` +
+                    'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +
+                    `">${value}</div>`
+            }
+
+            function checkAnswer() {
+                if (check() === undefined) {
+                    show_modal_notification('Выберите один из предложенных вариантов ответа.')
+                } else if (check() === quest_list[q_act - 1]['correct_answer']) {
+                    bf_dif = parseInt(bf_dif)
+                    currentQuest['difficulty'] = parseInt(currentQuest['difficulty'])
+                    attempts = 1
+                    if (bf_dif === currentQuest['difficulty']) {
+                        count_dif++
+                    } else if (!isNaN(bf_dif)) {
+                        count_dif = 5 - quest_template.filter(item => item === bf_dif).length + 1
+                    } else {
+                        bf_dif = currentQuest['difficulty']
+                        count_dif = 5 - quest_template.filter(item => item === bf_dif).length + 1
+                    }
+                    bonus = (combo - 1) * (currentQuest['difficulty'] + count_dif) / (70 - currentQuest['difficulty'])
+                    hintsBonusCalc()
+                    tmpScore += Math.round(deltaScore[q_act - 1] + bonus + hintsBonus)
+                    bf_dif = currentQuest['difficulty']
+                    bf_cor = true
+                    if (bf_cor) {
+                        combo++
+                    }
+                    if (q_act < 12) {
+                        initGameField()
+                    } else {
+                        tmpScore += 290
+                        tmpScore = tmpScore / 10
+                        window.location.replace(`${result_game}?status=win&score=${score}&newGame=${window.location.href}`)
+                    }
+                } else if (attempts > 1) {
+                    attempts = 1
+                    getInp()
+                    inp.nextSibling.nextSibling.style['backgroundColor'] = 'red'
+                    inp.remove()
+                } else {
+                    bf_cor = false
+                    combo = 0
+                    losePage()
+                }
+                inp = undefined
+                {#log()#}
+            }
+
+            function initHints() {
+                if (hintsCounter['askMaster'] === 0) {
+                    document.querySelector('.hint1').outerHTML = divHintConstructor('Спросить у мастера', 'hint1')
+                }
+                if (hintsCounter['twoAnswers'] === 0) {
+                    document.querySelector('.hint2').outerHTML = divHintConstructor('Убрать 2 ответа', 'hint2')
+                }
+                if (hintsCounter['skipQuest'] === 0) {
+                    document.querySelector('.hint3').outerHTML = divHintConstructor('Пропустить вопрос', 'hint3')
+                }
+                if (hintsCounter['secondAttempt'] === 0) {
+                    document.querySelector('.hint4').outerHTML = divHintConstructor('Ответ со второй попытки', 'hint4')
+                }
+            }
+
+            {#function log() {#}
+            {#    console.log('---------------------------------------------------------------')#}
+            {#    console.log(`Score delta: ${deltaScore}`)#}
+            {#    console.log(`Before score: ${Math.round(tmpScore)}`)#}
+            {#    console.log('Template difficulty: ', quest_template)#}
+            {#    console.log('Hints bonus: ', hintsBonus)#}
+            {#    console.log('Counter difficulty: ', count_dif)#}
+            {#    console.log('Before difficulty: ', bf_dif)#}
+            {#    console.log('Current difficulty: ', currentQuest['difficulty'])#}
+            {#    console.log('Current question: ', q_act)#}
+            {#    console.log('Combo: ', combo)#}
+            {#    console.log('B0nus: ', Math.round(bonus))#}
+            {#    console.log('+ Score: ', Math.round(deltaScore[q_act-1]+bonus))#}
+            {#    console.log(`tmpScore: ${tmpScore}`)#}
+            {#    console.log(`Score: ${score}`)}#}
+            {#    console.log('Current question: ', q_act)#}
+            {#    console.log('---------------------------------------------------------------')#}
+
+            function initGameField(a = 2) {
+
+                initHints()
+                attempts = 1
+                document.querySelector('.game__options').style['height'] = '114px'
+                hintSum = hintsCounter["askMaster"] + hintsCounter['twoAnswers'] + hintsCounter['skipQuest'] + hintsCounter['secondAttempt']
+                if (q_act > 0) {
+                    q_nums[q_act - 1].classList.remove('act')
+                }
+                currentQuest = quest_list[q_act]
+                if (quest_list[q_act - 1]) {
+                    beforeQuest = quest_list[q_act - 1]
+                } else {
+                    beforeQuest = {'difficulty': 0}
+                }
+                q_nums[q_act].classList.add('act')
+                document.querySelector('.text-author span').innerHTML = `Автор вопроса: ${currentQuest['author']}`
+                document.querySelector('.game__question').innerHTML = `${currentQuest['question']}`
+                let answers = document.querySelectorAll('label.answer')
+                for (let i = 0; i < answers['length']; i++) {
+                    answers[i].remove()
+                }
+                answers = document.querySelector('.game__options')
+                let answersArray = []
+                for (let i = 0; i < 4; i++) {
+                    if (i !== 0) {
+                        answersArray.splice(3, 1, `<label class="answer"><input type="radio" name="answer" value="${currentQuest[`answer${a}`]}">${currentQuest[`answer${a}`]}<span></span></label>`)
+                        a++
+                    } else {
+                        answersArray.splice(3, 1, `<label class="answer"><input type="radio" name="answer" value="${quest_list[q_act]['correct_answer']}">${currentQuest['correct_answer']}<span></span></label>`)
+                    }
+                }
+                shuffle(answersArray)
+                for (let i = 0; i < 4; i++) {
+                    answers.innerHTML += answersArray[i]
+                    a++
+                }
+                q_act++
+            }
+
+            function startDeltaScore() {
+                if (league === 'J') {
+                    deltaScore = [3, 5, 7, 9, 15, 18, 21, 24, 32, 37, 41, 45]
+                } else if (league === 'L') {
+                    deltaScore = [5, 7, 9, 18, 21, 24, 37, 41, 45, 65, 70, 100]
+                } else if (league === 'Z') {
+                    deltaScore = [7, 9, 18, 21, 24, 37, 41, 45, 65, 70, 91, 100]
+                } else if (league === 'M') {
+                    deltaScore = [18, 21, 24, 32, 37, 41, 45, 60, 65, 70, 91, 100]
+                } else if (league === 'P') {
+                    deltaScore = [32, 37, 41, 45, 55, 60, 65, 70, 77, 84, 91, 100]
+                }
+            }
+
+            function check() {
+                getInp()
+                if (inp !== undefined) {
+                    return inp.value
+                } else {
+                    return undefined
+                }
+
+            }
+
+
+            startDeltaScore()
             initGameField()
-        }
-        document.querySelector('.hint4').onclick = function () {
-            hintsCounter['secondAttempt'] = 0
-            initHints()
-            hintsBonusCalc()
-            attempts = 2
-        }
-        document.querySelector('.game__functional .btn:nth-child(5)').onclick = function () {
-            if (scoreSaveCounter > 1) {
-                score = tmpScore
-                show_modal_notification('Очки сохранены!')
-                scoreSaveCounter--
-            } else {
-                score = tmpScore
-                show_modal_notification('Очки сохранены!')
-                scoreSaveCounter--
-                losePage()
+
+            document.querySelector('.game__button').onclick = function () {
+                if (attempts === 1) {
+                    checkAnswer()
+                } else if (attempts > 1) {
+                    checkAnswer()
+                }
+            }
+            document.querySelector('.hint1').onclick = function () {
+                document.querySelector('.hint1').outerHTML = divHintConstructor('спросить у мастера', 'hint1')
+                {#'<div class="hint1" style="background: #d2d2d2; font-size: 18px;' +#}
+                {#'color: #6b6b6b; text-shadow: 1px 1px 1px black; width: 100%;' +#}
+                {#'text-align: center; margin: 7px 0; font-weight: 500; padding: 7px 0; text-transform: uppercase' +#}
+                {#`">Мастер: Я считаю, что правильный ответ - "<span style="text-transform: none">${currentQuest['correct_answer']}</span>"</div>`#}
+                show_modal_notification(`Мастер: Я считаю, что правильный ответ - ${currentQuest['correct_answer']}`)
+                hintsCounter['askMaster'] = 0
+                hintsBonusCalc()
+            }
+            document.querySelector('.hint2').onclick = function () {
+                hintsCounter['twoAnswers'] = 0
+                initHints()
+                hintsBonusCalc()
+                let c = 0
+                let currentAnswers = document.getElementsByName('answer')
+                for (let i = 0; i < 4; i++) {
+                    if (c < 2) {
+                        if (currentAnswers[i].value !== currentQuest['correct_answer']) {
+                            currentAnswers[i].parentElement.remove()
+                            c++
+                        }
+                    }
+                }
+                document.querySelector('.game__options').style['height'] = '52px'
+            }
+            document.querySelector('.hint3').onclick = function () {
+                hintsCounter['skipQuest'] = 0
+                initHints()
+                hintsBonusCalc()
+                initGameField()
+            }
+            document.querySelector('.hint4').onclick = function () {
+                hintsCounter['secondAttempt'] = 0
+                initHints()
+                hintsBonusCalc()
+                attempts = 2
+            }
+            document.querySelector('.game__functional .btn:nth-child(5)').onclick = function () {
+                if (scoreSaveCounter > 1) {
+                    score = tmpScore
+                    show_modal_notification('Очки сохранены!')
+                    scoreSaveCounter--
+                } else {
+                    score = tmpScore
+                    show_modal_notification('Очки сохранены!')
+                    scoreSaveCounter--
+                    losePage()
+                }
             }
         }
+        if ('error' in data) {
+            console.log(data)
+            show_modal_notification(data.error)
+        }
+        else {
+            game_logic(data)
+        }
+
     })
         .finally(() => {
             document.querySelector('.game .loading').style.opacity = '0'

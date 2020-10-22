@@ -12,9 +12,9 @@ from django.http import JsonResponse
 def api_train(request):
     quest_list = []
 
-    def quest_l(questions_list, index):
-        if questions_list[index]:
-            for i in questions_list[index]:
+    def quest_l(questions_list: dict, key: str):
+        if questions_list[key]:
+            for i in questions_list[key]:
                 d = model_to_dict(i)
                 city = i.author.city
                 if user_models.User.objects.get(id=d['author']).hideMyName or not city:
@@ -34,10 +34,15 @@ def api_train(request):
             league = user_services.get_user_rating_lvl_dif(float(request.user.rating))['level']
         else:
             league = 'Z'
-        quest_template = defs.q_template(league)
+        quest_template = defs.get_template_questions(league)
         questions = defs.q_questions(league, Question)
-        questions = {'q10': questions['10'], 'q20': questions['20'], 'q30': questions['30'],
-                     'q40': questions['40'], 'q50': questions['50']}
+        if 'error' in questions:
+            return JsonResponse(questions)
+        questions = {'q10': questions['10'],
+                     'q20': questions['20'],
+                     'q30': questions['30'],
+                     'q40': questions['40'],
+                     'q50': questions['50']}
         quest_l(questions, 'q10')
         quest_l(questions, 'q20')
         quest_l(questions, 'q30')

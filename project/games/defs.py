@@ -1,7 +1,9 @@
 import random
 
+difficulty_list = (10, 20, 30, 40, 50)
 
-def q_template(u):
+
+def get_template_questions(u):
     u = u.split(' ')[0]
     if u == 'J':
         return 10, 10, 10, 10, 20, 20, 20, 20, 30, 30, 30, 30,
@@ -19,24 +21,28 @@ def counter(template, diff):
     return template.count(diff)
 
 
-def dif_q(q):
-    dif = []
-    for i in 10, 20, 30, 40, 50:
-        dif.append(q.objects.filter(difficulty=i))
-    return dif
+def get_question_list_separated_by_difficulty(question_instance):
+    separated_question_list = []
+    conditions = {'premoderate': True}  # условия для выборки отработанных вопросов
+    for difficulty in difficulty_list:
+        separated_question_list.append(question_instance.objects.filter(difficulty=difficulty, **conditions))
+    return separated_question_list
 
 
-def q_questions(league, q):
-    t = q_template(league)
-    template = {'10': counter(t, 10), '20': counter(t, 20), '30': counter(t, 30),
-                '40': counter(t, 40), '50': counter(t, 50)}
-    q1 = dif_q(q)
-    d = 10
-    for s in range(0, 5):
-        a = []
-        for i in q1[s]:
-            if i.premoderate:
-                a.append(i)
-        template[str(d)] = random.sample(a, template[str(d)])
-        d += 10
+def q_questions(league, question_instance):
+    template = get_template_questions(league)
+    template = {'10': counter(template, 10),
+                '20': counter(template, 20),
+                '30': counter(template, 30),
+                '40': counter(template, 40),
+                '50': counter(template, 50)}
+    questions_separated_by_difficult = get_question_list_separated_by_difficulty(question_instance)
+    for index in range(0, 5):
+        difficulty = difficulty_list[index]
+        question_list = list(questions_separated_by_difficult[index])
+        quantity = template[str(difficulty)]
+        if len(question_list) < quantity:
+            return {'status': 'error', 'error': 'Not enough questions'}
+        template[str(difficulty)] = random.sample(question_list, quantity)
+
     return template
