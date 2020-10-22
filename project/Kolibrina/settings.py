@@ -170,3 +170,5 @@ QUESTION_SCORE_EQUALS = {'1': 0.1, '2': 0.3, '3': 0.5, '4': 0.7, '5': 0.9,
                          }
 TIME_SCORE_EQUALS = {'10': 0.007, '20': 0.08, '30': 0.14, '40': 0.2, '50': 0.23}
 DOMAIN = 'kolibrina.online'
+YANDEX_CHECKOUT_CONFIG = {'account_id': '734853',
+                          'secret_key': 'live_sXm5J__8xhwtHjZzVWX7Hkog4DKD59yGtDqpd_qzinI'}

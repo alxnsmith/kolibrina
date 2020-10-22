@@ -1,48 +1,58 @@
-<form action="" method="POST" class=" develop" id="pay">
+<form action="{% url 'PaymentAPI' %}" method="GET" class=" develop" id="pay">
     <div class="row">
-        <div class="col-md-6">
-            <strong>Код турнира</strong>
-            <select id="turnir">
-                <option label="СИРАИК 002" value="СИРАИК 002" selected>СИРАИК 002</option>
-                <option value="Название2">Название2</option>
-                <option value="Название3">Название3</option>
-            </select>
-        </div>
-        <div class="col-md-6">
+{#        <div class="col-md-6">#}
+{#            <strong>Код турнира</strong>#}
+{#            <select id="turnir">#}
+{#                <option label="СИРАИК 002" value="СИРАИК 002" selected>СИРАИК 002</option>#}
+{#                <option value="Название2">Название2</option>#}
+{#                <option value="Название3">Название3</option>#}
+{#            </select>#}
+{#        </div>#}
+        <div class="col-md-6" style="width: 100%">
             <strong>Сумма (руб)</strong>
-            <input type="number" value="300">
+            <input type="number" name="value" value="300">
         </div>
         <div class="clear"></div>
         <strong style="padding-top: 10px;">Оплатить</strong>
         <div id="services">
             <label>
-                <input type="radio" name="bank" value="sber" checked>
-                Банковской картой СберБанка
+                <input type="radio" name="payment_method" value="bank_card" checked>
+                Банковской картой
+                <span></span>
+            </label>
+{#            <label>#}
+{#                <input type="radio" name="payment_method" value="mobile_balance">#}
+{#                Со счёта мобильного телефона#}
+{#                <span></span>#}
+{#            </label>#}
+            <label>
+                <input type="radio" name="payment_method" value="sberbank">
+                Сбербанк Онлайн
                 <span></span>
             </label>
             <label>
-                <input type="radio" name="bank" value="tel">
-                Со счёта мобильного телефона
+                <input type="radio" name="payment_method" value="alfabank">
+                Альфа-Клик
                 <span></span>
             </label>
+{#            <label>#}
+{#                <input type="radio" name="payment_method" value="qiwi">#}
+{#                QIWI Wallet#}
+{#                <span></span>#}
+{#            </label>#}
             <label>
-                <input type="radio" name="bank" value="qiwi">
-                QIWI Wallet
-                <span></span>
-            </label>
-            <label>
-                <input type="radio" name="bank" value="yandex">
+                <input type="radio" name="payment_method" value="yandex_money">
                 Яндекс.Деньги
                 <span></span>
             </label>
             <label>
-                <input type="radio" name="bank" value="webmoney">
+                <input type="radio" name="payment_method" value="webmoney">
                 WebMoney
                 <span></span>
             </label>
         </div>
         <div style="padding: 0 15px;">
-            <a href="#" id="pay__button">Оплатить</a>
+            <button value="submit" id="pay__button">Оплатить</button>
         </div>
     </div>
 </form>

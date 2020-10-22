@@ -1,7 +1,7 @@
 import datetime
 from django.conf import settings
 
-from userK.models import User as User
+from userK.models import User
 from . import forms
 from .phone_validate import phone_validate
 from media import forms as media_forms, services as media_services
@@ -97,6 +97,13 @@ def get_user_rating_lvl_dif(rating):
 
 def get_user_model(username):
     return User.objects.get(username=username)
+
+
+def increase_user_balance(amount, user_id):
+    if amount['currency'] == 'RUB':
+        user = User.objects.get(id=user_id)
+        user.balance = round(float(amount['value']) + user.balance, 2)
+        user.save()
 
 
 def _get_users_and_id_list(current_user):
