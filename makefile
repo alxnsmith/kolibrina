@@ -19,7 +19,7 @@ CREATE_ENV =
 
 
 init:
-	$CREATE_ENV ; \
+	$(CREATE_ENV) ; \
 	$(MIGRATIONS) ; \
 	$(CREATESUPERUSER) ; \
 	cd ./bin ; \
