@@ -1,38 +1,34 @@
-from django.shortcuts import render, redirect
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.views import View
+
 from userK.models import User as User
-from django.shortcuts import HttpResponse
 
 
-def loginK(request):
-    if not request.user.is_authenticated:
-        if request.POST:
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect('account')
-                    # Redirect to a success page.
-                else:
-                    return render(request, 'loginK/login.html',
-                                  {'errTXT': 'Введите имя пользователя'})
-            else:
-                if request.user == 'AnonymousUser':
-                    if not User.objects.filter(username=username)[0].is_active:
-                        return render(request, 'loginK/login.html',
-                                      {'errors': ['Ваш аккаунт не активирован, проверьте почту.',
-                                                 'После регистрации вам на почту была выслана ссылка на активацию аккаунта']})
-                    else:
-                        return render(request, 'loginK/login.html', {'errors': ['С вашим аккаунтом что-то не так,'
-                                                                               'обратитесь в техподдержку.']})
-                else:
-                    return render(request, 'loginK/login.html', {'errors': ['Неверный логин или пароль']})
-        else:
-            return render(request, 'loginK/login.html', {'hide': 'hide'})
-    else:
-        return redirect('account')
+class Login(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('account')
+        return render(request, 'loginK/login.html')
+
+    def post(self, request):
+        username = request.POST['username']
+        password = request.POST['password']
+        valid = authenticate(username=username, password=password) or False
+        user = User.objects.get(username=username) if User.objects.filter(username=username).exists() else None
+
+        if not valid and user is None:
+            return render(request, 'loginK/login.html', {'errors': [{'error': 'Неверный логин или пароль'}]})
+
+        if not user.is_active:
+            return render(request, 'loginK/login.html',
+                          {'errors': [{'error': 'Ваш аккаунт не активирован, проверьте почту. После регистрации '
+                                                'вам на почту была выслана ссылка на активацию аккаунта'}]})
+
+        login(request, user)
+        next_page = request.GET.get('next') or settings.LOGIN_URL
+        return redirect(next_page)
 
 
 def logoutK(request):

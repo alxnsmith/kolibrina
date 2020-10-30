@@ -1,12 +1,11 @@
-.idea/
 *.sqlite3
 *.pyc
+migrations/*
+!migrations/__init__.py
 *.php
-koliVENV/
-env3.8/
 env/
+venv/
 project/static/mediacontent/
 project/static/admin/
-!project/static/mediacontent/users/user_admin/Avatar.png
-!project/static/mediacontent/banners/banner.png
-venv/
+.idea/
+chromedriver

@@ -1,15 +1,20 @@
+from django.views import View
 from django.shortcuts import render, redirect
-from media.models import Banner
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from media.services import get_banner
 
 
-def chat(request):
-    if request.user.is_authenticated:
-        if Banner.objects.filter(name='MainBanner').exists():
-            mainBanner = str(Banner.objects.filter(name='MainBanner')[0].image)
-        else:
-            mainBanner = False
+# def chat(request):
+#     main_banner = get_banner()
+#     return render(request, 'chat/chat.html', {
+#         'mainBanner': main_banner,
+#         })
+
+
+class Chat(LoginRequiredMixin, View):
+    def get(self, request):
+        main_banner = get_banner()
         return render(request, 'chat/chat.html', {
-            'mainBanner': mainBanner,
+            'mainBanner': main_banner,
         })
-    else:
-        return redirect('login')

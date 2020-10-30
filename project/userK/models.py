@@ -1,17 +1,14 @@
-from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.db import models
 from django.utils import timezone
-from django.conf import settings
-
-from .managers import UserManager
-
-from stats.services import get_sum_score_user, init_league
-
-from media.models import Avatar
-from api_teams.models import Team
-
 from django.utils.translation import ugettext_lazy as _
+
+from api_teams.models import Team
+from media.models import Avatar
+from stats.services import get_sum_score_user, init_league
+from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -38,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name='Номер в команде', choices=settings.TEAM_NUMBERS, max_length=1, null=True, blank=True)
 
     # toggles
-    is_staff = models.BooleanField(verbose_name='Администратор', default=False)
+    is_staff = models.BooleanField(verbose_name='Персонал', default=False)
     is_free_member = models.BooleanField(verbose_name='Льготник', default=False)
     is_active = models.BooleanField(verbose_name='Активация аккаунта', default=False)
     hideMyName = models.BooleanField(verbose_name='Скрыть имя и фамилию', default=False)

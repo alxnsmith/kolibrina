@@ -16,11 +16,9 @@ def get_avatar(user):
 
 
 def get_banner():
-    if models.Banner.objects.filter(name='MainBanner').exists():
-        mainBanner = f"{settings.MEDIA_URL}/{str(models.Banner.objects.filter(name='MainBanner')[0].image)}"
-    else:
-        mainBanner = False
-    return mainBanner
+    if main_banner := models.Banner.objects.filter(name='MainBanner').exists():
+        main_banner = f"{settings.MEDIA_URL}/{str(models.Banner.objects.filter(name='MainBanner')[0].image)}"
+    return main_banner
 
 
 class User:
@@ -64,4 +62,3 @@ class User:
     def _init_user_media_dir(self):
         if not os.path.exists(self.full_user_media_path):
             os.makedirs(self.full_user_media_path)
-

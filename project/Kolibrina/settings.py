@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'admin_panel',
+
     'media',
     'authK',
     'regK',
@@ -134,6 +136,7 @@ MEDIA_URL = '/mediacontent/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediacontent")
 
 AUTH_USER_MODEL = 'userK.User'
+LOGIN_URL = 'login'
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = '465'

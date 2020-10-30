@@ -7,10 +7,17 @@ class InitProject:
 
     def __call__(self, *args, **kwargs):
         self.init_users_folder()
+        self.init_banners_folder()
+
+    def init_banners_folder(self):
+        path = os.path.join(self.project, 'mediacontent/banners/')
+        if not os.path.exists(path):
+            os.makedirs(path)
 
     def init_users_folder(self):
-        if not os.path.exists(os.path.join(self.project, 'mediacontent/users/')):
-            os.makedirs(os.path.join(self.project, 'mediacontent/users/'))
+        path = os.path.join(self.project, 'mediacontent/users/')
+        if not os.path.exists(path):
+            os.makedirs(path)
 
 
 def main():

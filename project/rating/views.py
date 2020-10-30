@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 from userK.models import User as User
 from userK.services import get_user_rating_lvl_dif
 
@@ -32,7 +33,7 @@ def ratings(request):
     for i in opLVL_users[:15]:
         opLVL_top15.append({'hideMyName': i.hideMyName,
                             'lvl': '{0} / {1}'.format(get_user_rating_lvl_dif(i.rating)['level'],
-                                                    get_user_rating_lvl_dif(i.rating)['numLevel']),
+                                                      get_user_rating_lvl_dif(i.rating)['numLevel']),
                             'opLVL': i.rating,
                             'firstName': i.firstName,
                             'lastName': i.lastName,
