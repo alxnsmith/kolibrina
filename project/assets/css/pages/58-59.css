@@ -1,5 +1,5 @@
-@import "../fonts.css";
-@import "../marafon.css";
+@import "../fonts.min.css";
+@import "../marafon.min.css";
 
 .text-information {
     min-height: 70px;
