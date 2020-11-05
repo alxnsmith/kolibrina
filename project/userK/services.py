@@ -95,7 +95,7 @@ def get_user_rating_lvl_dif(rating):
         return r(rating, max, deltamax, level)
 
 
-def get_user_model(username):
+def get_user_model(username: str) -> User:
     return User.objects.get(username=username)
 
 

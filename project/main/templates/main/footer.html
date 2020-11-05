@@ -15,7 +15,6 @@
 
 <script>
     try {
-        console.log(document.querySelector('#href_{{ request.resolver_match.url_name }} > span').classList.add('select'))
-    } catch {
-    }
+        document.querySelector('#href_{{ request.resolver_match.url_name }} > span').classList.add('select')
+    } catch {}
 </script>

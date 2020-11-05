@@ -1,1 +1,41 @@
-.game_nav{width:100%;min-height:50px;border:1px solid #969696;margin-top:10px;padding:10px 15px 0;margin-bottom:10px}.game_nav .game_nav-btns{display:flex;margin:auto;max-width:700px;flex-wrap:wrap}.game_nav a{height:30px;width:30px;border:1px solid #969696;border-radius:50px;display:flex;font-weight:700;margin-right:15px;margin-bottom:10px;justify-content:center;align-items:center;font-size:14px;transition:all .3s}.game_nav a:hover{background-color:#2D06FF;color:#fff}.game_nav a.act{background-color:#2D06FF;border-color:#2D06FF;color:#fff}
+.game_nav {
+    width: 100%;
+    min-height: 50px;
+    border: 1px solid #969696;
+    margin-top: 10px;
+    padding: 10px 15px 0;
+    margin-bottom: 10px
+}
+
+.game_nav .game_nav-btns {
+    display: flex;
+    margin: auto;
+    max-width: 700px;
+    flex-wrap: wrap
+}
+
+.game_nav a {
+    height: 30px;
+    width: 30px;
+    border: 1px solid #969696;
+    border-radius: 50px;
+    display: flex;
+    font-weight: 700;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    transition: all .3s
+}
+
+.game_nav a:hover {
+    background-color: #2D06FF;
+    color: #fff
+}
+
+.game_nav a.act {
+    background-color: #2D06FF;
+    border-color: #2D06FF;
+    color: #fff
+}

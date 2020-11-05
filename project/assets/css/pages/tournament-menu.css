@@ -1,1 +1,122 @@
-.border3F48CC{width:100%;display:table;border:1px solid #2a1efe}.m10{margin:10px 0}.question-nav a{position:relative;padding-left:25px;padding-right:25px;display:flex;justify-content:center;align-items:center;height:50px}@media (min-width:991px) and (max-width:1200px){.question-nav a{height:70px}}.question-nav a img{position:absolute;width:20px;height:auto;top:5px}.question-nav a img.attr1{left:5px}.question-nav a img.attr2{right:5px}.attr{margin:0 10px}
+#pay_confirmation {
+    opacity: 0;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    position: fixed;
+    box-shadow: 1px 1px 10px black;
+    background-color: #dfd;
+    border-radius: 2px;
+    width: 300px;
+    height: 130px;
+    padding: 10px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    transition: 0.5s;
+}
+
+
+.bg {
+    opacity: 0;
+    z-index: -1;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00003390;
+    transition: 1s;
+}
+
+#pay_confirmation .content {
+    display: grid;
+    grid-template-areas:
+            'a a a a a'
+            'd d d d d'
+            'e e e e e'
+            'b b . c c';
+}
+
+#pay_confirmation .note {
+    grid-area: a;
+    text-align: center;
+}
+
+#pay_confirmation .accept {
+    grid-area: b;
+    cursor: pointer;
+}
+
+#pay_confirmation .cancel {
+    grid-area: c;
+    cursor: pointer;
+}
+
+#pay_confirmation .info {
+    grid-area: d;
+    text-align: center;
+    margin: 5px 0 10px 0;
+}
+
+#pay_confirmation .watch {
+    grid-area: e;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+#pay_confirmation .btn {
+    color: white;
+    text-align: center;
+    background-color: #0f74fe;
+    padding: 3px 5px;
+    cursor: pointer;
+}
+
+.border3F48CC {
+    width: 100%;
+    display: table;
+    border: 1px solid #2a1efe
+}
+
+.m10 {
+    margin: 10px 0
+}
+
+.question-nav a {
+    position: relative;
+    padding-left: 25px;
+    padding-right: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px
+}
+
+@media (min-width: 991px) and (max-width: 1200px) {
+    .question-nav a {
+        height: 70px
+    }
+}
+
+.question-nav a img {
+    position: absolute;
+    width: 20px;
+    height: auto;
+    top: 5px
+}
+
+.question-nav a img.attr1 {
+    left: 5px
+}
+
+.question-nav a img.attr2 {
+    right: 5px
+}
+
+.attr {
+    margin: 0 10px
+}

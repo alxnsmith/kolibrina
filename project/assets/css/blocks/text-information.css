@@ -1,1 +1,14 @@
-.text-information{border:1px solid #969696;color:#333;min-height:40px;max-height:auto;width:100%;padding:10px;margin-top:15px}.text-information p{font-size:14px;font-weight:700}
+.text-information {
+    border: 1px solid #969696;
+    color: #333;
+    min-height: 40px;
+    max-height: auto;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px
+}
+
+.text-information p {
+    font-size: 14px;
+    font-weight: 700
+}

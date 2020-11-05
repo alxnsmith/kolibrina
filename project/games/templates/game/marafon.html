@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="robots" content="index,follow">
+
+    <title>КОЛИБРИНА - Марафон</title>
+
+    <meta name="description" content="">
+
+    {% include 'main/headPiece.html' %}
+
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <link rel="stylesheet" href="{% static "css/pages/marafon.css" %}">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+{% include "main/header.html" %}
+<div class="container">
+
+    <div class="marafon-top">
+        <div class="text-information">
+            <p>Текстовая информация</p>
+        </div>
+        <div class="marafon-top_right">
+            <div class="btn_choose">Ваш выбор</div>
+            <div class="marafon-timer" id="timer">00:00</div>
+        </div>
+    </div>
+
+
+    <form action="" method="POST" class="game">
+        <div class="topics">
+            {% for i in marafon_info.number_of_theme_blocks %}
+                <div class="topic">
+                    <div class="topic-name">__________</div>
+                    <div class="topic-points">
+                        <div class="topic-point" data-pos="1">100</div>
+                        <div class="topic-point" data-pos="2">200</div>
+                        <div class="topic-point" data-pos="3">300</div>
+                        <div class="topic-point" data-pos="4">400</div>
+                        <div class="topic-point" data-pos="5">500</div>
+                        <div class="topic-point" data-pos="6">600</div>
+                        <div class="topic-point" data-pos="7">700</div>
+                        <div class="topic-point" data-pos="8">800</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-7 col-lg-7">
+                <div class="game__question">
+                    ___________________________________________________?
+                </div>
+                <div class="game__options">
+                    <label>
+                        <input class="answer" type="radio" name="answer" value="" checked>
+                        _______
+                        <span></span>
+                    </label>
+                    <label>
+                        <input class="answer" type="radio" name="answer" value="">
+                        _______
+                        <span></span>
+                    </label>
+                    <label>
+                        <input class="answer" type="radio" name="answer" value="">
+                        _______
+                        <span></span>
+                    </label>
+                    <label>
+                        <input class="answer" type="radio" name="answer" value="">
+                        _______
+                        <span></span>
+                    </label>
+                </div>
+                <div class="game__button">
+                    <a class="btn" href="#">Пропустить</a>
+                </div>
+                <div class="correct_answer">
+                    <span>Правильный ответ:</span>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-5 col-lg-5 rating">
+                <div class="rating-title">Рейтинг топ 15 марафона</div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">1</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">2</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">3</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">4</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">5</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">6</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">7</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">8</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">9</span>. <span class="username"></span><span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">10</span>. <span class="username"></span> <span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">11</span>. <span class="username"></span> <span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">12</span>. <span class="username"></span> <span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">13</span>. <span class="username"></span> <span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">14</span>. <span class="username"></span> <span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="rating-place" id="username">
+                    <div class="rt-user"><span class="num">15</span>. <span class="username"></span> <span
+                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
+                    <div class="rt-points"> = <span class="score">0</span> (+<span class="score_delta">0</span>)</div>
+                </div>
+                <div class="players">ИГРОКИ (<span id="online_players">0</span>)</div>
+                <div class="viewers">ЗРИТЕЛИ (<span id="online_watchers">0</span>)</div>
+            </div>
+        </div>
+    </form>
+    <div class="user-stat">
+        <div class="user-avatar user_div">
+            <img class="user_img" src="{{ user_info.avatar }}"/>
+            <div class="user-name">
+                <span>{{ user_info.last_name }}</span>
+                <span>{{ user_info.first_name }}</span>
+                <span><b>г.{{ user_info.city }}</b></span>
+            </div>
+        </div>
+        <div class="user-points_table user_div">
+
+            <div class="user-points_table_col">
+                <div class="user-points_table_row">баллы за игру:</div>
+                <div class="user-points_table_row cr">0</div>
+            </div>
+            <div class="user-points_table_col">
+                <div class="user-points_table_row">баллы за месяц:</div>
+                <div class="user-points_table_row cr">{{ user_info.month_score }}</div>
+            </div>
+            <div class="user-points_table_col">
+                <div class="user-points_table_row">баллы всего:</div>
+                <div class="user-points_table_row cr">{{ user_info.total_score }}</div>
+            </div>
+        </div>
+        <div class="league_place user_div">
+            <span><b>Место <BR>в лиге</b></span>
+            <div class="league_count">123 / 878</div>
+        </div>
+        <div class="author user_div marafon_author">
+            <span class="marafon_author-title">Автор марафона №{{ marafon_info.id }}</span>
+            <span class="marafon_author-name">{{ marafon_info.author_firstname }} {{ marafon_info.author_lastname }}, {{ marafon_info.author_city }}</span>
+        </div>
+
+        <div class="marafon_league">
+            {{ user_info.league }}
+        </div>
+        <div class="user-lvl user_div">
+            <span>Уровень игрока</span>
+            <div class="lvl">{{ user_info.level.level }} / {{ user_info.level.numLevel }}</div>
+            {% if marafon_info.time_to_start %}{% include 'game/blocks/wait_block.html' %}{% endif %}
+        </div>
+    </div>
+</div>
+
+{% include "main/footer.html" %}
+<script>
+    function deltaTime(date_start) {
+        let now = Date.parse(Date())
+        return Math.floor((date_start - now) / 1000)
+    }
+
+    function timerCycle(date_start) {
+        let delta = deltaTime(date_start)
+
+        let days = Math.floor(delta / 86400)
+        let hours = Math.floor(delta / 360 % 24)
+        let minutes = Math.floor(delta / 60 % 60)
+        let seconds = Math.ceil(delta % 60)
+        return {'days': days, 'hours': hours, 'minutes': minutes, 'seconds': seconds, 'delta': delta}
+    }
+</script>
+<script>
+    "use strict"
+
+    function connect() {
+        let time_to_response
+        let rime_to_choose
+
+        class rating_top_fifteen {
+            constructor() {
+                this.rows = document.querySelectorAll('.rating-place')
+            }
+
+            write_username(username) {
+                this.row.querySelector('.username').innerHTML = username;
+            }
+
+            write_score(score) {
+                this.row.querySelector('.rt-points .score').innerHTML = score
+            }
+
+            write_score_delta(score_delta) {
+                this.row.querySelector('.rt-points .score_delta').innerHTML = score_delta
+            }
+
+            write_first_name(first_name) {
+                this.row.querySelector('.first_name').innerHTML = first_name
+            }
+
+            write_last_name(last_name) {
+                this.row.querySelector('.last_name').innerHTML = last_name
+            }
+
+            write_city(city) {
+                this.row.querySelector('.city').innerHTML = city
+            }
+
+            score_display(display) {
+                this.row.querySelector('.rt-points').style.display = display
+            }
+
+            write_row(user_dict) {
+                this.row = this.rows[user_dict.pos]
+                this.write_score(user_dict.score)
+                this.write_score_delta(user_dict.score_delta)
+                this.score_display('block')
+
+                if (user_dict.hide_name) {
+                    this.write_username(user_dict.username)
+                } else {
+                    this.write_first_name(user_dict.first_name)
+                    this.write_last_name(user_dict.last_name)
+                    this.write_city(user_dict.city)
+                }
+            }
+
+            erase_row() {
+                {# erase current row #}
+                this.write_score('0')
+                this.write_score_delta('0')
+                this.score_display('none')
+                this.write_username('')
+                this.write_first_name('')
+                this.write_last_name('')
+                this.write_city('')
+            }
+        }
+
+
+        function update_top_fifteen(players) {
+            let rating = new rating_top_fifteen()
+
+            players.forEach(player => {
+                rating.write_row(player)
+            })
+
+            let to_erase = Array.from(rating.rows).slice(players.length)
+            to_erase.forEach(row_to_erase => {
+                rating.row = row_to_erase
+                rating.erase_row()
+            })
+
+        }
+
+        function update_online(counter, online) {
+            if (counter === 'watchers') {
+                document.getElementById('online_watchers').innerText = online
+            } else if (counter === 'players') {
+                document.getElementById('online_players').innerText = online
+            }
+        }
+
+        function fill_themes(themes) {
+            let theme_field
+            let questions
+            let theme_blocs = document.querySelectorAll('.topic')
+            let i = 0
+            themes.forEach(theme => {
+                theme_field = theme_blocs[i].querySelector('.topic-name')
+                questions = theme_blocs[i].querySelectorAll('.topic-point')
+                theme_field.innerText = theme[0]
+                questions.forEach(question => {
+                    question.dataset.block_id = theme[1]
+                })
+                i++
+            })
+        }
+
+        function start_timer() {
+            function render_timer() {
+                let time = timerCycle(time_to_response * 1000)
+                document.getElementById('timer').innerText = `${String(time.minutes).padStart(2, '0')}:${time.seconds}`
+            }
+
+            render_timer()
+            let timer = setInterval(() => {
+                render_timer()
+            }, 1000)
+        }
+
+        let websocket = new WebSocket('wss://' + window.location.host + '/ws/marafon-week/')
+        websocket.onmessage = e => {
+            let data = JSON.parse(e.data)
+            if (data.type === 'online_watchers') {
+                update_online('watchers', data.online)
+            } else if (data.type === 'online_players') {
+                update_online('players', data.online)
+            } else if (data.type === 'themes_list') {
+                fill_themes(data.themes)
+            } else if (data.type === 'timer') {
+                time_to_response = data.timer
+                start_timer()
+            } else if (data.type === 'top_fifteen') {
+                update_top_fifteen(data.rows)
+            }
+        }
+    }
+</script>
+<script>
+    "use strict"
+
+    let date_start = new Date('{{ marafon_info.date }}')
+    date_start = Date.parse(date_start)
+    let wait_block
+    let timer_block
+
+    let days_block = document.getElementById('days')
+    let hours_block = document.getElementById('hours')
+    let minutes_block = document.getElementById('minutes')
+    let seconds_block = document.getElementById('seconds')
+
+    function render_timer() {
+        let timer = timerCycle(date_start)
+
+        days_block.innerText = timer.days
+        hours_block.innerText = timer.hours
+        minutes_block.innerText = timer.minutes
+        seconds_block.innerText = timer.seconds
+    }
+
+    if (deltaTime(date_start) > 0) {
+        render_timer(date_start)
+        let waitToStart = setInterval(() => {
+            render_timer(date_start)
+            if (deltaTime(date_start) < 1) {
+                clearInterval(waitToStart)
+                let wait_block = document.querySelector('.wait_block')
+                wait_block.style.opacity = '0'
+                connect()
+                setTimeout(() => {
+                    wait_block.remove()
+                }, 400)
+            }
+        }, 1000)
+    } else {
+        connect()
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $(".title > h2 > strong").html("Марафон");
+        $("header nav a:nth-child(2) > span").addClass("select");
+    });
+</script>
+
+</body>
+</html>

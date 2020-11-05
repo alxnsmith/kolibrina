@@ -1,1 +1,434 @@
-@import "../fonts.css";@import "../marafon.css";.text-information{min-height:70px;margin-top:0;margin-right:15px}.user_img{width:50px;height:50px;background:#333;border-radius:50px;margin-right:10px}.user-stat{padding:15px 0;display:flex}.user-avatar{display:flex;align-items:center}.user-name{display:flex;flex-direction:column}.user-points{display:flex;flex-direction:column;padding:0 20px}.user-points_points{display:flex;justify-content:space-around;text-align:center}.points-title{display:flex;justify-content:center;font-weight:700}.points_block{display:flex;flex-direction:column;justify-content:center}.points_block .points_block-points{color:#B658B0;font-weight:700;font-size:22px}.league_place{text-align:center}.league_count{color:#B658B0;font-weight:700;font-size:18px}.author{max-width:250px;display:flex;justify-content:center;align-items:center;text-align:center;padding:0 20px;margin:0 20px;border-left:1px solid #969696;border-right:1px solid #969696}.user-lvl{display:flex;align-items:center;flex-direction:column;justify-content:center;padding-right:15px;margin-right:15px}.user-lvl span{font-size:18px;font-weight:500}.user-lvl .lvl{color:#B658B0;font-weight:700;font-size:18px}.major-title{font-size:18px;font-weight:500}.marafon_league{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid #969696;padding-right:35px;margin-right:15px;color:#969696;font-weight:500}.major-count{color:red;margin-top:15px;font-size:18px;font-weight:500;display:flex;justify-content:center;border:2px solid red;padding:2px 30px}.game_nav{width:100%;min-height:50px;border:1px solid #969696;padding:15px 15px 5px;margin-top:30px;margin-bottom:10px}.game_nav .game_nav-btns{display:flex;margin:auto;max-width:700px;flex-wrap:wrap}.game_nav a{height:40px;width:40px;border:1px solid #969696;border-radius:50px;display:flex;font-weight:700;margin-right:15px;margin-bottom:10px;justify-content:center;align-items:center;font-size:16px;transition:all .3s}.game_nav a:hover{background-color:#2D06FF;color:#fff}.game_nav a.act{background-color:#2D06FF;border-color:#2D06FF;color:#fff}.user-stat{justify-content:space-between}.marafon-top{padding-top:15px;display:flex;align-items:center}.marafon-top .text-information{margin-top:0;min-height:40px;margin-right:25px}.marafon-top .marafon-top_right{display:flex}.marafon-top .btn_choose{border:3px solid #155afe;padding:0 5px;color:#155afe;font-weight:700;min-width:180px;display:flex;justify-content:center;align-items:center;border-radius:20px;cursor:pointer;transition:all .3s;margin-right:15px;height:40px}.marafon-top .btn_choose:hover{background:#155afe;color:#fff}.marafon-top .marafon-timer{border:3px solid red;padding:15px 20px;color:red;font-weight:700;min-width:150px;display:flex;justify-content:center;align-items:center;border-radius:20px;cursor:pointer;transition:all .3s;font-size:20px;height:40px}.marafon_author-title{font-weight:700}.marafon_author{display:flex;flex-direction:column}.marafon_author-name{color:#969696;font-weight:500}.correct_answer{margin-top:15px;font-weight:700}.rating-title{font-size:18px;text-transform:uppercase;font-weight:500;color:#969696;margin-top:5px;margin-bottom:10px}.rating-place{display:flex;justify-content:space-between;color:#969696;font-weight:500;flex-wrap:wrap}.viewers{text-align:center;font-weight:700;color:#969696}.ml15{margin-left:15px}.header-gradient{background:linear-gradient(90deg,#5401fa 16%,#013cfa 84%)!important}.user-lvl{border-right:none}.user-name span{font-weight:500}.game__functional a{border:2px solid #fff;box-shadow:-4px 3px 10px 0 rgba(50,50,50,.33)}.game__options textarea{width:100%;max-width:100%;min-width:100%;outline-color:#2D06FF;padding:15px}.game__question_sp{font-weight:700}.game_btns{display:flex;justify-content:space-between;align-items:center}.game_btns .skip_question{height:30px;width:160px;border:1px solid;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:30px;cursor:pointer}.textarea_span{margin-bottom:10px;display:block;font-weight:700}.game__theme{font-weight:700;margin-bottom:10px}.viewers_list{color:#969696;font-weight:500;padding:10px 0}.complexity{width:350px;height:60px;border:2px solid #2D06FF;margin:auto auto 15px;display:flex;align-items:center;justify-content:space-around}.complexity .complexity_item{width:50px;height:50px;cursor:pointer;border:2px solid #2D06FF;border-radius:50px;display:flex;justify-content:center;font-weight:700;font-size:22px;align-items:center;transition:all .3s}.complexity .complexity_item:hover{background:#2D06FF;color:#fff}.user-points{width:244px}.league_place{border-left:1px solid #333;padding-left:15px;margin-right:15px}.author{margin-left:0}@media screen and (max-width:1200px){.user-stat{flex-wrap:wrap;justify-content:center}.user-stat .user_div{margin-bottom:15px}}@media screen and (max-width:992px){.topic{flex-direction:column}.topic .topic-name{width:100%;margin-bottom:5px}.topic .topic-points{justify-content:space-between}.topic .topic-point{margin-left:0}}@media screen and (max-width:760px){.marafon-top{flex-wrap:wrap;justify-content:center}.text-information{margin-bottom:15px}}@media screen and (max-width:530px){.marafon-top_right{flex-wrap:wrap}.btn_choose{margin:0 0 10px}}
+@import "../fonts.css";
+@import "../marafon.css";
+
+.text-information {
+    min-height: 70px;
+    margin-top: 0;
+    margin-right: 15px
+}
+
+.user_img {
+    width: 50px;
+    height: 50px;
+    background: #333;
+    border-radius: 50px;
+    margin-right: 10px
+}
+
+.user-stat {
+    padding: 15px 0;
+    display: flex
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center
+}
+
+.user-name {
+    display: flex;
+    flex-direction: column
+}
+
+.user-points {
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px
+}
+
+.user-points_points {
+    display: flex;
+    justify-content: space-around;
+    text-align: center
+}
+
+.points-title {
+    display: flex;
+    justify-content: center;
+    font-weight: 700
+}
+
+.points_block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center
+}
+
+.points_block .points_block-points {
+    color: #B658B0;
+    font-weight: 700;
+    font-size: 22px
+}
+
+.league_place {
+    text-align: center
+}
+
+.league_count {
+    color: #B658B0;
+    font-weight: 700;
+    font-size: 18px
+}
+
+.author {
+    max-width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+    margin: 0 20px;
+    border-left: 1px solid #969696;
+    border-right: 1px solid #969696
+}
+
+.user-lvl {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 15px;
+    margin-right: 15px
+}
+
+.user-lvl span {
+    font-size: 18px;
+    font-weight: 500
+}
+
+.user-lvl .lvl {
+    color: #B658B0;
+    font-weight: 700;
+    font-size: 18px
+}
+
+.major-title {
+    font-size: 18px;
+    font-weight: 500
+}
+
+.marafon_league {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #969696;
+    padding-right: 35px;
+    margin-right: 15px;
+    color: #969696;
+    font-weight: 500
+}
+
+.major-count {
+    color: red;
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    border: 2px solid red;
+    padding: 2px 30px
+}
+
+.game_nav {
+    width: 100%;
+    min-height: 50px;
+    border: 1px solid #969696;
+    padding: 15px 15px 5px;
+    margin-top: 30px;
+    margin-bottom: 10px
+}
+
+.game_nav .game_nav-btns {
+    display: flex;
+    margin: auto;
+    max-width: 700px;
+    flex-wrap: wrap
+}
+
+.game_nav a {
+    height: 40px;
+    width: 40px;
+    border: 1px solid #969696;
+    border-radius: 50px;
+    display: flex;
+    font-weight: 700;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    transition: all .3s
+}
+
+.game_nav a:hover {
+    background-color: #2D06FF;
+    color: #fff
+}
+
+.game_nav a.act {
+    background-color: #2D06FF;
+    border-color: #2D06FF;
+    color: #fff
+}
+
+.user-stat {
+    justify-content: space-between
+}
+
+.marafon-top {
+    padding-top: 15px;
+    display: flex;
+    align-items: center
+}
+
+.marafon-top .text-information {
+    margin-top: 0;
+    min-height: 40px;
+    margin-right: 25px
+}
+
+.marafon-top .marafon-top_right {
+    display: flex
+}
+
+.marafon-top .btn_choose {
+    border: 3px solid #155afe;
+    padding: 0 5px;
+    color: #155afe;
+    font-weight: 700;
+    min-width: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all .3s;
+    margin-right: 15px;
+    height: 40px
+}
+
+.marafon-top .btn_choose:hover {
+    background: #155afe;
+    color: #fff
+}
+
+.marafon-top .marafon-timer {
+    border: 3px solid red;
+    padding: 15px 20px;
+    color: red;
+    font-weight: 700;
+    min-width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all .3s;
+    font-size: 20px;
+    height: 40px
+}
+
+.marafon_author-title {
+    font-weight: 700
+}
+
+.marafon_author {
+    display: flex;
+    flex-direction: column
+}
+
+.marafon_author-name {
+    color: #969696;
+    font-weight: 500
+}
+
+.correct_answer {
+    margin-top: 15px;
+    font-weight: 700
+}
+
+.rating-title {
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #969696;
+    margin-top: 5px;
+    margin-bottom: 10px
+}
+
+.rating-place {
+    display: flex;
+    justify-content: space-between;
+    color: #969696;
+    font-weight: 500;
+    flex-wrap: wrap
+}
+
+.viewers {
+    text-align: center;
+    font-weight: 700;
+    color: #969696
+}
+
+.ml15 {
+    margin-left: 15px
+}
+
+.header-gradient {
+    background: linear-gradient(90deg, #5401fa 16%, #013cfa 84%) !important
+}
+
+.user-lvl {
+    border-right: none
+}
+
+.user-name span {
+    font-weight: 500
+}
+
+.game__functional a {
+    border: 2px solid #fff;
+    box-shadow: -4px 3px 10px 0 rgba(50, 50, 50, .33)
+}
+
+.game__options textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    outline-color: #2D06FF;
+    padding: 15px
+}
+
+.game__question_sp {
+    font-weight: 700
+}
+
+.game_btns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.game_btns .skip_question {
+    height: 30px;
+    width: 160px;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-top: 30px;
+    cursor: pointer
+}
+
+.textarea_span {
+    margin-bottom: 10px;
+    display: block;
+    font-weight: 700
+}
+
+.game__theme {
+    font-weight: 700;
+    margin-bottom: 10px
+}
+
+.viewers_list {
+    color: #969696;
+    font-weight: 500;
+    padding: 10px 0
+}
+
+.complexity {
+    width: 350px;
+    height: 60px;
+    border: 2px solid #2D06FF;
+    margin: auto auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around
+}
+
+.complexity .complexity_item {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border: 2px solid #2D06FF;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 22px;
+    align-items: center;
+    transition: all .3s
+}
+
+.complexity .complexity_item:hover {
+    background: #2D06FF;
+    color: #fff
+}
+
+.user-points {
+    width: 244px
+}
+
+.league_place {
+    border-left: 1px solid #333;
+    padding-left: 15px;
+    margin-right: 15px
+}
+
+.author {
+    margin-left: 0
+}
+
+@media screen and (max-width: 1200px) {
+    .user-stat {
+        flex-wrap: wrap;
+        justify-content: center
+    }
+
+    .user-stat .user_div {
+        margin-bottom: 15px
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .topic {
+        flex-direction: column
+    }
+
+    .topic .topic-name {
+        width: 100%;
+        margin-bottom: 5px
+    }
+
+    .topic .topic-points {
+        justify-content: space-between
+    }
+
+    .topic .topic-point {
+        margin-left: 0
+    }
+}
+
+@media screen and (max-width: 760px) {
+    .marafon-top {
+        flex-wrap: wrap;
+        justify-content: center
+    }
+
+    .text-information {
+        margin-bottom: 15px
+    }
+}
+
+@media screen and (max-width: 530px) {
+    .marafon-top_right {
+        flex-wrap: wrap
+    }
+
+    .btn_choose {
+        margin: 0 0 10px
+    }
+}

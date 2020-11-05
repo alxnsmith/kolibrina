@@ -1,8 +1,21 @@
 import os
-import django
-from channels.routing import get_default_application
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from django.core.asgi import get_asgi_application
+
+import chat.routing
+import channel_common.routing
+import games.routing
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Kolibrina.settings")
-pythonpath = '/home/www/kolibrinaMAIN/project'
-django.setup()
-application = get_default_application()
+
+application = ProtocolTypeRouter({
+    "http": get_asgi_application(),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(
+            chat.routing.websocket_urlpatterns +
+            channel_common.routing.websocket_urlpatterns +
+            games.routing.websocket_urlpatterns
+        )
+    )
+})

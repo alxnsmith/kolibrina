@@ -1,12 +1,13 @@
 import json
-from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
+from asgiref.sync import async_to_sync, sync_to_async
+from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer
 from django.utils import timezone
 from django.forms.models import model_to_dict
 import random
+import math
 
 from questions.models import Tournament
-from .services import TournamentWeekInstance
+from .services import TournamentWeekInstance, get_marafon_instance, user_services
 import redis
 from django.conf import settings
 
@@ -40,13 +41,13 @@ class TournamentWeek(WebsocketConsumer):
         self.tournament_shortname = self.scope['url_route']['kwargs']['tournament_name']
         self.tournament_instance = _get_tournament_instance(self.tournament_shortname)
         self.accept()
-        self.game_session = TournamentWeekInstance(self.tournament_instance, self.scope['user'], lose_question=self.lose_num_question)
+        self.game_session = TournamentWeekInstance(self.tournament_instance, self.scope['user'],
+                                                   lose_question=self.lose_num_question)
         self.send(json.dumps({'type': 'timer_duration',
                               'timer': self.game_session.timer_duration}))
         self.send(json.dumps({'type': 'tournament_author',
                               'author': str(self.game_session.tournament_author)}))
         attempt = self.game_session.attempt
-        print(attempt)
         if attempt > 0:
             attempt2 = self.game_session.attempt2
             if attempt > 0 and not attempt2:
@@ -59,7 +60,6 @@ class TournamentWeek(WebsocketConsumer):
 
     def disconnect(self, code):
         if code == 1001:
-            print('Tab closed')
             if self.game_session.is_started:
                 data = {'event': 'respond', 'answer': None}
                 self.check_respond(data)
@@ -179,7 +179,6 @@ class TournamentWeek(WebsocketConsumer):
             self.send(json.dumps({'type': 'answer_result', 'result': 'OK'}))
             self.send(json.dumps({'type': 'reset_timer'}))
             if int(self.current_question_num) == 24:
-                # TODO: ввести переменную с попбедным вопросом (количеством вопросов в игре)
                 user = self.scope['user']
                 attempts = self.game_session.tournament_instance.attempt_set.get(user=user)
                 attempts.lose_num_question = self.current_question_num
@@ -200,3 +199,160 @@ def _get_tournament_instance(tournament_shortname):
         date__range=date_range)
     tournament_model = active_tournaments_list.order_by('date')[0]
     return tournament_model
+
+
+class Timer:
+    redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
+                                       port=settings.REDIS_PORT,
+                                       db=settings.REDIS_DB)
+
+    def __init__(self, timer):
+        self.timer = timer
+
+    def get_end_time_timer(self):
+        return timezone.now().timestamp() + self.timer
+
+
+class MarafonRating:
+    players = {}
+
+    def add_player(self, player_instance) -> None:
+        player = {
+            'username': player_instance.username,
+            'hide_name': player_instance.hideMyName,
+            'score': 0,
+            'score_delta': 0
+        }
+        if not player['hide_name']:
+            player.update({
+                'first_name': player_instance.firstName,
+                'last_name': player_instance.lastName,
+                'city': player_instance.city,
+            })
+        self.players[player['username']] = player
+
+    def remove_player(self, player_instance) -> None:
+        del self.players[player_instance.username]
+
+    def get_top_fifteen(self) -> list:
+        players = []
+        for i, dictionary in enumerate(sorted(self.players.items(), key=lambda x: x[1]['score'])[:15]):
+            dictionary = dictionary[1]
+            dictionary['pos'] = i
+            players.append(dictionary)
+        return players
+
+
+class MarafonWeek(JsonWebsocketConsumer):
+    class Roles:
+        WATCHER = 'watcher'
+        PLAYER = 'player'
+
+    watchers_online = set()
+    players_online = set()
+    rating = MarafonRating()
+    marafon = get_marafon_instance()
+
+    themes = [theme
+              for theme in list(marafon.question_blocks.all().values_list('theme__theme', 'theme'))]
+
+    game_group_name = 'marafon_week'
+
+    def connect(self):
+        self.user = self.scope['user']
+
+        self.username = self.user.username
+
+        if self.user in self.marafon.players.all():
+            self.role = self.Roles.PLAYER
+        else:
+            self.role = self.Roles.WATCHER
+
+        async_to_sync(self.channel_layer.group_add)(
+            self.role,
+            self.channel_name
+        )
+        async_to_sync(self.channel_layer.group_add)(
+            self.game_group_name,
+            self.channel_name
+        )
+
+        self.accept()
+        self.update_online(event='connect')
+        self.update_rating(event='connect')
+
+        for i in range(0, 4):
+            theme = list(self.marafon.question_blocks.all().values_list('theme__theme', 'theme'))[i]
+            for raw_question in list(self.marafon.question_blocks.all())[i].questions.all():
+                question = {'question': raw_question.question,
+                            'correct_answer': raw_question.correct_answer,
+                            'answer2': raw_question.answer2,
+                            'answer3': raw_question.answer3,
+                            'answer4': raw_question.answer4,
+                            'pos': raw_question.pos,
+                            'author': raw_question.author,
+
+                            }
+
+        self.send_themes()
+
+        self.response_timer = Timer(self.marafon.response_timer)
+        # self.start_timer()
+
+    def receive_json(self, content, **kwargs):
+        print(content)
+
+    def disconnect(self, message):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.role,
+            self.channel_name
+        )
+        self.update_online(event='disconnect')
+        self.update_rating(event='disconnect')
+
+    def start_timer(self, *_):
+        self.send_json({'type': 'timer', 'timer': self.response_timer.get_end_time_timer()})
+
+    def send_themes(self, *_):
+        self.send_json({'type': 'themes_list', 'themes': self.themes})
+
+    def update_rating(self, event):
+        def update():
+            if event == 'connect':
+                self.rating.add_player(self.user)
+            elif event == 'disconnect':
+                self.rating.remove_player(self.user)
+            async_to_sync(self.channel_layer.group_send)(
+                self.game_group_name,
+                {'type': 'send_rating'})
+
+        if self.role == self.Roles.PLAYER:
+            update()
+        else:
+            self.send_rating()
+
+    def send_rating(self, *_):
+        self.send_json({'type': 'top_fifteen', 'rows': self.rating.get_top_fifteen()})
+
+    def update_online(self, event):
+        def update(group, group_name):
+            if event == 'connect':
+                group.add(self.user)
+            elif event == 'disconnect':
+                group.discard(self.user)
+            async_to_sync(self.channel_layer.group_send)(
+                self.game_group_name,
+                {'type': f'update_online_{group_name}s'})
+
+        if self.role == self.Roles.WATCHER:
+            update(self.watchers_online, self.Roles.WATCHER)
+            self.update_online_players()
+        elif self.role == self.Roles.PLAYER:
+            update(self.players_online, self.Roles.PLAYER)
+            self.update_online_watchers()
+
+    def update_online_watchers(self, *_):
+        self.send_json(content={'type': 'online_watchers', 'online': len(self.watchers_online)})
+
+    def update_online_players(self, *_):
+        self.send_json(content={'type': 'online_players', 'online': len(self.players_online)})

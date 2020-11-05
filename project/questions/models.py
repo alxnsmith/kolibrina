@@ -162,10 +162,16 @@ class Marafon(models.Model):
                                verbose_name="Автор марафона")
     official = models.BooleanField(default=False)
     question_blocks = models.ManyToManyField(MarafonThemeBlock)
-    timer = models.IntegerField(verbose_name='Время таймера', default=30)
-    date = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)
+    response_timer = models.SmallIntegerField(verbose_name='Время на ответ', default=30)
+    choose_timer = models.SmallIntegerField(verbose_name='Время на выбор вопроса', default=15)
+
+    date_time_start = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)
+    is_active = models.BooleanField(verbose_name='Активный марафон', default=False)
+
     create_date = models.DateField(verbose_name='Дата создания', default=timezone.now)
-    is_active = models.BooleanField(verbose_name="Активный марафон", default=False)
+
+    price = models.SmallIntegerField(null=True, blank=True, verbose_name='Цена')
+    players = models.ManyToManyField(User, related_name='players', blank=True)
 
     def __str__(self):
         return f'A: {self.is_active};Name: {self.name}; Author: {self.author}; Create date: {self.create_date}'

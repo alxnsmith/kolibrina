@@ -14,16 +14,13 @@ ENV_SELENIUM = . ./bin/selenium/venv/bin/activate
 MIGRATIONS = python3.9 manage.py makemigrations ; \
 			 python3.9 manage.py migrate
 
-CREATESUPERUSER = echo "from django.contrib.auth import get_user_model; User = get_user_model(); admin = User.objects.create_superuser(username='admin',email='admin@kolibrina.ru', password='admin');"\
-	"from django.contrib.auth.models import Group; admins = Group.objects.create(name='Admins');print('admin'); admin.groups.add(admins)" | python3.9 manage.py shell
-
 
 
 
 init:
 	$(CREATE_ENV) ; \
 	$(MIGRATIONS) ; \
-	$(CREATESUPERUSER) ; \
+	python3.9 manage.py init ; \
 	cd .. ; \
 	python3.9 ./bin/initProject.py ; \
 
@@ -44,7 +41,7 @@ migrate:
 
 dev:
 	$(ENV) ; \
-	python3.9 manage.py runserver 127.0.0.1:8002
+	python3.9 manage.py runserver --settings=Kolibrina.settings_dev 127.0.0.1:8002
 
 shell:
 	$(ENV) ; \

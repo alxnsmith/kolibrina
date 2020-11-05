@@ -11,6 +11,7 @@ from questions.services import get_questions_from_tournament
 from stats.services import get_sum_score_user
 from userK import services as user_services
 from stats.services import UserScore
+from questions.models import Marafon
 from .models import TournamentScoreUserLink
 
 
@@ -63,7 +64,7 @@ class TournamentWeekInstance:
 
         self.pos_list = self.init_pos_list(self.attempt + 1, self.lose_question)
         self.next_question_pos = self._gen_pos_question(self.pos_list)
-        self.timer_duration = self.tournament_instance.timer
+        self.timer_duration = self.tournament_instance.response_timer
         self.tournament_author = self._get_tournament_author()
 
         self.current_question_num_gen = self._get_next_question_number()
@@ -315,3 +316,15 @@ class ScoreTournamentWeek:
     def combo_bonus_on_question(self):
         return (self.combo - 1) * (self.question_difficulty + int(str(self.question_pos).split('.')[-1])) / (
                 70 - self.question_difficulty)
+
+
+def get_marafon_instance():
+    active_marafon_list = Marafon.objects.filter(
+        is_active=True, purpose='MWEL', official=True, price__isnull=False, date_time_start__isnull=False
+    )
+    if active_marafon_list.exists():
+        marafon = active_marafon_list.order_by('date_time_start')[0]
+    else:
+        marafon = {'status': 'error', 'error': 'Empty'}
+    return marafon
+

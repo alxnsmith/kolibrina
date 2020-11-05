@@ -9,6 +9,7 @@ header > .header-gradient > .container {display: flex}
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
+  position: relative;
 }
 /*.container:before,*/
 /*.container:after {*/

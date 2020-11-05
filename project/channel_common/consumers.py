@@ -1,42 +1,60 @@
+import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+import redis
+from django.conf import settings
 
 
 class OnlineConsumer(WebsocketConsumer):
-    online_list = {}
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.username = self.scope['user']
+    redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
+                                       port=settings.REDIS_PORT,
+                                       db=0)
 
     def connect(self):
-        self.username = str(self.username)
+        self.room_group_name = 'online'
+        self.username = str(self.scope['user'])
+
+        #  Join to room
         async_to_sync(self.channel_layer.group_add)(
-            'online',
+            self.room_group_name,
             self.channel_name
         )
+
         self.accept()
-        if self.online_list.get(self.username):
-            self.online_list[self.username] += 1
-        elif self.username != 'AnonymousUser':
-            self.online_list[self.username] = 1
-        self.send_online()
+
+        self.redis_instance.zincrby(self.room_group_name, 1, self.username)
+
+        self._update_online()
 
     def disconnect(self, code):
-        if self.username != 'AnonymousUser':
-            self.send_online()
-            if self.online_list.get(self.username):
-                self.online_list[self.username] -= 1
-                if self.online_list[self.username] == 0:
-                    del self.online_list[self.username]
+        #  Leave room group
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name
+        )
 
-    def new_online(self, event):
-        value = event['value']
-        self.send(value)
+        self.redis_instance.zincrby(self.room_group_name, -1, self.username)
+        if self.redis_instance.zscore(self.room_group_name, self.username) < 1:
+            self.redis_instance.zrem(self.room_group_name, self.username)
 
-    def send_online(self):
+        self._update_online()
+
+    def send_online(self, event):
+        online = event['online']
+
+        self.send(text_data=json.dumps(
+            {
+                'type': 'online',
+                'online': online
+            }))
+
+    def _update_online(self):
+        online = self.redis_instance.zcard(self.room_group_name)
+        if b'AnonymousUser' in self.redis_instance.zrange(self.room_group_name, 0, -1):
+            online = online - 1 + self.redis_instance.zscore(self.room_group_name, 'AnonymousUser')
+
         async_to_sync(self.channel_layer.group_send)(
-            'online',
-            {'type': 'new_online',
-             'value': str(len(self.online_list))}
+            self.room_group_name,
+            {'type': 'send_online',
+             'online': online}
         )

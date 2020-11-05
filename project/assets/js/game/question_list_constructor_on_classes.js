@@ -16,7 +16,6 @@ class Question {
 class QuestionList {
     constructor(quantity_questions, categories_and_themes = false) {
         this._list = {}
-        console.log(quantity_questions)
         this._quantity_questions = quantity_questions
         this._categories_and_themes = categories_and_themes
     }

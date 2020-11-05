@@ -1,102 +1,82 @@
-import json
 from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import JsonWebsocketConsumer
 import redis
 from django.conf import settings
 
 
-class ChatConsumer(WebsocketConsumer):
+class ChatConsumer(JsonWebsocketConsumer):
     redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                        port=settings.REDIS_PORT,
                                        db=0)
-    room_name: object
-    room_group_name: object
     redis_instance.set('ChatOnline', '0')
 
     def connect(self):
-        self.redis_instance.incr('ChatOnline')
-        # Join room group
-
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
+        self.room_group_name = f'chat_{self.room_name}'
+        self.messages_redis_key = f'{self.room_group_name}_messages'
+        self.redis_instance.incr('ChatOnline')
 
+        self.accept()
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
             self.channel_name
         )
-        self.accept()
-        if history := self.redis_instance.get(f'{self.room_group_name}_messages'):
-            for mes in json.loads(history.decode()):
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                'type': 'chat_online',
+                'online': int(self.redis_instance.get('ChatOnline'))
+            }
+        )
+
+        if history := self.redis_instance.lrange(self.messages_redis_key, 0, -1):  # get all messages
+            for mes in history:
+                mes = self.decode_json(mes)
                 message = {'type': 'message',
                            'message': mes['message'],
                            'username': mes['username'],
                            'time': mes['time']}
-                self.send(json.dumps(message))
-
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {'type': 'chat_online'}
-        )
+                self.send_json(message)
 
     def disconnect(self, code):
         self.redis_instance.decr('ChatOnline')
-        # Leave room group
-        async_to_sync(self.channel_layer.group_discard)(
+        async_to_sync(self.channel_layer.group_discard)(  # Leave room group
             self.room_group_name,
             self.channel_name
         )
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
-            {'type': 'chat_online'}
+            {'type': 'chat_online',
+             'online': self.redis_instance.get('ChatOnline').decode()}
         )
 
-    def receive(self, *args, **kwargs):
+    def receive_json(self, content, **kwargs):
         """Receive message from WebSocket"""
-        text_data = kwargs['text_data']
-        text_data_json = json.loads(text_data)
-        message = {'message': text_data_json['message'],
-                   'username': str(self.scope['user']),
-                   'time': text_data_json['time']}
-        self._message_buffer(message=message)  # save last 20 messages (not for room, for all sockets)
+        message = {
+            'type': 'message',
+            'message': content['message'],
+            'time': content['time'],
+            'username': str(self.scope['user'])
+        }
+        self._message_buffer(message=self.encode_json(message))
 
-        # Send message to room group
-        async_to_sync(self.channel_layer.group_send)(
+        async_to_sync(self.channel_layer.group_send)(  # Send message to room group
             self.room_group_name,
-            {'type': 'chat_message',
-             'message': message})
+            {'type': 'chat_message', 'message': message})
 
     def chat_message(self, event):
-        """Receive message from room group"""
+        message = event['message']
+        self.send_json(content={**message})
 
-        message = event['message']['message']
-        username = event['message']['username']
-        time = event['message']['time']
-
-        # Send message to WebSocket
-        self.send(text_data=json.dumps({
-            'type': 'message',
-            'message': message,
-            'username': username,
-            'time': time,
-            # 'message_list': self.redis_instance.get(f'{self.room_group_name}_messages').decode(),
-        }))
-
-    def chat_online(self, *args, **kwargs):
-        self.send(json.dumps({
+    def chat_online(self, event):
+        online = event['online']
+        self.send_json(content={
             'type': 'online',
-            'online': int(self.redis_instance.get('ChatOnline')),
-        }))
+            'online': online,
+        })
 
-    def _message_buffer(self, message):
-        if self.redis_instance.exists(f'{self.room_group_name}_messages') == 1:
-            message_list = json.loads(self.redis_instance.get(f'{self.room_group_name}_messages').decode())
-            message_list.append(message)
-            if len(message_list) <= 20:
-                self.redis_instance.set(f'{self.room_group_name}_messages',
-                                        json.dumps(message_list))
-            else:
-                message_list.pop(0)
-                self.redis_instance.set(f'{self.room_group_name}_messages',
-                                        json.dumps(message_list))
-        else:
-            self.redis_instance.set(f'{self.room_group_name}_messages', json.dumps([message]))
+    def _message_buffer(self, message: str):
+        if self.redis_instance.exists(self.messages_redis_key) == 1:
+            self.redis_instance.ltrim(self.messages_redis_key, -20, -1)  # trim to last 20 messages
+        self.redis_instance.rpush(self.messages_redis_key, message)

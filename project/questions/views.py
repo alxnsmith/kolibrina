@@ -70,8 +70,7 @@ class QuestionAPI(View):
         else:
             return self._status_error('Error! Unknown event.')
 
-    @staticmethod
-    def _exists_in(keys, checked_element):
+    def _exists_in(self, keys, checked_element):
         for key in keys:
             if key not in checked_element:
                 return self._status_error(f'Error! Need "{key}"')

@@ -1,11 +1,297 @@
-@import "../fonts.css";#avatar{border-left:2px solid #00978F;border-right:2px solid #00978F}#avatar h3{font-weight:700;font-size:24px;margin-bottom:10px}#avatar img{height:auto;max-height:300px;width:auto;max-width:200px}#avatar form{width:100%}#avatar form a{display:block;width:100%;text-align:center;color:#2201F1}#avatar form a:hover{text-decoration:underline}#level,#rating{margin-top:10px}#level span,#level strong,#rating span,#rating strong{display:block;text-align:center}#level strong,#rating strong{font-weight:700;background-color:#00978F;color:#fff}#level span{margin-top:3px}.mt5{margin-top:5px}.mt10{margin-top:10px}.line{border:1px dashed #00978F}#data form input{margin:5px 0;padding:1px 15px;width:100%}#data form input,#data form label,#data form select{margin-top:10px}#data form select[id=country],#data form select[id=region]{margin-left:5px;min-width:150px;max-width:200px}#data form #birth,#data form #gender,#data form #leagues{text-align:center}#data form #birth span,#data form #gender span,#data form #leagues span{font-weight:700}#data form #gender span,#data form #leagues span,#data form #panel-captain > div > div > span{display:block;width:100%;margin-bottom:20px}#data form #gender input,#data form #gender label,#data form #leagues input,#data form #leagues label,#data form #panel-captain input,#data form #panel-captain label{margin-top:0;margin-left:10px}#data form #gender input,#data form #leagues input,#data form #panel-captain input{width:auto}#data form #gender label,#data form #leagues label,#data form #panel-captain label{float:left;margin-top:-5px}#data form #leagues span,#data form #panel-captain span{margin:10px 0}#data form #leagues label,#data form #panel-captain label{float:initial}#data form #panel-captain input{width:auto}#data form #panel-captain a{margin-left:10px;color:maroon}#data form #panel-captain a:hover{text-decoration:underline}#pay{border:1px solid #22B14C;padding:15px}#pay input,#pay strong{display:block;text-align:center;margin:0 auto}#pay strong{font-weight:700;color:#22B14C;margin-bottom:5px}#pay input,#pay select{width:100%}#pay__button{display:inline-block;height:50px;width:100%;line-height:50px;text-align:center;text-transform:uppercase;background-color:#22B14C;color:#fff;font-weight:700}#pay__button:hover{opacity:.8}#pay #services{padding:0 15px 15px}#pay #services label{font-size:16px;text-transform:capitalize;display:block;vertical-align:middle;color:#333;position:relative;padding-left:30px}#pay #services label:hover{cursor:pointer}#pay #services label input[type=radio]{display:none}#pay #services label+label{margin-top:10px}#pay #services label span{width:16px;height:16px;border-radius:50%;border:1px solid #22B14C;display:block;position:absolute;left:0;top:7px}#pay #services label span:after{content:"";height:9px;width:9px;background-color:#22B14C;display:block;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);border-radius:50%;transition:300ms ease-in-out 0s}#pay #services label input[type=radio]:checked~span:after{transform:translate(-50%,-50%) scale(1)}@media (max-width:600px){#tournaments{width:100%;overflow-x:scroll}}#tournaments #wrap-title{position:relative}#tournaments hr{margin-left:15px;border:2px solid #00978f}#tournaments #text1{position:absolute;top:-9px;left:0;right:0;text-align:center}#tournaments #text1 span{display:inline-block;padding:5px 20px;background-color:#fff;font-weight:700;text-transform:uppercase;margin-top:-35px}#tournaments table{margin:30px auto}#tournaments table td,#tournaments table th{text-align:center;padding-left:15px}#tournaments table th{font-weight:700;padding-bottom:10px}#tournaments table td{border:#00978F}#tournaments table td:first-child{text-align:left}.footer__buttons a,.footer__buttons input,footer .row>div:first-child{margin-top:10px}.footer__buttons input{padding:1px 15px;min-width:310px}
-.teammate{
+@import "../fonts.css";
+
+#avatar {
+    border-left: 2px solid #00978F;
+    border-right: 2px solid #00978F
+}
+
+#avatar h3 {
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 10px
+}
+
+#avatar img {
+    height: auto;
+    max-height: 300px;
+    width: auto;
+    max-width: 200px
+}
+
+#avatar form {
+    width: 100%
+}
+
+#avatar form a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #2201F1
+}
+
+#avatar form a:hover {
+    text-decoration: underline
+}
+
+#level, #rating {
+    margin-top: 10px
+}
+
+#level span, #level strong, #rating span, #rating strong {
+    display: block;
+    text-align: center
+}
+
+#level strong, #rating strong {
+    font-weight: 700;
+    background-color: #00978F;
+    color: #fff
+}
+
+#level span {
+    margin-top: 3px
+}
+
+.mt5 {
+    margin-top: 5px
+}
+
+.mt10 {
+    margin-top: 10px
+}
+
+.line {
+    border: 1px dashed #00978F
+}
+
+#data form input {
+    margin: 5px 0;
+    padding: 1px 15px;
+    width: 100%
+}
+
+#data form input, #data form label, #data form select {
+    margin-top: 10px
+}
+
+#data form select[id=country], #data form select[id=region] {
+    margin-left: 5px;
+    min-width: 150px;
+    max-width: 200px
+}
+
+#data form #birth, #data form #gender, #data form #leagues {
+    text-align: center
+}
+
+#data form #birth span, #data form #gender span, #data form #leagues span {
+    font-weight: 700
+}
+
+#data form #gender span, #data form #leagues span, #data form #panel-captain > div > div > span {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px
+}
+
+#data form #gender input, #data form #gender label, #data form #leagues input, #data form #leagues label, #data form #panel-captain input, #data form #panel-captain label {
+    margin-top: 0;
+    margin-left: 10px
+}
+
+#data form #gender input, #data form #leagues input, #data form #panel-captain input {
+    width: auto
+}
+
+#data form #gender label, #data form #leagues label, #data form #panel-captain label {
+    float: left;
+    margin-top: -5px
+}
+
+#data form #leagues span, #data form #panel-captain span {
+    margin: 10px 0
+}
+
+#data form #leagues label, #data form #panel-captain label {
+    float: initial
+}
+
+#data form #panel-captain input {
+    width: auto
+}
+
+#data form #panel-captain a {
+    margin-left: 10px;
+    color: maroon
+}
+
+#data form #panel-captain a:hover {
+    text-decoration: underline
+}
+
+#pay {
+    border: 1px solid #22B14C;
+    padding: 15px
+}
+
+#pay input, #pay strong {
+    display: block;
+    text-align: center;
+    margin: 0 auto
+}
+
+#pay strong {
+    font-weight: 700;
+    color: #22B14C;
+    margin-bottom: 5px
+}
+
+#pay input, #pay select {
+    width: 100%
+}
+
+#pay__button {
+    display: inline-block;
+    height: 50px;
+    width: 100%;
+    line-height: 50px;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: #22B14C;
+    color: #fff;
+    font-weight: 700
+}
+
+#pay__button:hover {
+    opacity: .8
+}
+
+#pay #services {
+    padding: 0 15px 15px
+}
+
+#pay #services label {
+    font-size: 16px;
+    text-transform: capitalize;
+    display: block;
+    vertical-align: middle;
+    color: #333;
+    position: relative;
+    padding-left: 30px
+}
+
+#pay #services label:hover {
+    cursor: pointer
+}
+
+#pay #services label input[type=radio] {
+    display: none
+}
+
+#pay #services label + label {
+    margin-top: 10px
+}
+
+#pay #services label span {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #22B14C;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 7px
+}
+
+#pay #services label span:after {
+    content: "";
+    height: 9px;
+    width: 9px;
+    background-color: #22B14C;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    transition: 300ms ease-in-out 0s
+}
+
+#pay #services label input[type=radio]:checked ~ span:after {
+    transform: translate(-50%, -50%) scale(1)
+}
+
+@media (max-width: 600px) {
+    #tournaments {
+        width: 100%;
+        overflow-x: scroll
+    }
+}
+
+#tournaments #wrap-title {
+    position: relative
+}
+
+#tournaments hr {
+    margin-left: 15px;
+    border: 2px solid #00978f
+}
+
+#tournaments #text1 {
+    position: absolute;
+    top: -9px;
+    left: 0;
+    right: 0;
+    text-align: center
+}
+
+#tournaments #text1 span {
+    display: inline-block;
+    padding: 5px 20px;
+    background-color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: -35px
+}
+
+#tournaments table {
+    margin: 30px auto
+}
+
+#tournaments table td, #tournaments table th {
+    text-align: center;
+    padding-left: 15px
+}
+
+#tournaments table th {
+    font-weight: 700;
+    padding-bottom: 10px
+}
+
+#tournaments table td {
+    border: #00978F
+}
+
+#tournaments table td:first-child {
+    text-align: left
+}
+
+.footer__buttons a, .footer__buttons input, footer .row > div:first-child {
+    margin-top: 10px
+}
+
+.footer__buttons input {
+    padding: 1px 15px;
+    min-width: 310px
+}
+
+.teammate {
     margin-top: 10px;
     padding: 6px 3px 3px 3px;
     width: 100%;
 }
 
-.teammate input{
+.teammate input {
     transition: all 1s;
 }
 
@@ -13,11 +299,11 @@
     position: relative;
 }
 
-.number_in_the_team > span, .role > span, .teammate_role > span{
+.number_in_the_team > span, .role > span, .teammate_role > span {
     display: none;
     position: absolute;
     opacity: 0;
-    width: 75px!important;
+    width: 75px !important;
     background-color: rgba(100, 255, 100, 0.8);
     color: #fff;
     text-align: center;
@@ -29,9 +315,9 @@
     margin-left: -80px;
 }
 
-.number_in_the_team > span span, .role > span span, .teammate_role > span span{
+.number_in_the_team > span span, .role > span span, .teammate_role > span span {
     position: absolute;
-    width: 10px!important;
+    width: 10px !important;
     top: 70%;
     left: 40%;
     margin-left: -5px;
@@ -39,11 +325,12 @@
     border-style: solid;
     border-color: rgba(100, 255, 100, 0.7) transparent transparent transparent;
 }
-.number_in_the_team span, .role span, .teammate_role span{
+
+.number_in_the_team span, .role span, .teammate_role span {
     transition: opacity 1s;
 }
 
-.role > span, .teammate_role > span{
+.role > span, .teammate_role > span {
     left: -19%;
 }
 
@@ -52,11 +339,11 @@
     opacity: 0;
 }
 
-.teammate{
+.teammate {
     position: relative;
 }
 
-.teammate_num{
+.teammate_num {
     position: absolute;
     font-size: 15px;
     top: -10px;
@@ -64,14 +351,17 @@
     color: #2D06FF;
 }
 
-.l{
+.l {
     justify-content: center;
 
 }
-.l span:before{
+
+.l span:before {
     content: '';
     position: absolute;
     border-bottom: 4px solid #009e90;
     width: 100px;
 }
-.l span:after{}
+
+.l span:after {
+}

@@ -265,26 +265,6 @@ input, select, textarea {
     align-items: center
 }
 
-/*.close_btn{*/
-/*    position: relative;*/
-/*}*/
-/*.close_btn:after, .close_btn:before{*/
-/*    content: '';*/
-/*    position: absolute;*/
-/*    width: 15px;*/
-/*    height: 2px;*/
-/*    background-color: red;*/
-/*    border-radius: 2px;*/
-/*    left: 20px;*/
-/*    top: 10px;*/
-/*}*/
-/*.close_btn:after{*/
-/*    transform: rotate(45deg);*/
-/*}*/
-/*.close_btn:before{*/
-/*    transform: rotate(-45deg);*/
-/*}*/
-
 #add_question {
     opacity: 0;
     display: none;
@@ -349,6 +329,6 @@ input, select, textarea {
     justify-content: center;
 }
 
-.circle_btn.ok {
+.circle_btn.accept {
     background: #00000050;
 }

@@ -207,15 +207,15 @@
     justify-content: center;
 }
 
-.game__options{
+.game__options {
     transition: height 1s;
 }
 
-.game{
+.game {
     position: relative;
 }
 
-.start{
+.start {
     display: flex;
     position: absolute;
     width: 100%;
@@ -227,7 +227,8 @@
     text-align: center;
     transition: all 0.5s;
 }
-.start .btn{
+
+.start .btn {
     color: #2f4;
     font-size: 5em;
     border: #2f4 solid 5px;
@@ -236,10 +237,10 @@
     cursor: pointer;
 }
 
-.game .game__options{
+.game .game__options {
     transition: height 0.8s;
 }
 
-.game .game__functional *{
+.game .game__functional * {
     transition: opacity 0.8s;
 }
