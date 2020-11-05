@@ -189,7 +189,7 @@ class MarafonWeek(View):
             'response_timer': self.marafon.response_timer,
             'choose_timer': self.marafon.choose_timer,
             'price': '0' if self.BENEFIT_RECIPIENT else self.marafon.price,
-            'date': str(self.marafon.date_time_start),
+            'date_start': str(self.marafon.date_time_start.timestamp()),
             'access': self.request.user in users,
             'time_to_start': self._time_to_start,
             'number_of_theme_blocks': list(range(0, len(self.marafon.question_blocks.all())))
@@ -212,4 +212,4 @@ class MarafonWeek(View):
 
     @property
     def _time_to_start(self):
-        return timezone.now() < self.marafon.date_time_start
+        return timezone.now() > self.marafon.date_time_start

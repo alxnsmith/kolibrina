@@ -15,7 +15,7 @@
 
     {% include 'main/headPiece.html' %}
 
-    <link rel="stylesheet" href="{% statc "css/pages/addquestion.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/pages/addquestion.min.css" %}">
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
@@ -69,8 +69,8 @@
     document.querySelector('.title > h2 > strong').innerText = "Добавить вопрос | Добавить авторский турнир"
     document.querySelector('#href_questions > span').classList.add('select')
 </script>
-<script src="{% static 'js/game/row_constructor_for_adding_marafon_table.js' %}"></script>
-<script src="{% static 'js/game/question_list_constructor_on_classes.js' %}"></script>
+<script src="{% static 'js/games/libs/../../../assets/js/questions/marafon/row_constructor_for_adding_marafon_table.js' %}"></script>
+<script src="{% static 'js/games/libs/../../../assets/js/questions/marafon/question_list_constructor_on_classes.js' %}"></script>
 
 </body>
 </html>

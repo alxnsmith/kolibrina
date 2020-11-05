@@ -232,7 +232,8 @@ class MarafonRating:
         self.players[player['username']] = player
 
     def remove_player(self, player_instance) -> None:
-        del self.players[player_instance.username]
+        if self.players.get(player_instance.username):
+            del self.players[player_instance.username]
 
     def get_top_fifteen(self) -> list:
         players = []
@@ -248,6 +249,8 @@ class MarafonWeek(JsonWebsocketConsumer):
         WATCHER = 'watcher'
         PLAYER = 'player'
 
+    game_info = {'is_started': False}
+
     watchers_online = set()
     players_online = set()
     rating = MarafonRating()
@@ -256,9 +259,10 @@ class MarafonWeek(JsonWebsocketConsumer):
     themes = [theme
               for theme in list(marafon.question_blocks.all().values_list('theme__theme', 'theme'))]
 
-    game_group_name = 'marafon_week'
+    GAME_GROUP_NAME = 'marafon_week'
 
     def connect(self):
+        print(self.game_info)
         self.user = self.scope['user']
 
         self.username = self.user.username
@@ -273,7 +277,7 @@ class MarafonWeek(JsonWebsocketConsumer):
             self.channel_name
         )
         async_to_sync(self.channel_layer.group_add)(
-            self.game_group_name,
+            self.GAME_GROUP_NAME,
             self.channel_name
         )
 
@@ -301,6 +305,11 @@ class MarafonWeek(JsonWebsocketConsumer):
 
     def receive_json(self, content, **kwargs):
         print(content)
+        if content['type'] == 'event':
+            if content['event'] == 'time_to_start':
+                if not self.game_info['is_started'] and self.is_time_to_start:
+                    self.game_info['is_started'] = True
+                    print('GAME IS STARTED!')
 
     def disconnect(self, message):
         async_to_sync(self.channel_layer.group_discard)(
@@ -310,11 +319,26 @@ class MarafonWeek(JsonWebsocketConsumer):
         self.update_online(event='disconnect')
         self.update_rating(event='disconnect')
 
-    def start_timer(self, *_):
+        if len(self.players_online) < 2 and self.game_info['is_started']:
+            self.end_game()
+
+    def send_start_timer(self, *_):
         self.send_json({'type': 'timer', 'timer': self.response_timer.get_end_time_timer()})
 
     def send_themes(self, *_):
         self.send_json({'type': 'themes_list', 'themes': self.themes})
+
+    def end_game(self):
+        self.game_info['is_started'] = False
+        async_to_sync(self.channel_layer.group_send)(
+            self.GAME_GROUP_NAME,
+            {'type': 'send_end_game'}
+        )
+
+    def send_end_game(self, *_):
+        self.send_json({
+            'type': 'end_game'
+        })
 
     def update_rating(self, event):
         def update():
@@ -323,7 +347,7 @@ class MarafonWeek(JsonWebsocketConsumer):
             elif event == 'disconnect':
                 self.rating.remove_player(self.user)
             async_to_sync(self.channel_layer.group_send)(
-                self.game_group_name,
+                self.GAME_GROUP_NAME,
                 {'type': 'send_rating'})
 
         if self.role == self.Roles.PLAYER:
@@ -337,11 +361,11 @@ class MarafonWeek(JsonWebsocketConsumer):
     def update_online(self, event):
         def update(group, group_name):
             if event == 'connect':
-                group.add(self.user)
+                group.add(self.user.username)
             elif event == 'disconnect':
-                group.discard(self.user)
+                group.discard(self.user.username)
             async_to_sync(self.channel_layer.group_send)(
-                self.game_group_name,
+                self.GAME_GROUP_NAME,
                 {'type': f'update_online_{group_name}s'})
 
         if self.role == self.Roles.WATCHER:
@@ -356,3 +380,7 @@ class MarafonWeek(JsonWebsocketConsumer):
 
     def update_online_players(self, *_):
         self.send_json(content={'type': 'online_players', 'online': len(self.players_online)})
+
+    @property
+    def is_time_to_start(self):
+        return self.marafon.date_time_start < timezone.now()

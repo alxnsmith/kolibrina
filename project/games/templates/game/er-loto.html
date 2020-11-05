@@ -73,9 +73,9 @@
         $(".title > h2 > strong").html("Тренировка Эрудит-Лото / Турнир Недели");
     });
 </script>
-<script src="{% static 'js/game/init_question.js' %}"></script>
-<script src="{% static 'js/game/timer.js' %}"></script>
-<script src="{% static 'js/game/calculate_and_render_tournament_score.js' %}"></script>
+<script src="{% static 'js/games/libs/tournament_week/init_question.js' %}"></script>
+<script src="{% static 'js/games/libs/tournament_week/timer.js' %}"></script>
+<script src="{% static 'js/games/libs/tournament_week/calculate_and_render_tournament_score.js' %}"></script>
 
 <script>
     function main() {
@@ -111,7 +111,7 @@
             } else if (data.type === 'question') {
                 question_text = data.question.question
                 init_question(question_text, data.question.answers, data.question_num)
-                old_answers = data.question.answers
+                old_answers = data.question.answers  /* нужен ли? */
             } else if (data.type === 'tournament_author') {
                 tournament_author = data.author
                 document.getElementById('tournament_author').innerText = tournament_author
