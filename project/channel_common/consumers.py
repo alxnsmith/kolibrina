@@ -8,7 +8,7 @@ from django.conf import settings
 class OnlineConsumer(WebsocketConsumer):
     redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                        port=settings.REDIS_PORT,
-                                       db=0)
+                                       db=settings.REDIS_DB)
 
     def connect(self):
         self.room_group_name = 'online'

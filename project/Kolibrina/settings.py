@@ -155,7 +155,7 @@ CHANNEL_LAYERS = {
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
-REDIS_DB = 1
+REDIS_DB = 0
 
 GENDER_CHOICES = (('Male', 'М'), ('Female', 'Ж'))
 COUNTRY_CHOICES = (('RU', 'Россия'), ('UK', 'Украина'), ('BY', 'Беларусь'), ('KZ', 'Казахстан'))

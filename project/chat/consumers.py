@@ -7,7 +7,7 @@ from django.conf import settings
 class ChatConsumer(JsonWebsocketConsumer):
     redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                        port=settings.REDIS_PORT,
-                                       db=0)
+                                       db=settings.REDIS_DB)
     redis_instance.set('ChatOnline', '0')
 
     def connect(self):
