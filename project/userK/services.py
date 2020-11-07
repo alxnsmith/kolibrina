@@ -5,6 +5,7 @@ from userK.models import User
 from . import forms
 from .phone_validate import phone_validate
 from media import forms as media_forms, services as media_services
+from questions.services import get_open_for_registration
 
 
 def write_user_model(username, values):
@@ -31,30 +32,32 @@ def write_user_model(username, values):
 
 
 def create_render_data(request, ):
-    userModel = get_user_model(request.user)
-    maxDateField = '-'.join((str(datetime.date.today().year), datetime.date.today().strftime('%m-%d')))
-    minDateField = '-'.join((str(datetime.date.today().year - 100), datetime.date.today().strftime('%m-%d')))
-
+    user_model = get_user_model(request.user)
+    max_date_field = '-'.join((str(datetime.date.today().year), datetime.date.today().strftime('%m-%d')))
+    min_date_field = '-'.join((str(datetime.date.today().year - 100), datetime.date.today().strftime('%m-%d')))
+    open_for_registration = get_open_for_registration()
+    print(open_for_registration)
     team_players_list = _get_teammates(request.user)
 
     data = {'userID': f'{request.user.id}'.rjust(7, '0'),
-            'gender': userModel.gender,
-            'form': _get_form_values(userModel=userModel),
+            'gender': user_model.gender,
+            'form': _get_form_values(userModel=user_model),
             'errors': [],
             'error_phone': '',
-            'level': get_user_rating_lvl_dif(userModel.rating),
+            'level': get_user_rating_lvl_dif(user_model.rating),
             'AvatarForm': media_forms.AvatarForm(initial={'user': request.user}),
             'AvatarImage': media_services.get_avatar(user=request.user),
             'mainBanner': media_services.get_banner(),
             'league': str(request.user.league),
-            'maxDateField': maxDateField,
-            'minDateField': minDateField,
+            'maxDateField': max_date_field,
+            'minDateField': min_date_field,
             'users_list': _get_users_and_id_list(request.user),
             'team': _get_team_name_or_blank(request.user),
             'team_players_list': team_players_list,
-            'new_teammate_num': len(team_players_list)+1,
+            'new_teammate_num': len(team_players_list) + 1,
             'team_number': settings.TEAM_NUMBERS,
-            'invite_teams_list': _get_invite_teams_list(request.user)}
+            'invite_teams_list': _get_invite_teams_list(request.user),
+            'open_for_registration': open_for_registration}
     return data
 
 

@@ -6,6 +6,7 @@ from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer
 from django.conf import settings
 from django.utils import timezone
 
+from questions.services import get_marafon_instance, get_tournament_instance
 from questions.models import Tournament
 from .services import TournamentWeekInstance, get_marafon_instance
 
@@ -37,7 +38,7 @@ class TournamentWeek(WebsocketConsumer):
 
     def connect(self):
         self.tournament_shortname = self.scope['url_route']['kwargs']['tournament_name']
-        self.tournament_instance = _get_tournament_instance(self.tournament_shortname)
+        self.tournament_instance = get_tournament_instance(self.tournament_shortname)
         self.accept()
         self.game_session = TournamentWeekInstance(self.tournament_instance, self.scope['user'],
                                                    lose_question=self.lose_num_question)
@@ -188,15 +189,6 @@ class TournamentWeek(WebsocketConsumer):
             return chance()
         else:
             return wrong()
-
-
-def _get_tournament_instance(tournament_shortname):
-    date_range = (timezone.now() - timezone.timedelta(days=7), timezone.now())  # last 7 days
-    active_tournaments_list = Tournament.objects.filter(
-        is_active=True, purpose=tournament_shortname,
-        date__range=date_range)
-    tournament_model = active_tournaments_list.order_by('date')[0]
-    return tournament_model
 
 
 class Timer:

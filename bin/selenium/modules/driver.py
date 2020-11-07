@@ -33,7 +33,8 @@ class Driver(webdriver.Chrome):
     class Url:
         def __init__(self, https, dev):
             self.protocol = 'https' if https else 'http'
-            self.host = 'dev.kolibrina.ru' if dev else 'kolibrina.ru'
+            # self.host = 'dev.kolibrina.ru' if dev else 'kolibrina.ru'
+            self.host = 'dev.kolibrina.ru'
             self.net_lock = 'Nillkizz:Vyjujxtujgjregfntkm'
 
     def __init__(self):

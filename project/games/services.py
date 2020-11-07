@@ -18,6 +18,7 @@ from .models import TournamentScoreUserLink
 def round3(func):
     def wrapper(*args, **kwargs):
         return round(func(*args, **kwargs), 3)
+
     return wrapper
 
 
@@ -59,7 +60,7 @@ class TournamentWeekInstance:
         self.player_score_instance = UserScore(self.player_instance)
         self.current_question_num = self._get_start_answer_number()
         self.questions_queryset = get_questions_from_tournament(self.tournament_instance)
-        
+
         self._get_attempt()
 
         self.pos_list = self.init_pos_list(self.attempt + 1, self.lose_question)
@@ -263,7 +264,7 @@ class ScoreTournamentWeek:
         self.combo_bonus = 0
         self.combo_reset()
         self.hints_decr()
-        
+
         return round(self.current_score, 3), round(self.saved_score, 3)
 
     def hints_decr(self):
@@ -327,4 +328,3 @@ def get_marafon_instance():
     else:
         marafon = {'status': 'error', 'error': 'Empty'}
     return marafon
-

@@ -1,4 +1,7 @@
+from django.utils import timezone
+
 from . import models
+from questions.models import Marafon, Tournament
 
 
 def add_theme_to_category(post):
@@ -94,3 +97,31 @@ def add_marafon(post, author: object):
     for i in question_blocks:
         marafon_instance.question_blocks.add(question_blocks[i].id)
     return {'status': 'OK'}
+
+
+def get_tournament_instance(tournament_shortname):
+    date_range = (timezone.now() - timezone.timedelta(days=7), timezone.now())  # last 7 days
+    active_tournaments_list = Tournament.objects.filter(
+        is_active=True, purpose=tournament_shortname,
+        date__range=date_range)
+    if active_tournaments_list.exists():
+        tournament_model = active_tournaments_list.order_by('date')[0]
+    else:
+        tournament_model = {'status': 'error', 'error': 'Empty'}
+    return tournament_model
+
+
+def get_marafon_instance():
+    active_marafon_list = Marafon.objects.filter(
+        is_active=True, purpose='MWEL', official=True, price__isnull=False, date_time_start__isnull=False
+    )
+    if active_marafon_list.exists():
+        marafon = active_marafon_list.order_by('date_time_start')[0]
+    else:
+        marafon = {'status': 'error', 'error': 'Empty'}
+    return marafon
+
+
+def get_open_for_registration():
+    reg_list = [get_marafon_instance(), ]
+    return reg_list

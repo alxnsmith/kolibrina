@@ -30,7 +30,6 @@
 <body>
 
 {% include "main/header.html" %}
-
 <div class="mt20"></div>
 <div class="row" style="margin: 0;">
     <div class="col-sm-9 col-md-9 col-lg-9">
@@ -260,42 +259,22 @@
                         <th>Дата</th>
                         <th>Время</th>
                         <th>Код турнира</th>
-                        <th>Кол-во туров</th>
+{#                        <th>Кол-во туров</th>#}
                         <th>Сумма взноса (руб)</th>
                         <th>Название мероприятия</th>
                     </tr>
-                    <tr>
-                        <td>25.05.20</td>
-                        <td>17:00</td>
-                        <td>ЭЛМН0001</td>
-                        <td>1</td>
-                        <td>100</td>
-                        <td>Эрудит-лото / Марафон недели</td>
-                    </tr>
-                    <tr>
-                        <td>25.05.20</td>
-                        <td>17:00</td>
-                        <td>ЭЛТП0003</td>
-                        <td>3</td>
-                        <td>300</td>
-                        <td>Эрудит-лото / Турнир призовой</td>
-                    </tr>
-                    <tr>
-                        <td>27.05.20</td>
-                        <td>б/в</td>
-                        <td>ЭЛМП0001</td>
-                        <td>5</td>
-                        <td>400</td>
-                        <td>Эрудит-лото / Марафон призовой</td>
-                    </tr>
-                    <tr>
-                        <td>28.05.20</td>
-                        <td>19:00</td>
-                        <td>СИКРАИК0002</td>
-                        <td>3/50</td>
-                        <td>300</td>
-                        <td>Своя игра / Кубок РАНК</td>
-                    </tr>
+                    {% for tournament in open_for_registration %}
+                        {% if tournament.status != 'error' %}
+                            <tr>
+                                <td>{{ tournament.date_time_start.date }}</td>
+                                <td>{{ tournament.date_time_start.time }}</td>
+                                <td>{{ tournament.purpose}}-{{ tourVnament.id }}</td>
+{#                                <td>{{ tournament }}</td>#}
+                                <td>{{ tournament.price }}</td>
+                                <td>{{ tournament.name }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
                 </table>
             </div>
         </div>

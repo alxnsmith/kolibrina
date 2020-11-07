@@ -74,3 +74,7 @@ createsuperuser:
 add_marafon_EL:
 	$(ENV_SELENIUM) ; \
 	python3.9 ./bin/selenium/add_marafon_EL.py
+
+add_tournament_EL:
+	$(ENV_SELENIUM) ; \
+	python3.9 bin/selenium/add_tournament_week.py
