@@ -1,23 +1,25 @@
 from django.shortcuts import HttpResponse, redirect
 from base64 import b64decode
 from userK.models import User as User
-from django.conf import settings
-from main.sendmail import sendmail
+from main.sendmail import sendmail_admins
+from django.contrib.auth import login, logout
 
 
 def confirmAccount(request):
     try:
-        e = b64decode(bytes(request.GET.get('c'), 'utf-8').decode('utf-8'))
-        p = str(e.decode('utf-8'))
-        u = User.objects.get(email=p)
-        if not u.is_active:
-            u.is_active = True
-            u.save()
+        encoded_email = b64decode(bytes(request.GET.get('c'), 'utf-8').decode('utf-8'))
+        decoded_email = str(encoded_email.decode('utf-8'))
+        user = User.objects.get(email=decoded_email)
+        if not user.is_active:
+            user.is_active = True
+            user.save()
             message = 'Новый пользователь прошел активацию!\n' \
-                      f'(id: {u.id}, username: {u.username}, email: {p})'
-            sendmail('Новая регистрация', message, settings.EMAIL_ADMIN_USERS)
-            return redirect('login')
+                      f'(id: {user.id}, username: {user.username}, email: {decoded_email})'
+            sendmail_admins('Новая регистрация', message)
+            logout(request)
+            login(request, user)
+            return redirect('account')
         else:
-            return Exception
+            return HttpResponse('User is active!')
     except:
         return HttpResponse('Ссылка не действительна!')

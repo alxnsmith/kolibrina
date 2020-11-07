@@ -61,7 +61,6 @@
         {% include 'game/blocks/questionText_answers.html' %}
     </div>
 </div>
-
 {% include "main/footer.html" %}
 
 
@@ -69,8 +68,9 @@
     document.querySelector('.title > h2 > strong').innerText = "Добавить вопрос | Добавить авторский турнир"
     document.querySelector('#href_questions > span').classList.add('select')
 </script>
-<script src="{% static 'js/games/libs/../../../assets/js/questions/marafon/row_constructor_for_adding_marafon_table.js' %}"></script>
-<script src="{% static 'js/games/libs/../../../assets/js/questions/marafon/question_list_constructor_on_classes.js' %}"></script>
+<script src="{% static 'js/questions/marafon/row_constructor_for_adding_marafon_table.js' %}"></script>
+<script src="{% static 'js/questions/marafon/question_list_constructor_on_classes.js' %}"></script>
+
 
 </body>
 </html>

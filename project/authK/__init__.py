@@ -1,1 +1,1 @@
-default_app_config = 'authK.apps.LoginkConfig'
+default_app_config = 'authK.apps.authKConfig'

@@ -14,7 +14,7 @@ ENV_SELENIUM = . ./bin/selenium/venv/bin/activate
 MIGRATIONS = python3.9 manage.py makemigrations ; \
 			 python3.9 manage.py migrate
 
-
+COLLECT_STATIC = python3.9 manage.py collectstatic ; \
 
 
 init:
@@ -22,8 +22,12 @@ init:
 	$(MIGRATIONS) ; \
 	python3.9 manage.py init ; \
 	cd .. ; \
-	python3.9 ./bin/initProject.py ; \
+	python3.9 ./bin/initProject.py
 
+
+collectstatic:
+	$(ENV) ; \
+    $(COLLECT_STATIC)
 
 
 init_selenium:
@@ -49,12 +53,18 @@ shell:
 
 start_daphne:
 	$(ENV) ; \
+	export DJANGO_SETTINGS_MODULE=Kolibrina.settings ; \
     daphne -p 8001 Kolibrina.asgi\:application
 
 clean_migrations:
 	$(ENV) ; \
 	cd ../bin ; \
 	python3.9 clean_migrations.py
+
+clean_cache:
+    $(ENv) ; \
+    cd ../bin ; \
+    python3.9 clean_cache.py
 
 createsuperuser:
 	$(ENV) ; \

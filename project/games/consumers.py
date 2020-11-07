@@ -1,15 +1,13 @@
 import json
-from asgiref.sync import async_to_sync, sync_to_async
+
+import redis
+from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer
+from django.conf import settings
 from django.utils import timezone
-from django.forms.models import model_to_dict
-import random
-import math
 
 from questions.models import Tournament
-from .services import TournamentWeekInstance, get_marafon_instance, user_services
-import redis
-from django.conf import settings
+from .services import TournamentWeekInstance, get_marafon_instance
 
 
 class TournamentWeek(WebsocketConsumer):
@@ -254,14 +252,14 @@ class MarafonWeek(JsonWebsocketConsumer):
     watchers_online = set()
     players_online = set()
     rating = MarafonRating()
-    marafon = get_marafon_instance()
-
-    themes = [theme
-              for theme in list(marafon.question_blocks.all().values_list('theme__theme', 'theme'))]
 
     GAME_GROUP_NAME = 'marafon_week'
 
     def connect(self):
+        self.marafon = get_marafon_instance()
+        if type(self.marafon) is not dict:
+            self.themes = [theme
+                           for theme in list(self.marafon.question_blocks.all().values_list('theme__theme', 'theme'))]
         print(self.game_info)
         self.user = self.scope['user']
 

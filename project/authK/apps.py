@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class LoginkConfig(AppConfig):
+class authKConfig(AppConfig):
     name = 'authK'
     verbose_name = 'Аутентификация'

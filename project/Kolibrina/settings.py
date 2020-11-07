@@ -1,7 +1,7 @@
-import os
+from pathlib import Path
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '0k#pueww6$7pm=8*-(e316$vzd3c=1ijd$^i!3y-g^a!n0v4pc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
@@ -26,27 +26,24 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'admin_panel',
-
-    'media',
-    'authK',
-    'regK',
-    'main',
-    'userK',
     'accountConfirmation',
-    'questions',
-    'rules',
+    'admin_panel',
+    'API',
+    'api_teams',
+    'authK',
+    'channel_common',
     'chat',
     'games',
-    'rating',
-    'api_teams',
-    'stats',
-
-    'API',
-
+    'Kolibrina',
+    'main',
+    'media',
     'payment',
-
-    'channel_common',
+    'questions',
+    'rating',
+    'regK',
+    'rules',
+    'stats',
+    'userK',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +80,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -121,9 +118,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "assets"),)
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static/'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -131,19 +127,23 @@ STATICFILES_FINDERS = (
 )
 
 MEDIA_URL = '/mediacontent/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "mediacontent")
+MEDIA_ROOT = BASE_DIR / "mediacontent"
 
 AUTH_USER_MODEL = 'userK.User'
 LOGIN_URL = 'login'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = '465'
 EMAIL_HOST_USER = 'kotovvsan@ya.ru'
+SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = '647012277RosTelecom'
 EMAIL_USE_SSL = True
 EMAIL_ADMIN_USERS = 'kotovvsan@ya.ru'
+ADMINS = [('Nillkizz', 'kotovvsan@ya.ru')]
 
-ASGI_APPLICATION = 'Kolibrina.routing.application'
+ASGI_APPLICATION = 'Kolibrina.asgi.application'
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',

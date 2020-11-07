@@ -1,56 +1,29 @@
-import os, shutil
+from pathlib import Path
+import shutil
+
+project = Path().resolve().parent / 'project'
 
 
-def get_project_path():
-    path = os.getcwd()  # current dir
-    path = os.path.dirname(path)  # to parent dir
-    path = os.path.join(path, 'project')
-    return path
+def print_deleted(path):
+    print('Deleted:', path)
 
 
-def migrations_walker():
-    walker = os.walk(get_project_path())
-    for i in walker:
-        if os.path.basename(i[0]) == 'migrations':
-            yield i
-
-
-def contain(directory):
-    new = {'dir': '', 'elems': []}
-    for index, i in enumerate(directory):
-        if index == 0:
-            new['dir'] = i
-            continue
-        if type(i) in (list, tuple):
-            for subdir in i:
-                new['elems'].append(subdir)
-    return new
-
-
-def delete_migrations_and_cache(walker):
-    for directory in walker:
-        directory = contain(directory)
-
-        elems = directory['elems']
-        elems.pop(elems.index('__init__.py'))
-        directory = directory['dir']
-
-        for elem in elems:
-            path = os.path.join(directory, elem)
-            try:
-                os.remove(path)
-            except IsADirectoryError:
-                shutil.rmtree(path)
-            print('Deleted: ', path)
-
-
-def delete_db():
-    os.remove(os.path.join(get_project_path(), 'db.sqlite3'))
-    print('DATABASE deleted')
+def delete_migrations(path):
+    for i in path.iterdir():
+        if i.is_dir():
+            delete_migrations(i)
+        if i.resolve().parent.name == 'migrations':
+            if i.name == '__pycache__':
+                shutil.rmtree(i)
+                print_deleted(i)
+            elif i.name != '__init__.py':
+                i.unlink()
+                print_deleted(i)
+        if i.name.endswith('.sqlite3'):
+            i.unlink()
+            print_deleted(i)
 
 
 if __name__ == '__main__':
-    walker = migrations_walker()
-
-    delete_migrations_and_cache(walker)
-    delete_db()
+    delete_migrations(project)
+    print('SUCCESS!')
