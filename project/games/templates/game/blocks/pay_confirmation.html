@@ -31,7 +31,7 @@
                 let months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Ноября', 'Декабря']
                 price = e.price
                 document.getElementById('price').innerText = price
-                let date = new Date(e.date)
+                let date = new Date(parseInt(e.date_start))
                 document.getElementById('date').innerText = `${date.getDate()} ${months[date.getMonth()]} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 
                 bg.style.opacity = '1'

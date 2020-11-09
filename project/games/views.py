@@ -198,17 +198,16 @@ class MarafonWeek(View):
     def pay(self):
         self.marafon = services.get_marafon_instance()
         if self._time_to_start:
-            user = self.request.user
-            if not self.BENEFIT_RECIPIENT and user.balance >= self.marafon.price:
-                user.balance -= self.marafon.price
-                user.save()
-            else:
-                return {'status': 'error',
-                        'error': 'Недостаточно средств, для участия - пополните баланс в личном кабинете.'}
-            self.marafon.players.add(user)
-            return {'status': 'OK'}
-        else:
             return {'status': 'error', 'error': 'Регистрация на марафон окончена, вы можете посмотреть за ходом игры.'}
+        user = self.request.user
+        if not self.BENEFIT_RECIPIENT and user.balance >= self.marafon.price:
+            user.balance -= self.marafon.price
+            user.save()
+        else:
+            return {'status': 'error',
+                    'error': 'Недостаточно средств, для участия - пополните баланс в личном кабинете.'}
+        self.marafon.players.add(user)
+        return {'status': 'OK'}
 
     @property
     def _time_to_start(self):
