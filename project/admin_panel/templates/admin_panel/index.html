@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel (develop)</title>
+</head>
+<style>
+    body{
+        margin: 0;
+        background: #eee9df;
+        display: grid;
+        grid-template: 'a b b b';
+    }
+    .left_panel{
+        grid-area: a;
+        background: #cbd9dc;
+        min-height: 100vh;
+        max-width: 20vw;
+    }
+    #online{
+        display: grid;
+        grid-template: 'h . . . b'
+                       't t t t t';
+        grid-gap: 5px;
+        padding: 5px;
+    }
+    #online h3{
+        grid-area: h;
+        margin: 0;
+    }
+    #online button{
+        grid-area: b;
+    }
+    #online table{
+        grid-area: t;
+    }
+    #online_table th.pages{
+        max-width: 15px;
+    }
+    table , th, td{
+        border: black solid 1px;
+        border-collapse: collapse;
+    }
+    .user td{
+        text-align: center;
+    }
+</style>
+<body>
+<aside class="left_panel">
+    <section id="online">
+        <h3 style="display: block">Онлайн:</h3>
+        <button>Update</button>
+        <table id="online_table">
+            <tr>
+                <th class="username">Username</th>
+                <th class="pages">Pages</th>
+            </tr>
+        </table>
+    </section>
+</aside>
+<script>
+    'use strict'
+    function fill_online_table(online){
+        let table = document.getElementById('online_table')
+        let old_rows = document.querySelectorAll('.user')
+        old_rows.forEach(row => {
+            row.remove()
+        })
+        online.forEach(user => {
+            let username = user[0]
+            let pages = Math.floor(user[1])
+            let template = `<tr class="user"> <td class="username">${username}</td> <td class="pages">${pages}</td> </tr>`
+            table.innerHTML += template
+        })
+    }
+    const AdminSocket = new WebSocket(
+        'wss://' + window.location.host + '/ws/admin_panel/online/'
+    );
+    AdminSocket.onmessage = e => {
+        let data = JSON.parse(e.data)
+        if (data.event === 'online'){
+            console.log(data)
+            fill_online_table(data.online)
+        }
+    }
+    function update_online_table(){
+        AdminSocket.send(JSON.stringify({'event': 'get_online'}))
+    }
+    document.querySelector('#online button').addEventListener('click', update_online_table)
+</script>
+</body>
+</html>
