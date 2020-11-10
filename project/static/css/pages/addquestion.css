@@ -332,3 +332,7 @@ input, select, textarea {
 .circle_btn.accept {
     background: #00000050;
 }
+
+.ok {
+    background: #a8a8a8;
+}

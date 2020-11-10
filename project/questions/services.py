@@ -1,7 +1,7 @@
 from django.utils import timezone
 
-from . import models
 from questions.models import Marafon, Tournament
+from . import models
 
 
 def add_theme_to_category(post):
@@ -26,6 +26,7 @@ def add_tournament_week(post):
             question_list[q]['pos'] = f'd{pos[1:]}'
         elif pos.startswith('замена'):
             question_list[q]['pos'] = 'zamena'
+        q['purpose'] = 'TournamentWeek'
         question_list_models.append(_add_question_to_db(**question_list[q]))
     for i in question_list_models:
         tournament.questions.add(i)
@@ -45,7 +46,13 @@ def _create_tournament(author_id, purpose):
 
 
 def _add_question_to_db(author_id, category_id, theme_id, difficulty,
-                        question, correct_answer, answer2, answer3, answer4, pos):
+                        question, correct_answer, answer2, answer3, answer4, pos, purpose=None, is_active=False):
+    purposes = {
+        'Training': 1,
+        'Marafon': 2,
+        'TournamentWeek': 3
+    }
+
     return models.Question.objects.create(author_id=author_id,
                                           category_id=category_id,
                                           theme_id=theme_id,
@@ -55,14 +62,15 @@ def _add_question_to_db(author_id, category_id, theme_id, difficulty,
                                           answer2=answer2.strip(),
                                           answer3=answer3.strip(),
                                           answer4=answer4.strip(),
-                                          pos=pos, )
+                                          pos=pos,
+                                          purpose_id=purposes.get(purpose))
 
 
 def get_questions_from_tournament(tournament):
     return tournament.questions.all()
 
 
-def add_marafon_theme_block(author: object, questions: list):
+def add_marafon_theme_block(author: object, questions: list, is_active=False):
     themes_check = set()
     for i in questions:
         themes_check.add(i.theme_id)
@@ -71,17 +79,20 @@ def add_marafon_theme_block(author: object, questions: list):
     else:
         return False
 
-    block = models.MarafonThemeBlock.objects.create(author=author, theme_id=theme_id)
+    block = models.MarafonThemeBlock.objects.create(author=author, theme_id=theme_id, is_active=is_active)
 
     for i in questions:
         block.questions.add(i)
     return block
 
 
-def add_marafon(post, author: object):
+def add_marafon(post, author: models.User):
     question_list = post['question_list']
     question_blocks = {1: [], 2: [], 3: [], 4: []}
+
     for i in question_list:
+        question_list[i]['pos'] = int(question_list[i]['pos'])
+        question_list[i]['purpose'] = 'Marafon'
         question_model = _add_question_to_db(**question_list[i])
         if str(i).startswith('1'):
             question_blocks[1].append(question_model)
@@ -91,8 +102,9 @@ def add_marafon(post, author: object):
             question_blocks[3].append(question_model)
         if str(i).startswith('4'):
             question_blocks[4].append(question_model)
+    is_active = True if author.is_staff else False
     for i in question_blocks:
-        question_blocks[i] = add_marafon_theme_block(author, question_blocks[i])
+        question_blocks[i] = add_marafon_theme_block(author, question_blocks[i], is_active)
     marafon_instance = models.Marafon.objects.create(purpose=post['purpose'], author=author)
     for i in question_blocks:
         marafon_instance.question_blocks.add(question_blocks[i].id)

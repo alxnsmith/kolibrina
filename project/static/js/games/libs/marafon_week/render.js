@@ -1,7 +1,10 @@
-class Render{
+'use strict'
+
+class Render {
     constructor() {
 
     }
+
     update_top_fifteen(players) {
         let rating = new rating_top_fifteen()
 
@@ -26,13 +29,16 @@ class Render{
 
     fill_themes(themes) {
         let theme_field
+        let questions_row
         let questions
         let theme_blocs = document.querySelectorAll('.topic')
         let i = 0
         themes.forEach(theme => {
             theme_field = theme_blocs[i].querySelector('.topic-name')
+            questions_row = theme_blocs[i].querySelector('.topic-points')
             questions = theme_blocs[i].querySelectorAll('.topic-point')
             theme_field.innerText = theme[0]
+            questions_row.classList.add(`theme_${theme[1]}`)
             questions.forEach(question => {
                 question.dataset.block_id = theme[1]
             })
@@ -51,4 +57,32 @@ class Render{
             render_timer()
         }, 1000)
     }
+
+    toggle_question_btn(block_id, pos) {
+        let row = document.querySelector(`.topic > .theme_${block_id}`)
+        let btn = row.querySelectorAll('.topic-point')[pos - 1]
+
+        let act = document.querySelector('.topic-point.act')
+        if (act) {
+            act.classList.remove('act')
+            act.classList.add('disable')
+        }
+        btn.classList.add('act')
+        btn.style.cursor = 'default'
+    }
+
+    render_question(question){
+        console.log(question)
+        this.toggle_question_btn(question.block_id, question.pos)
+
+        let question_field = document.getElementById('question')
+        let answer_fields = document.querySelectorAll('input.answer')
+
+        for (let i = 0; i<answer_fields.length; i++){
+            answer_fields[i].parentElement.querySelector('.text').innerText = question.answers[i]
+        }
+        question_field.innerText = question.question
+
+    }
+
 }

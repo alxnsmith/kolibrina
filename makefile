@@ -27,7 +27,7 @@ init:
 
 collectstatic:
 	$(ENV) ; \
-    $(COLLECT_STATIC)
+	$(COLLECT_STATIC)
 
 
 init_selenium:
@@ -54,7 +54,7 @@ shell:
 start_daphne:
 	$(ENV) ; \
 	export DJANGO_SETTINGS_MODULE=Kolibrina.settings ; \
-    daphne -p 8001 Kolibrina.asgi\:application
+	daphne -p 8001 Kolibrina.asgi\:application
 
 clean_migrations:
 	$(ENV) ; \
@@ -62,9 +62,9 @@ clean_migrations:
 	python3.9 clean_migrations.py
 
 clean_cache:
-    $(ENv) ; \
-    cd ../bin ; \
-    python3.9 clean_cache.py
+	$(ENV) ; \
+	cd ../bin ; \
+	python3.9 clean_cache.py
 
 createsuperuser:
 	$(ENV) ; \

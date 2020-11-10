@@ -34,9 +34,11 @@ class QuestionList {
     }
 
     start_event_listener_for_circle_buttons(reader) {
-        let questions = document.querySelectorAll('.circle_btn')
-        for (let i = 0; i < questions.length; i++) {
-            questions[i].onclick = e => {
+        let questions = Array.from(document.querySelectorAll('.circle_btn'))
+        questions.forEach(btn => {
+            console.log(btn)
+            btn.onclick = e => {
+                console.log(e)
                 let class_list = e.target.parentElement.classList
                 if (!class_list.contains('act')) {
                     let question = reader()
@@ -52,7 +54,7 @@ class QuestionList {
                     }
                 }
             }
-        }
+        })
     }
 
     visual_question_num_switcher(e) {

@@ -161,7 +161,7 @@ class Marafon(models.Model):
     author = models.ForeignKey(User, default=None, null=True, on_delete=models.SET_NULL,
                                verbose_name="Автор марафона")
     official = models.BooleanField(default=False)
-    question_blocks = models.ManyToManyField(MarafonThemeBlock)
+    question_blocks = models.ManyToManyField(MarafonThemeBlock, limit_choices_to={'is_active': True})
     response_timer = models.SmallIntegerField(verbose_name='Время на ответ', default=30)
     choose_timer = models.SmallIntegerField(verbose_name='Время на выбор вопроса', default=15)
 

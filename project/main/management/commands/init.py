@@ -13,3 +13,5 @@ class Command(BaseCommand):
         benefit_recipients = Group.objects.create(name='Benefit recipients')
         admin.groups.add(benefit_recipients)
         Purpose.objects.create(purpose='Training')
+        Purpose.objects.create(purpose='Marafon')
+        Purpose.objects.create(purpose='TournamentWeek')

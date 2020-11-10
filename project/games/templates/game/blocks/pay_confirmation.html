@@ -25,7 +25,7 @@
                 show_modal_notification('В данный момент марафоны не проводятся.')
                 return
             }
-            if (e.access) {
+            if (e.user.is_player) {
                 window.location.replace(url)
             } else {
                 let months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Ноября', 'Декабря']

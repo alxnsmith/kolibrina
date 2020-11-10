@@ -62,28 +62,28 @@
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-7 col-lg-7">
-                <div class="game__question">
+                <div class="game__question" id="question">
                     ___________________________________________________?
                 </div>
                 <div class="game__options">
                     <label>
                         <input class="answer" type="radio" name="answer" value="" checked>
-                        _______
+                        <div class="text">_______</div>
                         <span></span>
                     </label>
                     <label>
                         <input class="answer" type="radio" name="answer" value="">
-                        _______
+                        <div class="text">_______</div>
                         <span></span>
                     </label>
                     <label>
                         <input class="answer" type="radio" name="answer" value="">
-                        _______
+                        <div class="text">_______</div>
                         <span></span>
                     </label>
                     <label>
                         <input class="answer" type="radio" name="answer" value="">
-                        _______
+                        <div class="text">_______</div>
                         <span></span>
                     </label>
                 </div>
@@ -215,16 +215,16 @@
         <div class="user-lvl user_div">
             <span>Уровень игрока</span>
             <div class="lvl">{{ user_info.level.level }} / {{ user_info.level.numLevel }}</div>
-            {% if not marafon_info.time_to_start %}{% include 'game/blocks/wait_block.html' %}{% endif %}
+            {% if not marafon_info.is_time_to_start %}{% include 'game/blocks/wait_block.html' %}{% endif %}
         </div>
     </div>
 </div>
-
 {% include "main/footer.html" %}
 <script src="{% static 'js/games/libs/time_counter.js' %}"></script>
 <script src="{% static 'js/games/libs/marafon_week/wait_timer.js' %}"></script>
 <script src="{% static 'js/games/libs/marafon_week/top_fifteen.js' %}"></script>
 <script src="{% static 'js/games/libs/marafon_week/render.js' %}"></script>
+<script src="{% static 'js/games/libs/marafon_week/event_listener.js' %}"></script>
 <script>
     "use strict"
 
@@ -233,12 +233,25 @@
         let time_to_response
         let rime_to_choose
 
-
+        let event_listener = new EventListener()
         let render = new Render()
+
+
+        function select_question(event){
+            let target = event.target
+            let block_id = target.dataset.block_id
+            let pos = target.dataset.pos
+            marafon_socket.send(JSON.stringify({
+                'type': 'event',
+                'event': 'select_question',
+                'block_id': block_id,
+                'pos': pos
+            }))
+        }
+        event_listener.add_listen_question_btns(select_question)
 
         marafon_socket.onmessage = e => {
             let data = JSON.parse(e.data)
-            console.log(data)
             if (data.type === 'online_watchers') {
                 render.update_online('watchers', data.online)
             } else if (data.type === 'online_players') {
@@ -251,7 +264,15 @@
             } else if (data.type === 'top_fifteen') {
                 render.update_top_fifteen(data.rows)
             } else if (data.type === 'end_game'){
-                show_modal_notification('Игроков мало, игра окончена!')
+                show_modal_notification('Игра окончена!')
+            } else if (data.type === 'selected_question'){
+                render.render_question(data.question)
+                event_listener.rm_listener_question_btn(select_question)
+           } else if (data.type === 'game_history'){
+                data.game_history.forEach(i => {
+                    render.toggle_question_btn(i[0], i[1])
+                    event_listener.rm_listener_question_btn(select_question)
+                })
             }
         }
 
@@ -261,11 +282,14 @@
 
         let url = window.location.origin + '/marafon-week/?info'
         sendRequest('get', url).then(data => {
+            console.log('fetch', data)
             return data
         }).then(marafon_info => {
             let date_start = marafon_info.date_start * 1000
-            !marafon_info.time_to_start && start_timer(date_start, send_start)
+            !marafon_info.is_time_to_start && start_timer(date_start, send_start)
         })
+
+
     }
 </script>
 <script>
