@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from questions.models import Marafon, Tournament
+from games.models import Marafon, Tournament
 from . import models
 
 
@@ -16,7 +16,7 @@ def add_tournament_week(post):
     if len(question_list) != 35:
         return {'status': 'error', 'error': 'Not full tournament'}
     author_id = post['tournament']['01']['author_id']
-    tournament = _create_tournament(author_id, models.Tournament.Purposes.TOURNAMENT_WEEK_ER_LOTTO)
+    tournament = _create_tournament(author_id, Tournament.Purposes.TOURNAMENT_WEEK_ER_LOTTO)
     question_list_models = []
     for q in question_list:
         pos = question_list[q]['pos']
@@ -42,7 +42,7 @@ def add_question(request):
 
 
 def _create_tournament(author_id, purpose):
-    return models.Tournament.objects.create(author_id=author_id, purpose=purpose)
+    return Tournament.objects.create(author_id=author_id, purpose=purpose)
 
 
 def _add_question_to_db(author_id, category_id, theme_id, difficulty,
@@ -105,7 +105,7 @@ def add_marafon(post, author: models.User):
     is_active = True if author.is_staff else False
     for i in question_blocks:
         question_blocks[i] = add_marafon_theme_block(author, question_blocks[i], is_active)
-    marafon_instance = models.Marafon.objects.create(purpose=post['purpose'], author=author)
+    marafon_instance = Marafon.objects.create(purpose=post['purpose'], author=author)
     for i in question_blocks:
         marafon_instance.question_blocks.add(question_blocks[i].id)
     return {'status': 'OK'}

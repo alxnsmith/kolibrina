@@ -1,5 +1,5 @@
 <div class="bg"></div>
-<dialog id="pay_confirmation">
+<div id="pay_confirmation">
     <div class="content">
         <div class="note">Стоимость участия <span id="price"></span><span id="currency">руб.</span></div>
         <div class="info">Начало <span id="date"></span></div>
@@ -7,7 +7,7 @@
         <a class="btn cancel">Отмена</a>
         <a class="btn watch">Смотреть</a>
     </div>
-</dialog>
+</div>
 {% load static %}
 <script>
     "use strict"
@@ -20,6 +20,7 @@
         disableScroll()
         url = window.location.origin + event.target.dataset.url
         sendRequest('get', url + '?info').then(e => {
+            console.log(e)
             if (e.status === 'error') {
                 enableScroll()
                 show_modal_notification('В данный момент марафоны не проводятся.')
@@ -34,7 +35,6 @@
                 let date = new Date(parseInt(e.date_start))
                 document.getElementById('date').innerText = `${date.getDate()} ${months[date.getMonth()]} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 
-                dialog.show()
                 dialog.classList.add('in')
                 bg.classList.add('in')
             }

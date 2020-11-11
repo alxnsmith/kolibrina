@@ -6,7 +6,7 @@ from django.conf import settings
 from django.forms.models import model_to_dict
 from django.utils import timezone
 
-from questions.models import Attempt
+from .models import Attempt
 from questions.services import get_questions_from_tournament, get_marafon_instance
 from stats.services import UserScore
 from stats.services import get_sum_score_user

@@ -6,15 +6,15 @@
     width: 300px;
     height: 130px;
     padding: 10px;
-}
-
-dialog{
     display: block;
     position: fixed;
     top: 0;
     bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
-dialog, .bg {
+#pay_confirmation, .bg {
     visibility:hidden;
     opacity:0;
     transition:visibility 0s linear .5s,opacity .5s linear;
@@ -27,12 +27,9 @@ dialog, .bg {
     right: 0;
     background-color: #00003390;
 }
-dialog[open].in,
+#pay_confirmation.in,
 .bg.in {
     transition-delay:0s;
-}
-dialog[open].in,
-.bg.in {
     opacity: 1;
     visibility: visible;
 }

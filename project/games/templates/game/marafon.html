@@ -178,7 +178,7 @@
     </form>
     <div class="user-stat">
         <div class="user-avatar user_div">
-            <img class="user_img" src="{{ user_info.avatar }}"/>
+            <img class="user_img" src="{% if user_info.avatar %}{{ user_info.avatar }}{% endif %}"/>
             <div class="user-name">
                 <span>{{ user_info.last_name }}</span>
                 <span>{{ user_info.first_name }}</span>

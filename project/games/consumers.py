@@ -6,8 +6,7 @@ from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer
 from django.conf import settings
 from django.utils import timezone
 
-from questions.services import get_marafon_instance, get_tournament_instance
-from questions.models import Tournament
+from questions.services import get_tournament_instance
 from . import services
 
 
