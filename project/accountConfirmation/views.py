@@ -2,7 +2,7 @@ from django.shortcuts import HttpResponse, redirect
 from base64 import b64decode
 from userK.models import User as User
 from main.sendmail import sendmail_admins
-from django.contrib.auth import login, logout
+from django.contrib.auth import logout
 
 
 def confirmAccount(request):
@@ -17,7 +17,7 @@ def confirmAccount(request):
                       f'(id: {user.id}, username: {user.username}, email: {decoded_email})'
             sendmail_admins('Новая регистрация', message)
             logout(request)
-            login(request, user)
+            # login(request, user)
             return redirect('account')
         else:
             return HttpResponse('User is active!')

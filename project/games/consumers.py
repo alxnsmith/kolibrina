@@ -203,7 +203,7 @@ class Timer:
 
 
 class MarafonRating:
-    players = {}
+    _players = {}
 
     def add_player(self, player_instance) -> None:
         player = {
@@ -218,15 +218,18 @@ class MarafonRating:
                 'last_name': player_instance.lastName,
                 'city': player_instance.city,
             })
-        self.players[player['username']] = player
+        self._players[player['username']] = player
 
     def remove_player(self, player_instance) -> None:
-        if self.players.get(player_instance.username):
-            del self.players[player_instance.username]
+        if self._players.get(player_instance.username):
+            del self._players[player_instance.username]
+
+    def clear(self):
+        self._players.clear()
 
     def get_top_fifteen(self) -> list:
         players = []
-        for i, dictionary in enumerate(sorted(self.players.items(), key=lambda x: x[1]['score'])[:15]):
+        for i, dictionary in enumerate(sorted(self._players.items(), key=lambda x: x[1]['score'])[:15]):
             dictionary = dictionary[1]
             dictionary['pos'] = i
             players.append(dictionary)
@@ -238,7 +241,7 @@ class MarafonWeek(JsonWebsocketConsumer):
         WATCHER = 'watcher'
         PLAYER = 'player'
 
-    game_info = {'is_started': False}
+    game_info = {'is_started': False, 'marafon_id': None}
 
     watchers_online = set()
     players_online = set()
@@ -252,6 +255,12 @@ class MarafonWeek(JsonWebsocketConsumer):
         print(self.game_info)
         self.user = self.scope['user']
         self.marafon = services.MarafonWeek(self.user)
+
+        marafon_id = self.marafon.info['id']
+        if current_id := self.game_info['marafon_id']:
+            if current_id != marafon_id:
+                self.end_game()
+        self.game_info['marafon_id'] = marafon_id
 
         self.username = self.user.username
 
@@ -289,7 +298,6 @@ class MarafonWeek(JsonWebsocketConsumer):
                 block_id = content['block_id']
                 pos = content['pos']
                 question = self.marafon.get_question(block_id, pos)
-
                 self.game_history['current_question'] = (block_id, pos)
                 self.game_history['questions_played'].add((block_id, pos))
 
@@ -323,7 +331,16 @@ class MarafonWeek(JsonWebsocketConsumer):
         self.send_json({'type': 'themes_list', 'themes': self.marafon.themes})
 
     def end_game(self):
+        self.rating.clear()
+        self.players_online.clear()
+        self.watchers_online.clear()
+
         self.game_info['is_started'] = False
+        self.game_info['marafon_id'] = None
+
+        self.game_history['current_question'] = tuple()
+        self.game_history['questions_played'] = set()
+
         async_to_sync(self.channel_layer.group_send)(
             self.GAME_GROUP_NAME, {'type': 'send_end_game'}
         )
