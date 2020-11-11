@@ -1,35 +1,40 @@
 #pay_confirmation {
-    opacity: 0;
-    z-index: -1;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    position: fixed;
     box-shadow: 1px 1px 10px black;
     background-color: #dfd;
-    border-radius: 2px;
+    border-radius: 3px;
+    border: none;
     width: 300px;
     height: 130px;
     padding: 10px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    transition: 0.5s;
 }
 
-
-.bg {
-    opacity: 0;
-    z-index: -1;
+dialog{
+    display: block;
     position: fixed;
-    left: 0;
     top: 0;
-    right: 0;
     bottom: 0;
+}
+dialog, .bg {
+    visibility:hidden;
+    opacity:0;
+    transition:visibility 0s linear .5s,opacity .5s linear;
+}
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
     background-color: #00003390;
-    transition: 1s;
+}
+dialog[open].in,
+.bg.in {
+    transition-delay:0s;
+}
+dialog[open].in,
+.bg.in {
+    opacity: 1;
+    visibility: visible;
 }
 
 #pay_confirmation .content {

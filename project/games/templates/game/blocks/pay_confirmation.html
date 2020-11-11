@@ -1,5 +1,5 @@
 <div class="bg"></div>
-<div id="pay_confirmation">
+<dialog id="pay_confirmation">
     <div class="content">
         <div class="note">Стоимость участия <span id="price"></span><span id="currency">руб.</span></div>
         <div class="info">Начало <span id="date"></span></div>
@@ -7,12 +7,12 @@
         <a class="btn cancel">Отмена</a>
         <a class="btn watch">Смотреть</a>
     </div>
-</div>
+</dialog>
 {% load static %}
 <script>
     "use strict"
     let bg = document.querySelector('.bg')
-    let popup = document.getElementById('pay_confirmation')
+    let dialog = document.getElementById('pay_confirmation')
     let url
     let price
 
@@ -34,22 +34,18 @@
                 let date = new Date(parseInt(e.date_start))
                 document.getElementById('date').innerText = `${date.getDate()} ${months[date.getMonth()]} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
 
-                bg.style.opacity = '1'
-                bg.style.zIndex = '1'
-                popup.style.opacity = '1'
-                popup.style.zIndex = '1'
+                dialog.show()
+                dialog.classList.add('in')
+                bg.classList.add('in')
             }
         })
     }
 
+
     function hide_pay() {
         enableScroll()
-        bg.style.opacity = '0';
-        popup.style.opacity = '0';
-        setTimeout(() => {
-            bg.style.zIndex = '-1';
-            popup.style.zIndex = '-1';
-        }, 300);
+        dialog.classList.remove('in')
+        bg.classList.remove('in')
     }
 
     function accept(event) {
