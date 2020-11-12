@@ -29,7 +29,7 @@ def api_train(request):
                     )
                 d['category'] = str(i.category)
                 d['theme'] = str(i.theme)
-                del d['purpose'], d['premoderate'],
+                del d['public'], d['premoderate'],
                 quest_list.append(d)
 
     if request.GET['games'] == 'train':
@@ -39,7 +39,7 @@ def api_train(request):
         else:
             league = 'Z'
         quest_template = defs.get_template_questions(league)
-        questions = defs.q_questions(league, Question)
+        questions = defs.q_questions(quest_template, Question)
         if 'error' in questions:
             return JsonResponse(questions)
         questions = {'q10': questions['10'],

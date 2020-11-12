@@ -23,19 +23,18 @@ def counter(template, diff):
 
 def get_question_list_separated_by_difficulty(question_instance):
     separated_question_list = []
-    conditions = {'premoderate': True}  # условия для выборки отработанных вопросов
+    conditions = {'premoderate': False, 'public': True}  # условия для выборки отработанных вопросов
     for difficulty in difficulty_list:
         separated_question_list.append(question_instance.objects.filter(difficulty=difficulty, **conditions))
     return separated_question_list
 
 
-def q_questions(league, question_instance):
-    template = get_template_questions(league)
-    template = {'10': counter(template, 10),
-                '20': counter(template, 20),
-                '30': counter(template, 30),
-                '40': counter(template, 40),
-                '50': counter(template, 50)}
+def q_questions(template_questions, question_instance):
+    template = {'10': counter(template_questions, 10),
+                '20': counter(template_questions, 20),
+                '30': counter(template_questions, 30),
+                '40': counter(template_questions, 40),
+                '50': counter(template_questions, 50)}
     questions_separated_by_difficult = get_question_list_separated_by_difficulty(question_instance)
     for index in range(0, 5):
         difficulty = difficulty_list[index]

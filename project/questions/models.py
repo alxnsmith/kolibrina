@@ -51,8 +51,9 @@ class Question(models.Model):
         ('d2.1', 'д2.1'), ('d2.2', 'д2.2'), ('d2.3', 'д2.3'), ('d2.4', 'д2.4'), ('d2.5', 'д2.5'), ('zamena', 'замена'),
     )
 
-    purpose = models.ForeignKey(Purpose, on_delete=models.SET_NULL, db_column='purpose', default=None,
-                                verbose_name='Назначение', null=True, blank=True)
+    # purpose = models.ForeignKey(Purpose, on_delete=models.SET_NULL, db_column='purpose', default=None,
+    #                             verbose_name='Назначение', null=True, blank=True)
+    public = models.BooleanField(default=False, verbose_name='Публичный')
     premoderate = models.BooleanField(default=True, verbose_name='На модерации')
     pos = models.CharField(choices=posChoices, max_length=10, verbose_name='Позиция вопроса в турнире', blank=True)
 
@@ -90,6 +91,7 @@ class Question(models.Model):
 class MarafonThemeBlock(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True)
+    public = models.BooleanField(default=False, verbose_name='Публичный')
     questions = models.ManyToManyField(Question)
     is_active = models.BooleanField(default=False)
 
