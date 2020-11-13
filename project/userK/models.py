@@ -5,7 +5,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from api_teams.models import Team
 from media.models import Avatar
 from stats.services import get_sum_score_user, init_league
 from .managers import UserManager
@@ -24,11 +23,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(verbose_name='Город', max_length=128)
     area = models.CharField(verbose_name='Область', max_length=128)
     swPlace = models.CharField(
-        verbose_name='Место работы / учёбы: ВУЗ / колледж / школа - класс', max_length=128, blank=True)
+        verbose_name='Место работы/учёбы', max_length=128, blank=True)
     balance = models.FloatField(verbose_name='Баланс', default=0.00)
 
     # team
-    team = models.ForeignKey(Team, verbose_name='Команда', on_delete=models.SET_NULL, blank=True, null=True)
+    # team = models.ForeignKey(Team, verbose_name='Команда', on_delete=models.SET_NULL, blank=True, null=True)
     team_role = models.CharField(
         verbose_name='Роль в команде', choices=settings.TEAM_ROLES, max_length=10, null=True, blank=True)
     number_in_the_team = models.CharField(
@@ -36,31 +35,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # toggles
     is_staff = models.BooleanField(verbose_name='Персонал', default=False)
-    is_free_member = models.BooleanField(verbose_name='Льготник', default=False)
     is_active = models.BooleanField(verbose_name='Активация аккаунта', default=False)
-    hideMyName = models.BooleanField(verbose_name='Скрыть имя и фамилию', default=False)
+    hide_my_name = models.BooleanField(verbose_name='Скрыть имя и фамилию', default=False)
 
     # rating
-    rating = models.CharField(verbose_name='Опыт(Очки уровня)', default=0, max_length=128)
+    rating = models.IntegerField(verbose_name='Опыт(Очки уровня)', default=0)
     league = models.CharField(verbose_name='Лига', choices=(
         ('l1', 'Школьная лига'), ('l2', 'Лига колледжей'), ('l3', 'Студенческая лига'),
         ('l4', 'Высшая лига'), ('l5', 'Премьер-лига'), ('l6', 'Супер-лига')),
                               blank=True, max_length=128)
-
-    # Parents and childs
-    parent_account_id = models.CharField(verbose_name='Родительский аккаунт', default='', max_length=20, blank=True)
-    child_account = models.BooleanField(verbose_name='Детский аккаунт', default=False)
-
-    # Hint stat
-    countHintMaster = models.CharField(verbose_name='Счетчик подсказок мастера', default=0, max_length=128)
-    countHintDelTwoAnswer = models.CharField(verbose_name='Счетчик подсказок "Убрать два ответа"', default=0,
-                                             max_length=128)
-    countHintChance = models.CharField(verbose_name='Счетчик подсказок "Второй шанс"', default=0, max_length=128)
-    countHintSkipQuest = models.CharField(verbose_name='Счетчик пропуска вопроса', default=0, max_length=128)
-    # Answers stat
-    countRightAnswer = models.CharField(verbose_name='Счетчик правильных ответов', default=0, max_length=128)
-    countWrongAnswer = models.CharField(verbose_name='Счетчик неправильныых ответов', default=0, max_length=128)
-    countTotalGames = models.CharField(verbose_name='Счетчик игр', default=0, max_length=128)
 
     date_joined = models.DateTimeField(verbose_name='Дата регистрации', default=timezone.now)
     last_game = models.DateTimeField(verbose_name='Дата последней игры', default=timezone.now)
@@ -83,13 +66,3 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = _('Пользователи')
 
 
-class InviteToTeam(models.Model):
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'"{self.user}" invited to "{self.team}"'
-
-    class Meta:
-        verbose_name = _('Приглашение в команду')
-        verbose_name_plural = _('Приглашения в команды')

@@ -66,7 +66,7 @@ class QuestionAPI(View):
             if result := self._exists_in(('question_list',), post):
                 return result
             post['purpose'] = 'MWEL'
-            result = services.add_marafon(post, request.user)
+            result = services.add_theme_blocks(post, request.user)
             return JsonResponse(result)
         else:
             return self._status_error('Error! Unknown event.')

@@ -1,12 +1,13 @@
 from django.core.exceptions import ObjectDoesNotExist
+
+from userK.models import User
 from .models import Team
-from userK.models import User, InviteToTeam
 
 
 def set_number_on_the_team(username, number):
     user = User.objects.get(username=username)
-    team_object = Team.objects.get(team_name=user.team)
-    occupied_player_numbers = [i['number_in_the_team'] for i in team_object.user_set.values('number_in_the_team')]
+    team_object = user.team_set.first()
+    occupied_player_numbers = [i['number_in_the_team'] for i in team_object.players.values('number_in_the_team')]
     if number in occupied_player_numbers:
         return {'status': 'error', 'error': 'This number is occupied'}
     user.number_in_the_team = number
@@ -14,12 +15,13 @@ def set_number_on_the_team(username, number):
     return {'status': 'OK'}
 
 
-def del_player_from_team(player, team):
-    exists = User.objects.filter(username=player).exists()
-    if exists:
-        player = User.objects.get(username=player)
-        if player.team == team:
-            player.team = None
+def del_player_from_team(username: str, team: Team):
+    player = User.objects.filter(username=username)
+    if player.exists():
+        player = player.first()
+        check_team = player.team_set.first()
+        if check_team == team:
+            check_team.players.remove(player)
             _reset_number_in_the_team(player)
             _reset_team_role(player)
             return {'status': 'OK'}
@@ -31,33 +33,28 @@ def del_player_from_team(player, team):
 
 def delete_team(user):
     team_role = user.team_role
-    team_name = user.team
-    if Team.objects.filter(team_name=team_name).exists():
-        team = Team.objects.get(team_name=team_name)
-        if team.user_set.filter(username=user.username).exists():
-            if team_role == 'COMMANDER':
-                _reset_team_role(user)
-                _reset_number_in_the_team(user)
-                team.delete()
-                return {'status': 'OK'}
+    team = user.team_set.first()
+    if user in team.players and team_role == 'COMMANDER':
+        _reset_team_role(user)
+        _reset_number_in_the_team(user)
+        team.delete()
+        return {'status': 'OK'}
 
 
-def add_player_to_invite_list(user_id, team_id):
-    exists = InviteToTeam.objects.filter(team=team_id, user=user_id).exists()
-    if not exists:
-        team = Team.objects.get(id=team_id)
-        user = User.objects.get(id=user_id)
-        InviteToTeam.objects.create(team=team, user=user)
+def add_player_to_invite_list(user_id: str, team: Team):
+    invitee = User.objects.get(id=user_id)
+    if invitee not in team.invites.all():
+        team.invites.add(invitee)
         return {'status': 'OK'}
     return {'status': 'error', 'error': 'This invitation is already there'}
 
 
 def get_team_info(team, user):
     try:
-        team_object = Team.objects.get(team_name=team)
+        team_object = Team.objects.get(name=team)
     except ObjectDoesNotExist:
         return {'Error': 'Нет такой команды'}
-    players_list = list(team_object.user_set.values('id', 'username', 'team_role', 'number_in_the_team'))
+    players_list = list(team_object.players.values('id', 'username', 'team_role', 'number_in_the_team'))
     players = _create_dict_with_user_models(players_list)
     if not str(user) in players['list']:
         return {'Error': 'Вы не состоите в этой команде, доступ закрыт.'}
@@ -82,12 +79,17 @@ def _create_dict_with_user_models(players_list):
 
 def set_player_team_role(user, put):
     role = put['role']
-    teammate_list = user.team.user_set.all()
+    teammate_list = user.team_set.first().players.all()
     if user.team_role == 'COMMANDER':
         if 'username' in put:
             if teammate_list.filter(username=put['username']).exists():
                 user = teammate_list.get(username=put['username'])
     empty_places_list = _check_empty_place_in_team_roles(teammate_list=teammate_list)
+    if role == 'CAPTAIN':
+        if empty_places_list['COMMANDER'] == 'OK':
+            _set_team_role(user, role)
+        else:
+            return {'status': 'error', 'error': 'Commander place is not empty!'}
     if role == 'LEGIONARY':
         if empty_places_list['LEGIONARY'] == 'OK':
             _set_team_role(user, role)
@@ -102,34 +104,30 @@ def set_player_team_role(user, put):
     return {'status': 'OK'}
 
 
-def join_player_to_team(user, team_name):
-    user = User.objects.get(username=user.username)
-    invited = user.invitetoteam_set.all()
-    if invited.filter(team__team_name=team_name).exists():
-        team = Team.objects.get(team_name=team_name)
-        user.team = team
-        user.save()
+def join_player_to_team(user: User, team_name: str):
+    invites = user.invites_set.all()
+    if invites.filter(name=team_name).exists():
+        team = Team.objects.get(name=team_name)
+        team.players.add(user)
         return {'status': 'OK'}
     else:
         return {'status': 'error', 'error': 'You are not invited to this team!'}
 
 
-def create_team(user, team_name):
-    new_team = Team.objects.create(team_name=team_name)
+def create_team(user, name):
+    new_team = Team.objects.create(name=name)
     new_team.save()
     user.team_role = 'COMMANDER'
     user.number_in_the_team = '1'
-    user.team = new_team
-    user.save()
-    return {'status': 'OK', 'user': user.username, 'team_name': team_name}
+    new_team.players.add(user)
+    return {'status': 'OK', 'user': user.username, 'name': name}
 
 
 def leave_from_team(user):
-    if user.team:
+    if user.team_set.first():
         _reset_team_role(user)
         _reset_number_in_the_team(user)
-        user.team = None
-        user.save()
+        user.team_set.first().players.remove(user)
         return {'status': 'OK'}
     else:
         return {'status': 'error', 'error': 'You haven\'t in team'}
@@ -166,8 +164,13 @@ def _check_empty_place_in_team_roles(teammate_list):
     team_roles = []
     for i, u in enumerate(team_roles_query):
         team_roles.append(team_roles_query[i][0])
+    exist_c = team_roles.count('COMMANDER')
     exist_l = team_roles.count('LEGIONARY')
     exist_b = team_roles.count('BASIC')
+    if exist_c > 0:
+        place_c = 'FILLED'
+    else:
+        place_c = 'OK'
     if exist_l < 2:
         place_l = 'OK'
     else:
@@ -177,4 +180,4 @@ def _check_empty_place_in_team_roles(teammate_list):
     else:
         place_b = 'FILLED'
 
-    return {'LEGIONARY': place_l, 'BASIC': place_b}
+    return {'COMMANDER': place_c, 'LEGIONARY': place_l, 'BASIC': place_b}

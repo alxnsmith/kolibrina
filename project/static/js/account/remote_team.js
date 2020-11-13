@@ -135,7 +135,11 @@ function select_team_role(role, element, username=null){
             }else if (r.error === 'There many to Basics'){
                 error_text = 'Слишком много Базовых!'
                 _error_red_and_text_popup(error_text, popup_notification, '0', '120px', '80%')
+            }else if (r.error === 'Commander place is not empty!'){
+                error_text = 'Это место занято!'
+                _error_red_and_text_popup(error_text, popup_notification, '0', '120px', '80%')
             }
+
         setTimeout(()=>{window.location.reload()}, 1400)
         } else {_show_nums()}
 
@@ -297,7 +301,7 @@ function join_to_team(team){
     let request_url = window.location.origin + '/api/team/'
     let data = {
         'event': 'join_to_team',
-        'team_name': team
+        'name': team
     }
     return sendRequest('put', request_url, data).then(r=> {
         if (r.status === 'OK') {
@@ -310,7 +314,7 @@ function create_team(team){
     let request_url = window.location.origin + '/api/team/'
     let data = {
         'event': 'create_team',
-        'team_name': team
+        'name': team
     }
     return sendRequest('post', request_url, data).then(r=> {
         if (r.status === 'OK') {

@@ -29,9 +29,9 @@ def team_api(request):
         if 'event' in post:
             event = post['event']
             if event == 'add_player_to_invite_list':
-                return _add_player_to_invite_list(post['player_id'], user.team.id)
+                return _add_player_to_invite_list(post['player_id'], user.team_set.first())
             elif event == 'create_team':
-                return _create_team(user, post['team_name'])
+                return _create_team(user, post['name'])
             else:
                 return JsonResponse({'error': 'Error! Unknown event.'})
         else:
@@ -42,7 +42,7 @@ def team_api(request):
         if 'event' in data:
             event = data['event']
             if event == 'delete_player_from_team':
-                result = services.del_player_from_team(team=user.team, player=data['player'])
+                result = services.del_player_from_team(team=user.team_set.first(), username=data['player'])
                 return JsonResponse(result)
             elif event == 'delete_team':
                 result = services.delete_team(user)
@@ -61,7 +61,7 @@ def team_api(request):
                 elif event == 'set_team_role':
                     return _set_team_role(user, put)
                 elif event == 'join_to_team':
-                    return JsonResponse(services.join_player_to_team(user=user, team_name=put['team_name']))
+                    return JsonResponse(services.join_player_to_team(user=user, team_name=put['name']))
                 elif event == 'leave_from_team':
                     return JsonResponse(services.leave_from_team(user=user))
                 else:
@@ -77,8 +77,8 @@ def _set_team_role(user, put):
     return JsonResponse(result)
 
 
-def _create_team(user, team_name):
-    result = team_services.create_team(user=user, team_name=team_name)
+def _create_team(user, name):
+    result = team_services.create_team(user=user, name=name)
     return JsonResponse(result)
 
 
@@ -87,8 +87,8 @@ def _get_team_info(team, user):
     return team_info
 
 
-def _add_player_to_invite_list(user_id, team_id):
-    result = services.add_player_to_invite_list(user_id, team_id)
+def _add_player_to_invite_list(user_id: str, team: object):
+    result = services.add_player_to_invite_list(user_id, team)
     return JsonResponse(result)
 
 

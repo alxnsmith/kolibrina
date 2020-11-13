@@ -86,9 +86,9 @@
 
                     </div>
                     <div>
-                        <label for="hyde_my_name"><input type="checkbox" id='hyde_my_name' name="hideMyName"
+                        <label for="hyde_my_name"><input type="checkbox" id='hyde_my_name' name="hide_my_name"
                                                          style="width: auto;"
-                                                         {% if request.user.hideMyName == 1 %}checked{% endif %}> Не
+                                                         {% if request.user.hide_my_name == 1 %}checked{% endif %}> Не
                             отображать моё имя и фамилию</label><br>
                     </div>
                     <input id='username' type="text" placeholder="Ник / псевдоним, под которым будет играть участник"
@@ -163,12 +163,16 @@
                             <div class="flex-row">
                                 <span style="text-align: center;">Ваша команда</span>
                                 <div>
+                                    {% for team in invite_teams_list %}{{ team.name }}{% endfor %}
+                                    {% for team in invite_teams_list %}
+                                        <option value="{{ team.team }}"></option>
+                                    {% endfor %}
                                     <input id="team" type="text" list="team_list" placeholder="Название команды / ID"
                                            value="{{ team }}" style="min-width: 210px;"
                                            {% if request.user.team_role != "COMMANDER" and request.user.team %}disabled{% endif %}>
                                     <datalist id="team_list">
                                         {% for team in invite_teams_list %}
-                                            <option value="{{ team.team }}"></option>
+                                            <option value="{{ team.name }}"></option>
                                         {% endfor %}
                                     </datalist>
                                     {% if team %}
@@ -195,7 +199,7 @@
                                 {% endif %}
                             </div>
                         </div>
-                        {% if request.user.team %}
+                        {% if request.user.team_set.first %}
                             <div class="col-md-6">
                                 <div class="flex-row">
                                     <span style="text-align: center;">Ваш статус в команде</span>
@@ -205,7 +209,7 @@
                                                                                      name="your_team_status"
                                                                                      type="radio" value="CAPTAIN"
                                                                                      {% if request.user.team_role == 'COMMANDER' %}checked{% endif %}
-                                                                                     {% if request.user.team %}disabled{% endif %}>
+                                                                                     {% if request.user.team_set %}disabled{% endif %}>
                                                 Капитан
                                                 <span>Готово! <span></span></span></label>
                                         </div>

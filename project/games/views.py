@@ -20,7 +20,7 @@ def api_train(request):
             for i in questions_list[key]:
                 d = model_to_dict(i)
                 city = i.author.city
-                if user_models.User.objects.get(id=d['author']).hideMyName or not city:
+                if user_models.User.objects.get(id=d['author']).hide_my_name or not city:
                     d['author'] = str(i.author)
                 else:
                     d['author'] = '{0} {1}, г.{2}'.format(
@@ -37,7 +37,7 @@ def api_train(request):
         if str(request.user) != 'AnonymousUser':
             league = user_services.get_user_rating_lvl_dif(float(request.user.rating))['level']
         else:
-            league = 'Z'
+            league = 'Z (знаток)'
         quest_template = defs.get_template_questions(league)
         questions = defs.q_questions(quest_template, Question)
         if 'error' in questions:
@@ -128,46 +128,3 @@ def clarify_question(request):
         return redirect('account')
 
 
-class MarafonWeek(View):
-    IS_BENEFIT_RECIPIENT = None
-
-    def __init__(self):
-        super(MarafonWeek, self).__init__()
-
-    def get(self, request):
-        self.marafon = services.MarafonWeek(self.request.user)
-        self.user = self.request.user
-        get = self.request.GET
-        query = list(get.keys())
-        if 'info' in query:
-            response = self.marafon.info
-            return JsonResponse(response)
-        elif 'pay' in query:
-            response = self.pay()
-            return JsonResponse(response)
-
-        info = self.marafon.info
-        if info['status'] == 'OK':
-            return render(self.request, 'game/marafon.html', {
-                'marafon_info': info,
-                'user_info': services.get_user_info(self.user)
-            })
-        else:
-            return redirect('account')
-
-    def pay(self):
-        if self._is_time_to_start:
-            return {'status': 'error', 'error': 'Регистрация на марафон окончена, вы можете посмотреть за ходом игры.'}
-        user = self.request.user
-        if not self.IS_BENEFIT_RECIPIENT and user.balance >= self.marafon.instance.price:
-            user.balance -= self.marafon.instance.price
-            user.save()
-        else:
-            return {'status': 'error',
-                    'error': 'Недостаточно средств, для участия - пополните баланс в личном кабинете.'}
-        self.marafon.instance.players.add(user)
-        return {'status': 'OK'}
-
-    @property
-    def _is_time_to_start(self):
-        return timezone.now() > self.marafon.instance.date_time_start

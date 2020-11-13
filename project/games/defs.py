@@ -4,7 +4,7 @@ difficulty_list = (10, 20, 30, 40, 50)
 
 
 def get_template_questions(u):
-    u = u.split(' ')[0]
+    u = u[0]
     if u == 'J':
         return 10, 10, 10, 10, 20, 20, 20, 20, 30, 30, 30, 30,
     if u == 'L':

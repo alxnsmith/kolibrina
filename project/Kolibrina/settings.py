@@ -33,7 +33,10 @@ INSTALLED_APPS = [
     'authK',
     'channel_common',
     'chat',
+
     'games',
+    'marathon',
+
     'Kolibrina',
     'main',
     'media',
@@ -121,7 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static/'
 
-# STATICFILES_DIRS = [BASE_DIR / 'static/']  # может вызывать ошибку статики.
+STATICFILES_DIRS = [BASE_DIR / 'static/']  # может вызывать ошибку статики.
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',

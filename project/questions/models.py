@@ -88,7 +88,7 @@ class Question(models.Model):
         verbose_name_plural = _('Вопросы')
 
 
-class MarafonThemeBlock(models.Model):
+class MarathonThemeBlock(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True)
     public = models.BooleanField(default=False, verbose_name='Публичный')

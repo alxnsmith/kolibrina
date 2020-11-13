@@ -1,13 +1,14 @@
 from django.utils import timezone
 
-from games.models import Marafon, Tournament
-from . import models
+from games.models import Tournament
+from marathon.models import MarathonWeekOfficial
+from .models import Theme, Question, MarathonThemeBlock, User
 
 
 def add_theme_to_category(post):
     cat = post['cat']
     theme = post['theme']
-    models.Theme.objects.create(category_id=cat, theme=theme)
+    Theme.objects.create(category_id=cat, theme=theme)
     return {'status': 'OK'}
 
 
@@ -38,7 +39,7 @@ def add_question(request):
     items['author_id'] = request.user.id
     if 'csrfmiddlewaretoken' in items:
         del items['csrfmiddlewaretoken']
-    models.Question.objects.create(**items)
+    Question.objects.create(**items)
 
 
 def _create_tournament(author_id, purpose):
@@ -47,23 +48,25 @@ def _create_tournament(author_id, purpose):
 
 def _add_question_to_db(author_id, category_id, theme_id, difficulty,
                         question, correct_answer, answer2, answer3, answer4, pos, purpose=None, is_active=False):
-    purposes = {
-        'Training': 1,
-        'Marafon': 2,
-        'TournamentWeek': 3
-    }
+    # purposes = {
+    #     'Training': 1,
+    #     'Marafon': 2,
+    #     'TournamentWeek': 3
+    # }
 
-    return models.Question.objects.create(author_id=author_id,
-                                          category_id=category_id,
-                                          theme_id=theme_id,
-                                          difficulty=difficulty,
-                                          question=question.strip(),
-                                          correct_answer=correct_answer.strip(),
-                                          answer2=answer2.strip(),
-                                          answer3=answer3.strip(),
-                                          answer4=answer4.strip(),
-                                          pos=pos,
-                                          purpose_id=purposes.get(purpose))
+    return Question.objects.create(
+        author_id=author_id,
+        category_id=category_id,
+        theme_id=theme_id,
+        difficulty=difficulty,
+        question=question.strip(),
+        correct_answer=correct_answer.strip(),
+        answer2=answer2.strip(),
+        answer3=answer3.strip(),
+        answer4=answer4.strip(),
+        pos=pos,
+        # purpose_id=purposes.get(purpose)
+    )
 
 
 def get_questions_from_tournament(tournament):
@@ -71,6 +74,7 @@ def get_questions_from_tournament(tournament):
 
 
 def add_marafon_theme_block(author: object, questions: list, is_active=False):
+    print(questions)
     themes_check = set()
     for i in questions:
         themes_check.add(i.theme_id)
@@ -79,14 +83,14 @@ def add_marafon_theme_block(author: object, questions: list, is_active=False):
     else:
         return False
 
-    block = models.MarafonThemeBlock.objects.create(author=author, theme_id=theme_id, is_active=is_active)
+    block = MarathonThemeBlock.objects.create(author=author, theme_id=theme_id, is_active=is_active)
 
     for i in questions:
         block.questions.add(i)
     return block
 
 
-def add_marafon(post, author: models.User):
+def add_theme_blocks(post, author: User):
     question_list = post['question_list']
     question_blocks = {1: [], 2: [], 3: [], 4: []}
 
@@ -105,9 +109,9 @@ def add_marafon(post, author: models.User):
     is_active = True if author.is_staff else False
     for i in question_blocks:
         question_blocks[i] = add_marafon_theme_block(author, question_blocks[i], is_active)
-    marafon_instance = Marafon.objects.create(purpose=post['purpose'], author=author)
-    for i in question_blocks:
-        marafon_instance.question_blocks.add(question_blocks[i].id)
+    # marafon_instance = Marafon.objects.create(purpose=post['purpose'], author=author)
+    # for i in question_blocks:
+    #     marafon_instance.question_blocks.add(question_blocks[i].id)
     return {'status': 'OK'}
 
 
@@ -123,17 +127,18 @@ def get_tournament_instance(tournament_shortname):
     return tournament_model
 
 
-def get_marafon_instance():
-    active_marafon_list = Marafon.objects.filter(
-        is_active=True, purpose='MWEL', official=True, price__isnull=False, date_time_start__isnull=False
+def get_list_official_marathons() -> dict:
+    active_marafon_list = MarathonWeekOfficial.objects.filter(
+        is_active=True, date_time_start__isnull=False, code_name__isnull=False
     )
     if active_marafon_list.exists():
-        marafon = active_marafon_list.order_by('date_time_start')[0]
+        return {'status': 'OK', 'marathons_list': active_marafon_list}
     else:
-        marafon = {'status': 'error', 'error': 'Empty'}
-    return marafon
+        return {'status': 'error', 'error': 'Empty'}
 
 
-def get_open_for_registration():
-    reg_list = [get_marafon_instance(), ]
-    return reg_list
+def get_all_nearest_events_dict():
+    events = {
+        'official_marathon': get_list_official_marathons()
+    }
+    return events

@@ -1,13 +1,17 @@
-from django.urls import path
-from . import views
 from django.contrib.auth.decorators import login_required
+from django.urls import path, include
+
+from .views import tournament_week, train, win_lose, tournaments, clarify_question, api_train
 
 urlpatterns = [
-    path('', views.train, name='train'),
-    path('tournament-week', views.tournament_week, name='tournament-week'),
-    path('result-games/', views.win_lose, name='result-game'),
-    path('tournaments/', views.tournaments, name='tournaments'),
-    path('clarify-question/', views.clarify_question, name='clarify-question'),
-    path('api-train/', views.api_train, name='api_train'),
-    path('marafon-week/', login_required(views.MarafonWeek.as_view()), name='marafon_week')
+    path('tournaments/', tournaments, name='tournaments'),
+
+    path('', train, name='train'),
+    path('api-train/', api_train, name='api_train'),
+
+    path('tournament-week', login_required(tournament_week), name='tournament-week'),
+    path('marafon/', include('marathon.urls')),
+
+    path('clarify-question/', login_required(clarify_question), name='clarify-question'),
+    path('result-games/', win_lose, name='result-game'),
 ]

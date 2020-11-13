@@ -9,8 +9,9 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 import channel_common.routing
 import chat.routing
-import games.routing
 import admin_panel.routing
+import games.routing
+import marathon.routing
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
@@ -18,8 +19,9 @@ application = ProtocolTypeRouter({
         URLRouter(
             chat.routing.websocket_urlpatterns +
             channel_common.routing.websocket_urlpatterns +
+            admin_panel.routing.websocket_urlpatterns +
             games.routing.websocket_urlpatterns +
-            admin_panel.routing.websocket_urlpatterns
+            marathon.routing.websocket_urlpatterns
         )
     )
 })

@@ -15,7 +15,6 @@ class PaymentAPI(View):
 
     @staticmethod
     def get(request):
-        print(request.GET)
         user = request.user
         payment_method = request.GET['payment_method']
         value = request.GET['value']
