@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from . import services
-from api_teams import services as team_services
+from teams import services as team_services
 
 
 @csrf_exempt

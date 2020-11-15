@@ -84,9 +84,9 @@
         let round_timer
         let tournament_author
         let question_text
-        const t = "TWEL"
+        const tournament_shortname = "ELTW"
         const tournament_socket = new WebSocket(
-            'wss://' + window.location.host + `/ws/tournament-week-${t}/`
+            'wss://' + window.location.host + `/ws/tournament-week-${tournament_shortname}/`
         );
         tournament_socket.onmessage = (event) => {
             let data = JSON.parse(event.data)

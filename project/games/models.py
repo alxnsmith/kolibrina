@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from questions.models import Question
+from questions.models import Question, Purpose
 from stats.models import ScoreHistoryElement
 from userK.models import User
 
@@ -10,13 +10,7 @@ from userK.models import User
 class Tournament(models.Model):
     name = models.CharField(max_length=128, verbose_name='Имя турнира', blank=True)
 
-    class Purposes(models.TextChoices):
-        NONE = 'NONE', _('Не указано')
-        TRAIN_ER_LOTTO = 'TEL', _('Тренировка эрудит-лото')
-        TOURNAMENT_WEEK_ER_LOTTO = 'TWEL', _('Турнир недели эрудит-лото')
-
-    purpose = models.CharField(verbose_name='Назначение', max_length=128, choices=Purposes.choices,
-                               default=Purposes.NONE)
+    purpose = models.ForeignKey(Purpose, verbose_name='Назначение', on_delete=models.SET_NULL, null=True)
     author = models.ForeignKey(User, default=None, null=True, on_delete=models.SET_NULL,
                                verbose_name="Автор турнира")
     timer = models.IntegerField(verbose_name='Время таймера', default=30)
@@ -70,7 +64,7 @@ class BaseGame(models.Model):
 
     is_active = models.BooleanField(verbose_name='Активный марафон', default=False)
 
-    players = models.ManyToManyField(User)
+    players = models.ManyToManyField(User, blank=True)
 
     date_time_start = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)
     create_date = models.DateField(verbose_name='Дата создания', default=timezone.now)

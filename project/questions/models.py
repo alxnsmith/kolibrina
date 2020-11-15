@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from userK.models import User
+from django.conf import settings
 
 
 class Category(models.Model):
@@ -16,10 +17,18 @@ class Category(models.Model):
 
 
 class Purpose(models.Model):
-    purpose = models.CharField(max_length=150, verbose_name='Назначение')
+
+    class Purposes(models.TextChoices):
+        Train = 'T', _('Тренировка')
+        MarathonWeek = 'ELMW', _('Марафон недели')
+        OfficialMarathonWeek = 'OELMW', _('Официальный марафон недели')
+        TournamentWeek = 'ELTW', _('Турнир недели')
+
+    codename = models.CharField(
+        choices=Purposes.choices, max_length=150, verbose_name="Назначение", null=True)
 
     def __str__(self):
-        return self.purpose
+        return self.get_codename_display()
 
     class Meta:
         verbose_name = _('Назначение')
@@ -51,31 +60,31 @@ class Question(models.Model):
         ('d2.1', 'д2.1'), ('d2.2', 'д2.2'), ('d2.3', 'д2.3'), ('d2.4', 'д2.4'), ('d2.5', 'д2.5'), ('zamena', 'замена'),
     )
 
-    # purpose = models.ForeignKey(Purpose, on_delete=models.SET_NULL, db_column='purpose', default=None,
-    #                             verbose_name='Назначение', null=True, blank=True)
+    purpose = models.ForeignKey(Purpose, on_delete=models.SET_NULL, verbose_name='Назначение', null=True, blank=True)
     public = models.BooleanField(default=False, verbose_name='Публичный')
-    premoderate = models.BooleanField(default=True, verbose_name='На модерации')
+    moderate = models.BooleanField(default=True, verbose_name='На модерации')
     pos = models.CharField(choices=posChoices, max_length=10, verbose_name='Позиция вопроса в турнире', blank=True)
 
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, db_column='author', verbose_name='Автор',
-                               default=None, null=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, default='0', db_column='category', null=True,
-                                 verbose_name='Категория')
-    theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, default='0', db_column='theme', verbose_name='Тема',
-                              null=True)
-    difficulty = models.CharField(choices=diffChoices, max_length=2, default='30', verbose_name='Сложность')
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, db_column='author', verbose_name='Автор', null=True)
+    category = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, db_column='category', null=True, verbose_name='Категория')
+    theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, db_column='theme', verbose_name='Тема', null=True)
+    difficulty = models.CharField(choices=diffChoices, max_length=2, verbose_name='Сложность', null=True)
+
     question = models.TextField(max_length=350, verbose_name='Вопрос')
     correct_answer = models.CharField(max_length=64, verbose_name='Правильный ответ')
     answer2 = models.CharField(max_length=64, verbose_name='Ответ2')
     answer3 = models.CharField(max_length=64, verbose_name='Ответ3')
     answer4 = models.CharField(max_length=64, verbose_name='Ответ4')
 
+    rate = models.IntegerField(verbose_name='Оценка', default=0)
+
     def __str__(self):
         # if len(self.question) > 50:
         # question_str = self.question[:50] + '...'
         # else:
         #     question_str = self.question.ljust(50, '_')
-        return 'M: {}, ID: {}, Q: {}, A: {}, D: {}, C: {}, T: {}'.format(self.premoderate,
+        return 'M: {}, ID: {}, Q: {}, A: {}, D: {}, C: {}, T: {}'.format(self.moderate,
                                                                          self.id,
                                                                          self.question,
                                                                          self.correct_answer,
@@ -96,10 +105,15 @@ class MarathonThemeBlock(models.Model):
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Theme: {self.theme}; Author: {self.author};'
+        return f'ID: {self.id};Theme: {self.theme}; Author: {self.author};'
 
     class Meta:
         verbose_name = _('Блок темы')
         verbose_name_plural = _('Блоки тем')
 
 
+def get_all_nearest_events_dict():
+    events = {
+        'official_marathon': ''
+    }
+    return events

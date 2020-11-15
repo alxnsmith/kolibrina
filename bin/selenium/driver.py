@@ -1,4 +1,4 @@
-from random import random
+from random import choice
 from time import sleep
 from selenium import webdriver
 
@@ -20,11 +20,16 @@ class Driver:
 
     def select_category_and_theme(self, instance: str):
         def set_random():
-            self.driver.find_elements_by_css_selector('#category_id option')[round(random() + 1)].click()
-            sleep(0.5)
-            themes = self.driver.find_elements_by_css_selector('#theme_id option')
-            x = round(random() * (len(themes) - 2) + 1)
-            themes[x].click()
+            categories = self.driver.find_elements_by_css_selector('#category_id option')[1:]
+            choice(categories).click()
+
+            def get_themes():
+                return self.driver.find_elements_by_css_selector('#theme_id option')[1:]
+
+            while len(get_themes()) < 1:
+                pass
+            themes = get_themes()
+            choice(themes).click()
 
         if instance == 'tournament':
             set_random()

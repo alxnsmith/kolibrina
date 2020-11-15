@@ -47,7 +47,7 @@
                     <div class="col-md-6 col-lg-6">
                         <a href="#" class="develop"><img src="{% static 'img/R.jpg' %} " alt="" class="attr1">Турнир
                             призовой <img src="{% static 'img/rub.jpg' %} " alt="" class="attr2"></a>
-                        <a data-url='{% url 'marafon_week' %}' class="marafon-week develop"><img src="{% static 'img/R.jpg' %} " alt="" class="attr1">Марафон
+                        <a href="{% url 'marafon_week' %}" class="marafon-week develop"><img src="{% static 'img/R.jpg' %} " alt="" class="attr1">Марафон
                             недели<img src="{% static 'img/rub.jpg' %} " alt="" class="attr2"></a>
                         <a href="#" class="develop"><img src="{% static 'img/R.jpg' %} " alt="" class="attr1">Марафон
                             призовой<img src="{% static 'img/rub.jpg' %} " alt="" class="attr2"></a>
@@ -206,7 +206,6 @@
 <div class="mt20"></div>
 
 {% include "main/footer.html" %}
-{% include "game/blocks/pay_confirmation.html" %}
 <script>
     $(document).ready(function () {
         $("header nav a:nth-child(2) > span").addClass("select");

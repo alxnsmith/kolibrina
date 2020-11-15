@@ -17,10 +17,17 @@ MIGRATIONS = python3.9 manage.py makemigrations ; \
 COLLECT_STATIC = python3.9 manage.py collectstatic ; \
 
 
-init:
+init_prod:
 	$(CREATE_ENV) ; \
 	$(MIGRATIONS) ; \
 	python3.9 manage.py init ; \
+	cd .. ; \
+	python3.9 ./bin/initProject.py
+
+init_dev:
+	$(CREATE_ENV) ; \
+	$(MIGRATIONS) ; \
+	python3.9 manage.py init -d 1 ; \
 	cd .. ; \
 	python3.9 ./bin/initProject.py
 
@@ -56,6 +63,13 @@ start_daphne:
 	export DJANGO_SETTINGS_MODULE=Kolibrina.settings ; \
 	daphne -p 8001 Kolibrina.asgi\:application
 
+
+clean_all:
+	$(ENV) ; \
+	cd ../bin ; \
+	python3.9 clean_migrations.py; \
+	python3.9 clean_cache.py
+
 clean_migrations:
 	$(ENV) ; \
 	cd ../bin ; \
@@ -78,3 +92,6 @@ add_marafon_EL:
 add_tournament_EL:
 	$(ENV_SELENIUM) ; \
 	python3.9 bin/selenium/add_tournament_week.py
+
+zip:
+	zip -r kolibrina.zip . -x '*/venv/*' 'venv/*' '.git/*' '.idea/*' '.gitignore' '*/__pycache__/*' '*/db.sqlite3' 'README.md';

@@ -71,7 +71,7 @@ class MarafonWeek(JsonWebsocketConsumer):
     def connect(self):
         print(self.game_info)
         self.user = self.scope['user']
-        self.marafon = services.MarafonWeek(self.user)
+        self.marafon = services.MarathonWeek(self.user)
 
         marafon_id = self.marafon.info['id']
         if current_id := self.game_info['marafon_id']:

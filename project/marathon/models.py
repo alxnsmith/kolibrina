@@ -31,6 +31,7 @@ class MarathonRound(models.Model):
 class MarathonWeekOfficial(BaseMarathon):
     price = models.SmallIntegerField(null=True, blank=True, verbose_name='Цена')
     rounds = models.ManyToManyField(MarathonRound, verbose_name='Раунды')
+
     is_rating = models.BooleanField(verbose_name='Рейтинговый', default=False)
 
     class Meta:

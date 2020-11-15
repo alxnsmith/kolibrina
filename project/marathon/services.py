@@ -3,8 +3,8 @@ import random
 
 from django.utils import timezone
 
-from questions.services import get_list_official_marathons
 from games.services import get_user_info
+from marathon.models import MarathonWeekOfficial
 
 
 def round3(func):
@@ -14,14 +14,10 @@ def round3(func):
     return wrapper
 
 
-class MarafonWeek:
+class MarathonWeek:
     def __init__(self, instance, user):
         self.instance = instance
         self.user = user
-        if type(self.instance) is not dict:
-            self.themes = [theme
-                           for theme in list(self.instance.question_blocks.all().values_list('theme__theme', 'id'))]
-            self.players = self.instance.players.all()
 
     @property
     def info(self) -> dict:
@@ -38,13 +34,10 @@ class MarafonWeek:
             'author_firstname': self.instance.author.firstName,
             'author_lastname': self.instance.author.lastName,
             'author_city': self.instance.author.city,
-            'players': [user.username for user in players],
             'response_timer': self.instance.response_timer,
             'choose_timer': self.instance.choose_timer,
             'price': '0' if user['is_benefit_recipient'] else self.instance.price,
             'date_start': str(self.instance.date_time_start.timestamp()),
-            'is_time_to_start': timezone.now() > self.instance.date_time_start,
-            'number_of_theme_blocks': list(range(0, len(self.instance.question_blocks.all()))),
             'user': user
         }
 
@@ -60,3 +53,14 @@ class MarafonWeek:
             'pos': pos
         }
         return question
+
+
+def get_list_official_marathons() -> dict:
+    active_marafon_list = MarathonWeekOfficial.objects.filter(
+        is_active=True, date_time_start__isnull=False, code_name__isnull=False
+    ).order_by('-date_time_start')
+
+    if active_marafon_list.exists():
+        return {'status': 'OK', 'marathons_list': active_marafon_list}
+    else:
+        return {'status': 'error', 'error': 'Empty'}

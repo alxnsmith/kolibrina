@@ -64,7 +64,7 @@ class TournamentWeekInstance:
 
         self.pos_list = self.init_pos_list(self.attempt + 1, self.lose_question)
         self.next_question_pos = self._gen_pos_question(self.pos_list)
-        self.timer_duration = self.tournament_instance.response_timer
+        self.timer_duration = self.tournament_instance.timer
         self.tournament_author = self._get_tournament_author()
 
         self.current_question_num_gen = self._get_next_question_number()

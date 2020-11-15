@@ -5,7 +5,7 @@ class Render {
 
     }
 
-    update_top_fifteen(players) {
+    static update_top_fifteen(players) {
         let rating = new rating_top_fifteen()
 
         players.forEach(player => {
@@ -19,7 +19,7 @@ class Render {
 
     }
 
-    update_online(counter, online) {
+    static update_online(counter, online) {
         if (counter === 'watchers') {
             document.getElementById('online_watchers').innerText = online
         } else if (counter === 'players') {
@@ -27,7 +27,7 @@ class Render {
         }
     }
 
-    fill_themes(themes) {
+    static fill_themes(themes) {
         let theme_field
         let questions_row
         let questions
@@ -46,19 +46,7 @@ class Render {
         })
     }
 
-    start_timer() {
-        function render_timer() {
-            let time = timerCycle(time_to_response * 1000)
-            document.getElementById('timer').innerText = `${String(time.minutes).padStart(2, '0')}:${time.seconds}`
-        }
-
-        render_timer()
-        let timer = setInterval(() => {
-            render_timer()
-        }, 1000)
-    }
-
-    toggle_question_btn(block_id, pos) {
+    static toggle_question_btn(block_id, pos) {
         let row = document.querySelector(`.topic > .theme_${block_id}`)
         let btn = row.querySelectorAll('.topic-point')[pos - 1]
 
@@ -71,9 +59,9 @@ class Render {
         btn.style.cursor = 'default'
     }
 
-    render_question(question){
+    static render_question(question){
         console.log(question)
-        this.toggle_question_btn(question.block_id, question.pos)
+        super.toggle_question_btn(question.block_id, question.pos)
 
         let question_field = document.getElementById('question')
         let answer_fields = document.querySelectorAll('input.answer')

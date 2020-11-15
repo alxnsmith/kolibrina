@@ -11,10 +11,9 @@ def add_random_theme():
     categories = driver.find_elements_by_css_selector('#category_id > option')[1:]
     choice(categories).click()
 
-    while True:
-        if len(themes()) > 0:
-            break
-    sleep(0.1)
+    while len(themes()) < 1:
+        pass
+    sleep(.1)
     choice(themes()).click()
 
 
@@ -25,6 +24,7 @@ if __name__ == '__main__':
 
     for i in range(4):
         add_random_theme()
+        sleep(.15)
         driver.find_element_by_id('add_theme_to_table_button').click()
     driver.find_element_by_id('add_theme_to_table_button').click()
 

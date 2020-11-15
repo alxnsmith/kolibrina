@@ -36,7 +36,7 @@ class TournamentWeek(WebsocketConsumer):
         return self.game_session.correct_answer
 
     def connect(self):
-        self.tournament_shortname = self.scope['url_route']['kwargs']['tournament_name']
+        self.tournament_shortname = self.scope['url_route']['kwargs']['tournament_shortname']
         self.tournament_instance = get_tournament_instance(self.tournament_shortname)
         self.accept()
         self.game_session = services.TournamentWeekInstance(self.tournament_instance, self.scope['user'],

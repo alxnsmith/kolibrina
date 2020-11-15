@@ -60,7 +60,8 @@ class QuestionAPI(View):
         elif event == 'add_tournament_week':
             if result := self._exists_in(('tournament',), post):
                 return result
-            result = services.add_tournament_week(post)
+            author = request.user
+            result = services.add_tournament_week(post, author)
             return JsonResponse(result)
         elif event == 'add_marafon_week':
             if result := self._exists_in(('question_list',), post):

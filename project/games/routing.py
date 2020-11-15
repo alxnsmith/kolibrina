@@ -1,7 +1,7 @@
-from django.urls import re_path
+from django.urls import re_path, path
 
 from . import consumers
 
 websocket_urlpatterns = [
-    re_path(r'ws/tournament-week-<str:tournament_name>/', consumers.TournamentWeek.as_asgi()),
+    path('ws/tournament-week-<str:tournament_shortname>/', consumers.TournamentWeek.as_asgi()),
 ]

@@ -27,7 +27,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     balance = models.FloatField(verbose_name='Баланс', default=0.00)
 
     # team
-    # team = models.ForeignKey(Team, verbose_name='Команда', on_delete=models.SET_NULL, blank=True, null=True)
     team_role = models.CharField(
         verbose_name='Роль в команде', choices=settings.TEAM_ROLES, max_length=10, null=True, blank=True)
     number_in_the_team = models.CharField(
@@ -39,7 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     hide_my_name = models.BooleanField(verbose_name='Скрыть имя и фамилию', default=False)
 
     # rating
-    rating = models.IntegerField(verbose_name='Опыт(Очки уровня)', default=0)
+    author_rating = models.IntegerField(verbose_name='Рейтинг автора', default=0)
+    rating = models.IntegerField(verbose_name='Рейтинг', default=0)
     league = models.CharField(verbose_name='Лига', choices=(
         ('l1', 'Школьная лига'), ('l2', 'Лига колледжей'), ('l3', 'Студенческая лига'),
         ('l4', 'Высшая лига'), ('l5', 'Премьер-лига'), ('l6', 'Супер-лига')),
