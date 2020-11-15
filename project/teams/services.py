@@ -34,7 +34,7 @@ def del_player_from_team(username: str, team: Team):
 def delete_team(user):
     team_role = user.team_role
     team = user.team_set.first()
-    if user in team.players and team_role == 'COMMANDER':
+    if user in team.players.all() and team_role == 'COMMANDER':
         _reset_team_role(user)
         _reset_number_in_the_team(user)
         team.delete()
@@ -119,6 +119,7 @@ def create_team(user, name):
     new_team.save()
     user.team_role = 'COMMANDER'
     user.number_in_the_team = '1'
+    user.save()
     new_team.players.add(user)
     return {'status': 'OK', 'user': user.username, 'name': name}
 

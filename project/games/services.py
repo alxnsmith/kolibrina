@@ -104,27 +104,27 @@ class TournamentWeekInstance:
 
     def end_game(self, score):
         if self.is_started:
-            player_score_instance = self.player_score_instance
-            user = self.player_instance
-            tournament_instance = self.tournament_instance
-            score_link_instance = tournament_instance.tournamentscoreuserlink_set
-            score_link_query_set = score_link_instance.filter(user_instance=user)
             if 8 < int(self.current_question_num):
                 if 8 < int(self.current_question_num):
                     self.attempt_instance.attempt2 = True
                 if 12 < int(self.current_question_num):
                     self.attempt_instance.attempt3 = True
                 self.attempt_instance.save()
-
-            if score_link_query_set.exists():
-                score_instance = score_link_query_set[0].score_instance
-                score_instance.score = score
-                score_instance.save()
-            else:
-                score_instance = player_score_instance.add(score)
-                score_link_instance.create(user_instance=user,
-                                           score_instance=score_instance,
-                                           tournament_instance=tournament_instance)
+            """Тут должна быть конструкция для занесения в таблицу рейтинга, с которой потом рейтинг и раздается"""
+            # user = self.player_instance
+            # tournament_instance = self.tournament_instance
+            # score_link_instance = tournament_instance.tournamentscoreuserlink_set
+            # score_link_query_set = score_link_instance.filter(user_instance=user)
+            # if score_link_query_set.exists():
+            #     score_instance = score_link_query_set[0].score_instance
+            #     score_instance.score = score
+            #     score_instance.save()
+            # else:
+            #     player_score_instance = self.player_score_instance
+            #     score_instance = player_score_instance.add(score)
+            #     score_link_instance.create(user_instance=user,
+            #                                score_instance=score_instance,
+            #                                tournament_instance=tournament_instance)
 
     def _get_next_question_number(self):
         quantity_questions = 25

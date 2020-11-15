@@ -64,7 +64,7 @@ def create_render_data(request, ):
 
 
 def get_user_rating_lvl_dif(rating):
-    rating = round(float(rating), 3)
+    # rating = round(float(rating), 3)
 
     def r(rating, max, deltamax, level):
         for i in range(0, 981):
