@@ -20,7 +20,7 @@ class Purpose(models.Model):
 
     class Purposes(models.TextChoices):
         Train = 'T', _('Тренировка')
-        MarathonWeek = 'ELMW', _('Марафон недели')
+        MarathonWeek = 'CELMW', _('Пользовательский Марафон недели')
         OfficialMarathonWeek = 'OELMW', _('Официальный марафон недели')
         TournamentWeek = 'ELTW', _('Турнир недели')
 

@@ -19,16 +19,30 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('is_staff', 'is_active', 'team_role', 'groups')
     fieldsets = (
         (None, {
-            'fields': (('username', 'hide_my_name'), ('firstName', 'lastName'), ('birthday', 'gender'), 'balance')
+            'fields': (
+                ('username', 'hide_my_name'),
+                ('firstName', 'lastName'),
+                ('birthday', 'gender'),
+                ('balance', 'rating')
+            )
         }),
         ('Контакты', {
-            'fields': (('phoneNumber', 'email'), ('country', 'area', 'city'), 'swPlace')
+            'fields': (
+                ('phoneNumber', 'email'),
+                ('country', 'area', 'city'),
+                'swPlace'
+            )
         }),
         ('Команда', {
-            'fields': (('view_team_link', 'team_role', 'number_in_the_team'),)
+            'fields': (
+                ('view_team_link', 'team_role', 'number_in_the_team'),
+            )
         }),
         ('Config', {
-            'fields': ('groups', ('is_staff', 'is_active'),)
+            'fields': (
+                'groups',
+                ('is_staff', 'is_active'),
+            )
         }),
     )
 

@@ -32,6 +32,7 @@ class MarathonWeekOfficial(BaseMarathon):
     price = models.SmallIntegerField(null=True, blank=True, verbose_name='Цена')
     rounds = models.ManyToManyField(MarathonRound, verbose_name='Раунды')
 
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='OELMW_author')
     is_rating = models.BooleanField(verbose_name='Рейтинговый', default=False)
 
     class Meta:
@@ -43,6 +44,7 @@ class MarathonWeekCommunity(BaseMarathon):
     user_starter = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name='user_starter', verbose_name='Стартер')
     round = models.ForeignKey(MarathonRound, on_delete=models.SET_NULL, null=True, verbose_name='Игровой раунд')
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='CELMW_author')
 
     class Meta:
         verbose_name = _('Пользовательский марафон')

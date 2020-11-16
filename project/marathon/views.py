@@ -13,7 +13,7 @@ class MarathonWeek(View):
             marathon = marathons['marathons_list'][0]
         else:
             return render(self.request, 'marathon/marathon.html')
-        self.marafon = services.MarathonWeek(marathon, self.user)
+        self.marathon = services.MarathonWeek(marathon, self.user)
         get = self.request.GET
         query = list(get.keys())
         if 'pay' in query:
@@ -21,7 +21,7 @@ class MarathonWeek(View):
             return JsonResponse(response)
 
         return render(self.request, 'marathon/marathon.html', {
-            'user_info': services.get_user_info(self.user)
+            'user_info': services.get_user_info(self.user),
         })
 
     def pay(self):
@@ -29,15 +29,15 @@ class MarathonWeek(View):
         if self._is_time_to_start:
             return {'status': 'error', 'error': 'Регистрация на марафон окончена, вы можете посмотреть за ходом игры.'}
         user = self.request.user
-        if not self.IS_BENEFIT_RECIPIENT and user.balance >= self.marafon.instance.price:
-            user.balance -= self.marafon.instance.price
+        if not self.IS_BENEFIT_RECIPIENT and user.balance >= self.marathon.instance.price:
+            user.balance -= self.marathon.instance.price
             user.save()
         else:
             return {'status': 'error',
                     'error': 'Недостаточно средств, для участия - пополните баланс в личном кабинете.'}
-        self.marafon.instance.players.add(user)
+        self.marathon.instance.players.add(user)
         return {'status': 'OK'}
 
     @property
     def _is_time_to_start(self):
-        return timezone.now() > self.marafon.instance.date_time_start
+        return timezone.now() > self.marathon.instance.date_time_start

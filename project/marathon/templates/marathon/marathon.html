@@ -242,8 +242,12 @@
             <div class="league_count">123 / 878</div>
         </div>
         <div class="author user_div marafon_author">
-            <span class="marafon_author-title">Автор марафона №{{ marafon_info.id }}</span>
-            <span class="marafon_author-name">{{ marafon_info.author_firstname }} {{ marafon_info.author_lastname }}, {{ marafon_info.author_city }}</span>
+            <span class="marafon_author-title">Автор марафона №<span class="marafon-number"> □ </span></span>
+            <span class="marafon_author-name">
+                <span class="firstname">________</span>
+                <span class="lastname">________</span>,
+                <span class="city">________</span>
+            </span>
         </div>
 
         <div class="marafon_league">
@@ -257,10 +261,12 @@
 </div>
 {% include "main/footer.html" %}
 <script src="{% static 'games/js/time_counter.js' %}"></script>
-<script src="{% static 'marathon/js/top_fifteen.js' %}"></script>
-<script src="{% static 'marathon/js/render.js' %}"></script>
-<script src="{% static 'marathon/js/event_listener.js' %}"></script>
+<script src="{% static 'games/js/timer.js' %}"></script>
 <script src="{% static 'marathon/js/marathon_week/main.js' %}"></script>
+<script src="{% static 'marathon/js/marathon_week/services.js' %}"></script>
+<script src="{% static 'marathon/js/event_listener.js' %}"></script>
+<script src="{% static 'marathon/js/render.js' %}"></script>
+<script src="{% static 'marathon/js/top_fifteen.js' %}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

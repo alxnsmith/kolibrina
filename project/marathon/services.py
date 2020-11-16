@@ -18,6 +18,8 @@ class MarathonWeek:
     def __init__(self, instance, user):
         self.instance = instance
         self.user = user
+        self.round_gen = self._next_round()
+        self.round = next(self.round_gen)
 
     @property
     def info(self) -> dict:
@@ -28,9 +30,8 @@ class MarathonWeek:
         user['is_player'] = self.user in players
         return {
             'status': 'OK',
-            'id': self.instance.id,
             'name': self.instance.name,
-            'author': self.instance.author.username,
+            'author': self.instance.author,
             'author_firstname': self.instance.author.firstName,
             'author_lastname': self.instance.author.lastName,
             'author_city': self.instance.author.city,
@@ -41,8 +42,36 @@ class MarathonWeek:
             'user': user
         }
 
+    def get_base_static_info(self):
+        info = {
+            'marathon_id': self.id,
+            'firstname': self.instance.author.firstName,
+            'lastname': self.instance.author.lastName,
+            'city': self.instance.author.city
+        }
+        return info
+
+    def check_answer(self, block_id, pos, answer):
+        question = self.round.question_blocks.get(id=block_id).questions.all().get(pos=pos)
+        return question.correct_answer == answer
+
+
+    @property
+    def theme_blocks_with_id(self):
+        themes = self.round.question_blocks.all()
+        themes = [(str(block.theme), block.id) for block in themes]
+        return themes
+
+    @property
+    def players(self):
+        return self.instance.players.all()
+
+    @property
+    def id(self):
+        return self.instance.id
+
     def get_question(self, block_id, pos):
-        questions = self.instance.question_blocks.get(id=block_id).questions.all()
+        questions = self.round.question_blocks.get(id=block_id).questions.all()
         question = questions.get(pos=pos)
         answers = [question.correct_answer, question.answer2, question.answer3, question.answer4]
         random.shuffle(answers)
@@ -53,6 +82,10 @@ class MarathonWeek:
             'pos': pos
         }
         return question
+
+    def _next_round(self):
+        for round in self.instance.rounds.all():
+            yield round
 
 
 def get_list_official_marathons() -> dict:
