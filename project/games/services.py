@@ -7,7 +7,6 @@ from django.forms.models import model_to_dict
 from django.utils import timezone
 
 from .models import Attempt
-from marathon.models import MarathonWeekOfficial
 from questions.services import get_questions_from_tournament
 from stats.services import UserScore
 from stats.services import get_sum_score_user
