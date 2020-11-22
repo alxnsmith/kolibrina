@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views import View
 from . import services
+from games.services import get_user_info
 
 
 class MarathonWeek(View):
@@ -13,7 +14,7 @@ class MarathonWeek(View):
             marathon = marathons['marathons_list'][0]
         else:
             return render(self.request, 'marathon/marathon.html')
-        self.marathon = services.MarathonWeek(marathon, self.user)
+        self.marathon = services.MarathonWeek(marathon, 0)
         get = self.request.GET
         query = list(get.keys())
         if 'pay' in query:
@@ -21,7 +22,7 @@ class MarathonWeek(View):
             return JsonResponse(response)
 
         return render(self.request, 'marathon/marathon.html', {
-            'user_info': services.get_user_info(self.user),
+            'user_info': get_user_info(self.user),
         })
 
     def pay(self):

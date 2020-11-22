@@ -4,7 +4,6 @@ difficulty_list = (10, 20, 30, 40, 50)
 
 
 def get_template_questions(level):
-    level = level[0]
     templates = {
         'J': (10, 10, 10, 10, 20, 20, 20, 20, 30, 30, 30, 30),
         'L': (10, 10, 10, 20, 20, 20, 30, 30, 30, 40, 40, 50),
@@ -12,6 +11,8 @@ def get_template_questions(level):
         'M': (20, 20, 20, 30, 30, 30, 30, 40, 40, 40, 50, 50),
         'P': (30, 30, 30, 30, 40, 40, 40, 40, 50, 50, 50, 50)
     }
+
+    level = level[0]
     return templates.get(level)
 
 

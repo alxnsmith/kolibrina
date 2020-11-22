@@ -17,17 +17,17 @@ class Render {
     }
 
     static timer(minutes, seconds) {
-        let timer = document.querySelector('.marafon-timer')
+        let timer_html = document.querySelector('.marafon-timer')
         minutes = String(minutes).padStart(2, '0')
         seconds = String(seconds).padStart(2, '0')
-        let time = `${minutes}:${seconds}`
-        timer.innerText = time
+        timer_html.innerText = `${minutes}:${seconds}`
     }
 
     static update_top_fifteen(players) {
         let rating = new rating_top_fifteen()
 
         players.forEach(player => {
+            if (player.score_delta > 0){player.score_delta = '+' + String(player.score_delta)}
             rating.write_row(player)
         })
 
@@ -48,26 +48,18 @@ class Render {
 
     static fill_themes(themes) {
         let theme_field
-        let questions_row
-        let questions
-        let theme_blocs = document.querySelectorAll('.topic')
+        let theme_blocks = document.querySelectorAll('.topic')
         let i = 0
         themes.forEach(theme => {
-            theme_field = theme_blocs[i].querySelector('.topic-name')
-            questions_row = theme_blocs[i].querySelector('.topic-points')
-            questions = theme_blocs[i].querySelectorAll('.topic-point')
+            theme_field = theme_blocks[i].querySelector('.topic-name')
             theme_field.innerText = theme[0]
-            questions_row.classList.add(`theme_${theme[1]}`)
-            questions.forEach(question => {
-                question.dataset.block_id = theme[1]
-            })
             i++
         })
     }
 
-    static toggle_question_btn(block_id, pos) {
-        let row = document.querySelector(`.topic > .theme_${block_id}`)
-        let btn = row.querySelectorAll('.topic-point')[pos - 1]
+    static toggle_question_btn(block, pos) {
+        let row = document.querySelectorAll('.topic')[block]
+        let btn = row.querySelectorAll('.topic-point')[pos]
 
         let act = document.querySelector('.topic-point.act')
         if (act) {
@@ -79,7 +71,7 @@ class Render {
     }
 
     static render_question(question){
-        this.toggle_question_btn(question.block_id, question.pos)
+        this.toggle_question_btn(question.block, question.pos)
 
         let question_field = document.getElementById('question')
         let answer_fields = document.querySelectorAll('.game__options label')

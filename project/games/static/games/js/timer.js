@@ -42,6 +42,9 @@ class Timer {
 
     stop(){
         clearInterval(this.timer)
+    }
+    reset(){
+        this.stop()
         this.render_time({'minutes': 0, 'seconds': 0})
     }
 }

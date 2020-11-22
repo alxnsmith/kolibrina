@@ -5,37 +5,48 @@ class EventListener {
 
     }
 
-    static add_listen_question_btns(func) {
+    static rm_listen_question_btns(func) {
         let question_buttons = document.querySelectorAll('.topic-point')
         question_buttons.forEach(btn => {
-            btn.addEventListener('click', func)
+            btn.removeEventListener('click', func)
+            btn.style.cursor = 'default'
         })
     }
 
-    static rm_listener_question_btn(func) {
-        let act = document.querySelector('.topic-point.act')
-        act.removeEventListener('click', func)
+    static add_listen_question_btns(func) {
+        let question_buttons = document.querySelectorAll('.topic-point')
+        this.rm_listen_question_btns(func)
+        question_buttons.forEach(btn => {
+            if (!btn.classList.contains('act') && !btn.classList.contains('disable')) {
+                btn.addEventListener('click', func)
+                btn.style.cursor = 'pointer'
+            }
+        })
     }
 
     static add_listen_answers(func) {
+        function rm_listen_answers(func){
+            answer_fields.forEach(answer => {
+                answer.removeEventListener('click', func)
+                if (!answer.checked) {
+                    answer.disabled = true
+                    answer.parentElement.style.cursor = 'default'
+                }
+            })
+        }
+
         let answer_fields = document.querySelectorAll('.game__options label input')
+        function answer_listener(event){
+            func(event)
+            rm_listen_answers(answer_listener)
+        }
+
+        rm_listen_answers(answer_listener)
         answer_fields.forEach(answer => {
             answer.checked = false
             answer.disabled = false
             answer.parentElement.style.cursor = 'pointer'
-            answer.addEventListener('click', func)
-        })
-    }
-
-    static rm_listen_answers(func){
-        let answer_fields = document.querySelectorAll('.game__options label')
-        answer_fields.forEach(answer => {
-            let answer_input = answer.querySelector('input')
-            answer_input.removeEventListener('click', func)
-            if (!answer_input.checked) {
-                answer_input.disabled = true
-                answer.style.cursor = 'default'
-            }
+            answer.addEventListener('click', answer_listener)
         })
     }
 }

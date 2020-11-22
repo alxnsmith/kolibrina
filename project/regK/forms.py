@@ -24,10 +24,14 @@ class RegForm(UserCreationForm):
         return password2
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
+        email = self.cleaned_data.get('email').lower()
         for user in User.objects.filter(email=email):
             if user.is_active:
                 raise forms.ValidationError(u'Пользователь с таким e-mail уже зарегестрирован.')
             elif user is not None:
                 User.objects.filter(email=email)[0].delete()
         return email
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username').lower().strip()
+        return username

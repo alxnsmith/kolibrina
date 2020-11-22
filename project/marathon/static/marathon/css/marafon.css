@@ -272,7 +272,6 @@
 
 .topic .topic-name {
     width: 250px;
-    cursor: pointer;
     height: 30px;
     color: #fff;
     display: flex;
@@ -284,7 +283,7 @@
 }
 
 .topic .topic-points {
-    display: flex
+    display: flex;
 }
 
 .topic .topic-point {
@@ -293,7 +292,7 @@
     align-items: center;
     height: 30px;
     width: 70px;
-    cursor: pointer;
+    cursor: default;
     background: #4375ed;
     color: #fff;
     margin-left: 5px

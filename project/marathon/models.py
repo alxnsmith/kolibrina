@@ -9,7 +9,7 @@ from userK.models import User
 
 class BaseMarathon(BaseGame):
     response_timer = models.SmallIntegerField(verbose_name='Время на ответ', default=30)
-    choose_timer = models.SmallIntegerField(verbose_name='Время на выбор вопроса', default=20)
+    select_question_timer = models.SmallIntegerField(verbose_name='Время на выбор вопроса', default=20)
 
     class Meta:
         abstract = True
