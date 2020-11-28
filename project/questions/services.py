@@ -42,9 +42,11 @@ def add_tournament_week(post, author: User):
 
 def add_question(request):
     items = request.POST.dict()
+
     items['author_id'] = request.user.id
-    if 'csrfmiddlewaretoken' in items:
-        del items['csrfmiddlewaretoken']
+    items.pop('csrfmiddlewaretoken')
+    items.pop('category_id')
+
     Question.objects.create(**items)
 
 

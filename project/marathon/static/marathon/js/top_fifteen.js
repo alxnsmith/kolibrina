@@ -9,8 +9,11 @@ class rating_top_fifteen {
         this._write_score_delta(user_dict.score_delta)
         this._score_display('block')
 
+        this._write_username(upFirst(user_dict.username))
         if (user_dict.hide_name) {
-            this._write_username(user_dict.username)
+            this._write_first_name('')
+            this._write_last_name('')
+            this._write_city('')
         } else {
             this._write_first_name(user_dict.first_name)
             this._write_last_name(user_dict.last_name)

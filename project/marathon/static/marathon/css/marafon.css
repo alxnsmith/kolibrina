@@ -187,28 +187,22 @@
 }
 
 .marafon-top .marafon-top_right {
-    display: flex
+    display: grid;
+    grid-template-columns: calc(85% - 15px) 15%;
+    grid-gap: 15px;
+    min-width: 50%;
 }
 
 .marafon-top .btn_choose {
     border: 3px solid #155afe;
-    padding: 0 5px;
+    padding: 0 10px;
     color: #155afe;
     font-weight: 700;
-    min-width: 180px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 20px;
-    cursor: pointer;
-    transition: all .3s;
-    margin-right: 15px;
     height: 40px
-}
-
-.marafon-top .btn_choose:hover {
-    background: #155afe;
-    color: #fff
 }
 
 .marafon-top .marafon-timer {
@@ -216,14 +210,11 @@
     padding: 15px 20px;
     color: red;
     font-weight: 700;
-    min-width: 150px;
+    font-size: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 20px;
-    cursor: pointer;
-    transition: all .3s;
-    font-size: 20px;
     height: 40px
 }
 
@@ -376,6 +367,15 @@
     .marafon-top {
         flex-wrap: wrap;
         justify-content: center
+    }
+
+    .marafon-top .marafon-top_right{
+        grid-template-columns: calc(80% - 10px) calc(20%);
+        grid-gap: 10px;
+        min-width: 100%;
+    }
+    .marafon-top .btn_choose {
+        font-size: .9em;
     }
 
     .text-information {

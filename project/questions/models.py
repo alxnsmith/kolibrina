@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from userK.models import User
 from django.conf import settings
@@ -66,10 +67,8 @@ class Question(models.Model):
     pos = models.CharField(choices=posChoices, max_length=10, verbose_name='Позиция вопроса в турнире', blank=True)
 
     author = models.ForeignKey(User, on_delete=models.SET_NULL, db_column='author', verbose_name='Автор', null=True)
-    category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL, db_column='category', null=True, verbose_name='Категория')
     theme = models.ForeignKey(Theme, on_delete=models.SET_NULL, db_column='theme', verbose_name='Тема', null=True)
-    difficulty = models.CharField(choices=diffChoices, max_length=2, verbose_name='Сложность', null=True)
+    difficulty = models.CharField(choices=diffChoices, max_length=2, verbose_name='Сложность', default='10')
 
     question = models.TextField(max_length=350, verbose_name='Вопрос')
     correct_answer = models.CharField(max_length=64, verbose_name='Правильный ответ')
@@ -77,24 +76,23 @@ class Question(models.Model):
     answer3 = models.CharField(max_length=64, verbose_name='Ответ3')
     answer4 = models.CharField(max_length=64, verbose_name='Ответ4')
 
-    rate = models.IntegerField(verbose_name='Оценка', default=0)
+    rate = models.IntegerField('Оценка', default=0)
+
+    create_date = models.DateTimeField('Дата создания', default=timezone.now)
 
     def __str__(self):
-        # if len(self.question) > 50:
-        # question_str = self.question[:50] + '...'
-        # else:
-        #     question_str = self.question.ljust(50, '_')
         return 'M: {}, ID: {}, Q: {}, A: {}, D: {}, C: {}, T: {}'.format(self.moderate,
                                                                          self.id,
                                                                          self.question,
                                                                          self.correct_answer,
                                                                          self.difficulty,
-                                                                         self.category,
+                                                                         self.theme.category,
                                                                          self.theme)
 
     class Meta:
         verbose_name = _('Вопрос')
         verbose_name_plural = _('Вопросы')
+        ordering = ['-create_date']
 
 
 class MarathonThemeBlock(models.Model):

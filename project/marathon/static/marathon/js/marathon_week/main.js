@@ -6,6 +6,7 @@ marafon_socket.onopen = () => {
     let role;
     let timer;
 
+    disable_answers()
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
     // send_start()
@@ -22,11 +23,14 @@ marafon_socket.onopen = () => {
             case 'online_players':
                 Render.update_online('players', data.online);
                 break
+            case 'correct_answer':
+                Render.correct_answer(data.correct_answer)
+                break
             case 'themes_list':
                 Render.fill_themes(data.themes);
                 break
-            case 'respond_timer':
-                timer = new Timer(data.unix_time_end, 'minutes', Render.timer, show_modal_notification, 'Time is out');
+            case 'answer_timer':
+                timer = new Timer(data.unix_time_end, 'minutes', Render.timer, select_answer_timer_is_end);
                 timer.start();
                 break
             case 'static_base_info':
@@ -37,10 +41,13 @@ marafon_socket.onopen = () => {
                 break
             case 'end_game':
                 show_modal_notification('Игра окончена!');
+                Render.state('Игра окончена!')
                 break
             case 'selected_question':
                 Render.render_question(data.question);
-                console.log(data)
+                Render.state('Выбор ответа');
+                Render.correct_answer('')
+                EventListener.rm_listen_question_btns(select_question);
                 if (role === 'player' && data.expected_players.includes(username)){
                     EventListener.add_listen_answers(select_answer);
                 }
@@ -49,10 +56,13 @@ marafon_socket.onopen = () => {
                 if (data.username === username) {
                     EventListener.add_listen_question_btns(select_question);
                     show_modal_notification('Ваш черёд!');
+                    Render.state('Ваш выбор')
                 } else {
                     show_modal_notification(`${upFirst(data.username)} выбирает вопрос!`);
+                    Render.state(`Выбирает ${upFirst(data.username)}`)
                 }
-                timer = new Timer(data.timer, 'minutes', Render.timer) // добавить функцию для отправки ивента о том, что время на выбор вопроса вышло и пора выбрать рандомный
+                // disable_answers()
+                timer = new Timer(data.timer, 'minutes', Render.timer, select_question_timer_is_end)
                 timer.start()
                 break
             case 'game_history':
@@ -69,6 +79,7 @@ marafon_socket.onopen = () => {
             case 'date_time_start':
                 timer = new Timer(data.date_time_start, 'minutes', Render.timer, send_start);
                 timer.start();
+                Render.state('Ожидание начала')
                 break
             case 'stop_timer':
                 if (timer) {timer.stop()}
@@ -76,7 +87,10 @@ marafon_socket.onopen = () => {
             case 'reset_timer':
                 if (timer) {timer.reset()}
                 break
+            case 'no_events':
+                Render.state('Сейчас нет мероприятий.')
             }
+
     }
 
     function send_start() {

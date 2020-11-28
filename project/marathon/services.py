@@ -41,6 +41,10 @@ class MarathonWeek:
         question = self.questions[int(block)][int(pos)]
         return question.correct_answer == answer
 
+    def get_correct_answer(self, coords):
+        answer = self.questions[coords[0]][coords[1]].correct_answer
+        return answer
+
     @property
     def theme_blocks_with_id(self):
         themes = self.round.question_blocks.all()
@@ -52,14 +56,16 @@ class MarathonWeek:
         return self.instance.players.all()
 
     @staticmethod
-    def get_all_question_coords():
-        return set([(block, pos) for pos in range(8) for block in range(4)])
+    def get_all_question_coords_by_blocks(blocks: int):
+        return set([(block, pos) for pos in range(8) for block in range(blocks)])
 
-    def get_all_question_coords2(self):
+    def get_all_question_coords(self):
         return set([(block, pos) for pos in range(8) for block in range(len(self._rounds)+1)])
 
     def get_random_question(self, active_questions):
+        print('active_questions_in select random question: ', active_questions)
         coords = random.choice(list(active_questions))
+        print('random_choice: ', coords)
         question = self.get_question(*coords)
         return question
 

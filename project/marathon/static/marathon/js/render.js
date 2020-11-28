@@ -23,6 +23,11 @@ class Render {
         timer_html.innerText = `${minutes}:${seconds}`
     }
 
+    static correct_answer(answer) {
+        let elem = document.querySelector('.correct_answer span')
+        elem.innerText = answer
+    }
+
     static update_top_fifteen(players) {
         let rating = new rating_top_fifteen()
 
@@ -82,4 +87,8 @@ class Render {
         question_field.innerText = question.question
     }
 
+    static state(state){
+        let elem = document.querySelector('.btn_choose');
+        elem.innerText = state
+    }
 }

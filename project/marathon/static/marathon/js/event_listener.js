@@ -4,49 +4,56 @@ class EventListener {
     constructor() {
 
     }
+    static get answer_fields(){
+        return document.querySelectorAll('.game__options label input');
+    }
+    static get question_buttons(){
+        return document.querySelectorAll('.topic-point');
+    }
 
     static rm_listen_question_btns(func) {
-        let question_buttons = document.querySelectorAll('.topic-point')
-        question_buttons.forEach(btn => {
-            btn.removeEventListener('click', func)
-            btn.style.cursor = 'default'
+        this.question_buttons.forEach(btn => {
+            btn.removeEventListener('click', func);
+            btn.style.cursor = 'default';
         })
     }
 
     static add_listen_question_btns(func) {
-        let question_buttons = document.querySelectorAll('.topic-point')
-        this.rm_listen_question_btns(func)
-        question_buttons.forEach(btn => {
+        this.rm_listen_question_btns(func);
+        this.question_buttons.forEach(btn => {
             if (!btn.classList.contains('act') && !btn.classList.contains('disable')) {
-                btn.addEventListener('click', func)
-                btn.style.cursor = 'pointer'
+                btn.addEventListener('click', func);
+                btn.style.cursor = 'pointer';
+            }
+        })
+    }
+
+    static toggle_answer(answer, event){
+        if (event === 'disable') {
+            answer.disabled = true;
+            answer.checked = false;
+            answer.parentElement.style.cursor = 'default';
+        } else if (event === 'enable') {
+            answer.checked = false;
+            answer.disabled = false;
+            answer.parentElement.style.cursor = 'pointer';
+        }
+    }
+
+    static rm_listen_answers(func){
+        this.answer_fields.forEach(answer => {
+            answer.removeEventListener('click', func);
+            if (!answer.checked) {
+                this.toggle_answer(answer, 'disable')
             }
         })
     }
 
     static add_listen_answers(func) {
-        function rm_listen_answers(func){
-            answer_fields.forEach(answer => {
-                answer.removeEventListener('click', func)
-                if (!answer.checked) {
-                    answer.disabled = true
-                    answer.parentElement.style.cursor = 'default'
-                }
-            })
-        }
-
-        let answer_fields = document.querySelectorAll('.game__options label input')
-        function answer_listener(event){
-            func(event)
-            rm_listen_answers(answer_listener)
-        }
-
-        rm_listen_answers(answer_listener)
-        answer_fields.forEach(answer => {
-            answer.checked = false
-            answer.disabled = false
-            answer.parentElement.style.cursor = 'pointer'
-            answer.addEventListener('click', answer_listener)
+        this.rm_listen_answers(func);
+        this.answer_fields.forEach(answer => {
+            this.toggle_answer(answer, 'enable')
+            answer.addEventListener('click', func);
         })
     }
 }

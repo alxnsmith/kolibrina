@@ -11,7 +11,8 @@ from userK.models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'id', 'city', 'gender', 'balance', 'swPlace', 'rating', 'league', 'view_team_link')
+    list_display = ('id', 'username', 'city', 'gender', 'balance', 'swPlace', 'rating', 'league', 'view_team_link')
+    list_display_links = ('username',)
 
     readonly_fields = ('view_team_link', )
 
@@ -54,7 +55,5 @@ class UserAdmin(admin.ModelAdmin):
                     reverse("admin:api_teams_team_change", args=f'{team.id}')
             )
             html = f'<a href="{url}">{team.name}</a>'
-
         return format_html(html)
-
     view_team_link.short_description = 'Команда'

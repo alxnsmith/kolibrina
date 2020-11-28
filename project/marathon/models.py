@@ -32,6 +32,9 @@ class MarathonWeekOfficial(BaseMarathon):
     price = models.SmallIntegerField(null=True, blank=True, verbose_name='Цена')
     rounds = models.ManyToManyField(MarathonRound, verbose_name='Раунды')
 
+    starter_player = models.ForeignKey(
+        User, on_delete=models.SET_NULL, related_name='starter_player_in_official_marathon_week', null=True, blank=True,
+    )
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='OELMW_author')
     is_rating = models.BooleanField(verbose_name='Рейтинговый', default=False)
 
