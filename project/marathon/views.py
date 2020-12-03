@@ -9,17 +9,13 @@ from games.services import get_user_info
 class MarathonWeek(View):
     def get(self, request):
         self.user = self.request.user
-        marathons = services.get_list_official_marathons()
-        if marathons['status'] == 'OK':
-            marathon = marathons['marathons_list'][0]
-        else:
-            return render(self.request, 'marathon/marathon.html')
-        self.marathon = services.MarathonWeek(marathon, 0)
-        get = self.request.GET
-        query = list(get.keys())
-        if 'pay' in query:
-            response = self.pay()
-            return JsonResponse(response)
+        if round_instance := services.get_nearest_official_marathon_round():
+            self.round = services.MarathonWeekGP(round_instance)
+            get = self.request.GET
+            query = list(get.keys())
+            if 'pay' in query:
+                response = self.pay()
+                return JsonResponse(response)
 
         return render(self.request, 'marathon/marathon.html', {
             'user_info': get_user_info(self.user),
@@ -30,15 +26,23 @@ class MarathonWeek(View):
         if self._is_time_to_start:
             return {'status': 'error', 'error': 'Регистрация на марафон окончена, вы можете посмотреть за ходом игры.'}
         user = self.request.user
-        if not self.IS_BENEFIT_RECIPIENT and user.balance >= self.marathon.instance.price:
-            user.balance -= self.marathon.instance.price
+        if not self.IS_BENEFIT_RECIPIENT and user.balance >= self.round.round.price:
+            user.balance -= self.round.round.price
             user.save()
         else:
             return {'status': 'error',
                     'error': 'Недостаточно средств, для участия - пополните баланс в личном кабинете.'}
-        self.marathon.instance.players.add(user)
+        self.round.round.players.add(user)
         return {'status': 'OK'}
 
     @property
     def _is_time_to_start(self):
-        return timezone.now() > self.marathon.instance.date_time_start
+        return timezone.now() > self.round.round.date_time_start
+
+
+class SummaryMarathonWeek(View):
+    def get(self, request):
+        self.user = self.request.user
+        return render(request, 'marathon/summary-of-round.html', {
+            'user_info': get_user_info(self.user),
+        })

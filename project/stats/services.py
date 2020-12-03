@@ -1,23 +1,17 @@
 def get_sym_plus_if_num_is_positive(num):
-    sym = ''
-    if num > 0:
-        sym = '+'
-    return sym
+    return '' if num < 0 else '+'
 
 
-def get_sum_score_user(user, date_range=False):
-    if not date_range:
-        score_history = list(user.scorehistoryelement_set.values('score'))
-    else:
-        score_history = list(user.scorehistoryelement_set.filter(date__range=date_range).values('score'))
+def get_sum_from_history(history, date_range=False):
+    if date_range:
+        history = history.filter(date__range=date_range)
 
-    def _get_sum(scores):
-        scores_list = []
-        for i in scores:
-            scores_list.append(i['score'])
-        return round(sum(scores_list), 3)
+    history = list(history.values('value'))
 
-    return _get_sum(score_history)
+    def _get_sum(values):
+        scores_list = [value['value'] for value in values]
+        return sum(scores_list)
+    return _get_sum(history)
 
 
 def init_league(user):
@@ -26,6 +20,7 @@ def init_league(user):
     threshold = _get_lower_threshold(rating=rating, league=league)
     if threshold['status'] == 'SWITCH':
         user.league = threshold['new_league']
+        user.save()
 
 
 def _get_lower_threshold(rating, league):
@@ -52,6 +47,9 @@ class UserScore:
 
     def add(self, score):
         return self.score_history_instance.create(player=self.user_instance, score=score)
+
+    def subtract(self, score):
+        return self.score_history_instance.create(player=self.user_instance, score=-score)
 
     def remove_last(self):
         self.score_history_instance.last().delete()

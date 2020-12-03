@@ -162,13 +162,13 @@
                             <div class="flex-row">
                                 <span style="text-align: center;">Ваша команда</span>
                                 <div>
-                                    {% for team in invite_teams_list %}{{ team.name }}{% endfor %}
-                                    {% for team in invite_teams_list %}
-                                        <option value="{{ team.team }}"></option>
-                                    {% endfor %}
                                     <input id="team" type="text" list="team_list" placeholder="Название команды / ID"
                                            value="{{ team }}" style="min-width: 210px;"
-                                           {% if request.user.team_role != "COMMANDER" and request.user.team %}disabled{% endif %}>
+{#                                           {% if request.user.team_role != "COMMANDER" and request.user.team_set.exists %}disabled{% endif %}#}
+                                           {% if request.user.team_set.exists %}disabled{% endif %}
+                                           title="Команды, в которые вы приглашены:{% for team in invite_teams_list %}
+- {{ team.name }}{% endfor %}"
+                                    >
                                     <datalist id="team_list">
                                         {% for team in invite_teams_list %}
                                             <option value="{{ team.name }}"></option>

@@ -59,18 +59,28 @@ class TournamentScoreUserLink(models.Model):
 
 
 class BaseGame(models.Model):
-    name = models.CharField(max_length=128, verbose_name='Имя марафона', blank=True, null=True)
-    code_name = models.CharField(max_length=128, verbose_name='Кодовое имя марафона', blank=True, null=True)
+    name = models.CharField('Название', max_length=128, blank=True, null=True)
+    code_name = models.CharField('Кодовое имя', max_length=128, blank=True, null=True)
 
-    is_active = models.BooleanField(verbose_name='Активный марафон', default=False)
+    is_active = models.BooleanField('Активный', default=False)
 
-    players = models.ManyToManyField(User, blank=True)
-
-    date_time_start = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)
-    create_date = models.DateField(verbose_name='Дата создания', default=timezone.now)
+    create_date = models.DateField('Дата создания', default=timezone.now)
+    author = models.ForeignKey(
+        User, null=True, verbose_name='Автор', on_delete=models.SET_NULL)
 
     class Meta:
         abstract = True
 
     def __str__(self):
         return f'ID: {self.id}, CODE: {self.code_name}, IS_ACTIVE: {self.is_active}'
+
+
+class BaseRound(models.Model):
+    is_active = models.BooleanField('Активный', default=False)
+    price = models.SmallIntegerField('Цена', null=False, default=0)
+    date_time_start = models.DateTimeField('Дата и время проведения', blank=True, null=True)
+    create_date = models.DateField('Дата создания', default=timezone.now)
+    author = models.ForeignKey(User, null=True, verbose_name='Автор', on_delete=models.SET_NULL)
+
+    class Meta:
+        abstract = True

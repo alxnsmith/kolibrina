@@ -214,51 +214,7 @@
             </div>
         </div>
     </form>
-    <div class="user-stat">
-        <div class="user-avatar user_div">
-            <img class="user_img" src="{% if user_info.avatar %}{{ user_info.avatar }}{% endif %}"/>
-            <div class="user-name">
-                <span>{{ user_info.last_name }}</span>
-                <span>{{ user_info.first_name }}</span>
-                <span><b>г.{{ user_info.city }}</b></span>
-            </div>
-        </div>
-        <div class="user-points_table user_div">
-
-            <div class="user-points_table_col">
-                <div class="user-points_table_row">баллы за игру:</div>
-                <div class="user-points_table_row cr">0</div>
-            </div>
-            <div class="user-points_table_col">
-                <div class="user-points_table_row">баллы за месяц:</div>
-                <div class="user-points_table_row cr">{{ user_info.month_score }}</div>
-            </div>
-            <div class="user-points_table_col">
-                <div class="user-points_table_row">баллы всего:</div>
-                <div class="user-points_table_row cr">{{ user_info.total_score }}</div>
-            </div>
-        </div>
-        <div class="league_place user_div">
-            <span><b>Место <BR>в лиге</b></span>
-            <div class="league_count">123 / 878</div>
-        </div>
-        <div class="author user_div marafon_author">
-            <span class="marafon_author-title">Автор марафона №<span class="marafon-number"> □ </span></span>
-            <span class="marafon_author-name">
-                <span class="firstname">________</span>
-                <span class="lastname">________</span>,
-                <span class="city">________</span>
-            </span>
-        </div>
-
-        <div class="marafon_league">
-            {{ user_info.league }}
-        </div>
-        <div class="user-lvl user_div">
-            <span>Уровень игрока</span>
-            <div class="lvl">{{ user_info.level.level }} / {{ user_info.level.numLevel }}</div>
-        </div>
-    </div>
+    {% include 'marathon/blocks/user-stat.html'%}
 </div>
 {% include "main/footer.html" %}
 <script src="{% static 'games/js/time_counter.js' %}"></script>

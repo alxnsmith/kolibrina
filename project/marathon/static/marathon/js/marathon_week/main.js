@@ -42,6 +42,7 @@ marafon_socket.onopen = () => {
             case 'end_game':
                 show_modal_notification('Игра окончена!');
                 Render.state('Игра окончена!')
+                timer.reset()
                 break
             case 'selected_question':
                 Render.render_question(data.question);
@@ -61,7 +62,6 @@ marafon_socket.onopen = () => {
                     show_modal_notification(`${upFirst(data.username)} выбирает вопрос!`);
                     Render.state(`Выбирает ${upFirst(data.username)}`)
                 }
-                // disable_answers()
                 timer = new Timer(data.timer, 'minutes', Render.timer, select_question_timer_is_end)
                 timer.start()
                 break
@@ -89,6 +89,7 @@ marafon_socket.onopen = () => {
                 break
             case 'no_events':
                 Render.state('Сейчас нет мероприятий.')
+                marafon_socket.close()
             }
 
     }

@@ -6,11 +6,11 @@ from django.conf import settings
 from django.forms.models import model_to_dict
 from django.utils import timezone
 
-from .models import Attempt
 from questions.services import get_questions_from_tournament
 from stats.services import UserScore
-from stats.services import get_sum_score_user
+from stats.services import get_sum_from_history
 from userK import services as user_services
+from .models import Attempt
 
 
 def round3(func):
@@ -24,7 +24,7 @@ def create_render_data_for_tournament_week_el(request):
     user = request.user
     avatar_image = user_services.media_services.get_avatar(user)
     last_month_date_range = (timezone.now() - datetime.timedelta(days=30), timezone.now())
-    month_score = get_sum_score_user(user, last_month_date_range)
+    month_score = get_sum_from_history(user.scorehistoryelement_set, last_month_date_range)
     league = request.user.get_league_display()
     level = user_services.get_user_rating_lvl_dif(user.rating)
     quest_nums = [str(i).rjust(2, '0') for i in range(1, 25)]
@@ -319,17 +319,14 @@ class ScoreTournamentWeek:
 
 def get_user_info(user: user_services.User) -> dict:
     last_month_date_range = (timezone.now() - datetime.timedelta(days=30), timezone.now())
-    return {'first_name': user.firstName,
-            'last_name': user.lastName,
-            'username': user.username,
-            'city': user.city,
-            'league': user.get_league_display(),
-            'level': user_services.get_user_rating_lvl_dif(user.rating),
-            'month_score': get_sum_score_user(user, last_month_date_range),
-            'total_score': get_sum_score_user(user),
-            'avatar': user_services.media_services.get_avatar(user),
-            'is_benefit_recipient': user.groups.filter(name='Benefit recipients').exists()
-            }
+    return {
+        'league': user.get_league_display(),
+        'level': user_services.get_user_rating_lvl_dif(user.rating),
+        'month_score': get_sum_from_history(user.scorehistoryelement_set, last_month_date_range),
+        'total_score': get_sum_from_history(user.scorehistoryelement_set),
+        'avatar': user_services.media_services.get_avatar(user),
+        'is_benefit_recipient': user.groups.filter(name='Benefit recipients').exists()
+    }
 
 
 def get_all_nearest_events():

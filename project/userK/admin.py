@@ -51,9 +51,7 @@ class UserAdmin(admin.ModelAdmin):
         html = '<a>Нет</a>'
         if obj.team_set.exists():
             team = obj.team_set.first()
-            url = (
-                    reverse("admin:api_teams_team_change", args=f'{team.id}')
-            )
+            url = reverse("admin:teams_team_change", args=(f'{team.id}', ))
             html = f'<a href="{url}">{team.name}</a>'
         return format_html(html)
     view_team_link.short_description = 'Команда'

@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from questions.models import MarathonThemeBlock
-from games.models import BaseGame
+from games.models import BaseGame, BaseRound
 from userK.models import User
 
 
@@ -15,10 +15,22 @@ class BaseMarathon(BaseGame):
         abstract = True
 
 
-class MarathonRound(models.Model):
-    question_blocks = models.ManyToManyField(MarathonThemeBlock, limit_choices_to={'is_active': True})
+class MarathonRound(BaseRound):
+    class Purposes(models.IntegerChoices):
+        OFFICIAL = 0, 'Оффициальный'
+        COMMUNITY = 1, 'Пользовательский'
 
-    create_date = models.DateField(verbose_name='Дата создания', default=timezone.now)
+    purpose = models.SmallIntegerField('Назначение', choices=Purposes.choices, default=Purposes.OFFICIAL)
+
+    question_blocks = models.ManyToManyField(
+        MarathonThemeBlock, verbose_name='Блоки вопросов', limit_choices_to={'is_active': True})
+
+    players = models.ManyToManyField(
+        User, verbose_name='Зарегистрированные игроки', blank=True, related_name='MarathonRound_players_set')
+    starter_player = models.ForeignKey(
+        User, on_delete=models.SET_NULL, related_name='starter_player_in_marathon_week', null=True, blank=True,
+        verbose_name='Стартер'
+    )
 
     def __str__(self):
         return f'ID: {self.id}, Create date: {self.create_date}'
@@ -29,13 +41,9 @@ class MarathonRound(models.Model):
 
 
 class MarathonWeekOfficial(BaseMarathon):
-    price = models.SmallIntegerField(null=True, blank=True, verbose_name='Цена')
-    rounds = models.ManyToManyField(MarathonRound, verbose_name='Раунды')
+    rounds = models.ManyToManyField(MarathonRound, verbose_name='Раунды', related_name='official_marathon_round_set')
+    stage = models.SmallIntegerField('Этап', null=False, default=0)
 
-    starter_player = models.ForeignKey(
-        User, on_delete=models.SET_NULL, related_name='starter_player_in_official_marathon_week', null=True, blank=True,
-    )
-    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='OELMW_author')
     is_rating = models.BooleanField(verbose_name='Рейтинговый', default=False)
 
     class Meta:
@@ -44,11 +52,9 @@ class MarathonWeekOfficial(BaseMarathon):
 
 
 class MarathonWeekCommunity(BaseMarathon):
-    user_starter = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name='user_starter', verbose_name='Стартер')
     round = models.ForeignKey(MarathonRound, on_delete=models.SET_NULL, null=True, verbose_name='Игровой раунд')
-    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='CELMW_author')
 
     class Meta:
         verbose_name = _('Пользовательский марафон')
         verbose_name_plural = _('Полльзовательские марафоны')
+

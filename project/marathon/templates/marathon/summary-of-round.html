@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+	<head>
+        {% load static %}
+		<meta charset="UTF-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<meta name="robots" content="index,follow">
+
+			<title>КОЛИБРИНА - Марафон недели №122</title>
+
+		<meta name="description" content="">
+
+        {% include 'main/headPiece.html' %}
+
+		<link rel="stylesheet" href="{% static 'css/blocks/user-stat.css' %}">
+		<link rel="stylesheet" href="{% static 'css/pages/70.css' %}">
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+	    <!--[if lt IE 9]>
+	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	    <![endif]-->
+	</head>
+	<body>
+
+
+    {% include "main/header.html" %}
+
+
+		<div class="container">
+
+			<div class="marafon-top">
+				<div class="text-information">
+					<p>Текстовая информация</p>
+				</div>
+			</div>
+
+            {% include 'marathon/blocks/user-stat.html'%}
+
+			<div class="mt40"></div>
+
+			<div class="row rows">
+				<div class="col-md-12 leagues">
+					<strong class="subject">Итоги Марафона / Общий рейтинг</strong>
+					<table>
+					  <tr>
+					    <th>п/п</th>
+					    <th>ФИО</th>
+					    <th>Город</th>
+					    <th>1 тур</th>
+					    <th>2 тур</th>
+					    <th>3 тур</th>
+					    <th>&#8721;</th>
+					  </tr>
+					  <tr>
+					  	<td>1. </td>
+					    <td>Ерёмин Иван</td>
+					    <td>г. Краснодар</td>
+					    <td>173.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>2. </td>
+					    <td>Дмитрий Белкин</td>
+					    <td>г. Краснодар</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>3. </td>
+					    <td>Степан Слепаков</td>
+					    <td>г. Комсомольск-на-А</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					</table>
+					<div class="flex-row"><a href="#">Показать весь список</a></div>
+				</div>
+				<div class="col-md-12 leagues">
+					<strong class="subject">Итоги Марафона / Супер-лига</strong>
+					<table>
+					  <tr>
+					    <th>п/п</th>
+					    <th>ФИО</th>
+					    <th>Город</th>
+					    <th>1 тур</th>
+					    <th>2 тур</th>
+					    <th>3 тур</th>
+					    <th>&#8721;</th>
+					  </tr>
+					  <tr>
+					  	<td>1. </td>
+					    <td>Ерёмин Иван</td>
+					    <td>г. Краснодар</td>
+					    <td>173.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>2. </td>
+					    <td>Дмитрий Белкин</td>
+					    <td>г. Краснодар</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>3. </td>
+					    <td>Степан Слепаков</td>
+					    <td>г. Комсомольск-на-А</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					</table>
+					<div class="flex-row"><a href="#">Показать весь список</a></div>
+				</div>
+				<div class="col-md-12 leagues">
+					<strong class="subject">Итоги Марафона / Премьер-лига</strong>
+					<table>
+					  <tr>
+					    <th>п/п</th>
+					    <th>ФИО</th>
+					    <th>Город</th>
+					    <th>1 тур</th>
+					    <th>2 тур</th>
+					    <th>3 тур</th>
+					    <th>&#8721;</th>
+					  </tr>
+					  <tr>
+					  	<td>1. </td>
+					    <td>Ерёмин Иван</td>
+					    <td>г. Краснодар</td>
+					    <td>173.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>2. </td>
+					    <td>Дмитрий Белкин</td>
+					    <td>г. Краснодар</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>3. </td>
+					    <td>Степан Слепаков</td>
+					    <td>г. Комсомольск-на-А</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					</table>
+					<div class="flex-row"><a href="#">Показать весь список</a></div>
+				</div>
+				<div class="col-md-12 leagues">
+					<strong class="subject">Итоги Марафона / Высшая лига</strong>
+					<table>
+					  <tr>
+					    <th>п/п</th>
+					    <th>ФИО</th>
+					    <th>Город</th>
+					    <th>1 тур</th>
+					    <th>2 тур</th>
+					    <th>3 тур</th>
+					    <th>&#8721;</th>
+					  </tr>
+					  <tr>
+					  	<td>1. </td>
+					    <td>Ерёмин Иван</td>
+					    <td>г. Краснодар</td>
+					    <td>173.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>2. </td>
+					    <td>Дмитрий Белкин</td>
+					    <td>г. Краснодар</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>3. </td>
+					    <td>Степан Слепаков</td>
+					    <td>г. Комсомольск-на-А</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					</table>
+					<div class="flex-row"><a href="#">Показать весь список</a></div>
+				</div>
+				<div class="col-md-12 leagues">
+					<strong class="subject">Итоги Марафона / Студенческая лига</strong>
+					<table>
+					  <tr>
+					    <th>п/п</th>
+					    <th>ФИО</th>
+					    <th>Город</th>
+					    <th>1 тур</th>
+					    <th>2 тур</th>
+					    <th>3 тур</th>
+					    <th>&#8721;</th>
+					  </tr>
+					  <tr>
+					  	<td>1. </td>
+					    <td>Ерёмин Иван</td>
+					    <td>г. Краснодар</td>
+					    <td>173.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>2. </td>
+					    <td>Дмитрий Белкин</td>
+					    <td>г. Краснодар</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>3. </td>
+					    <td>Степан Слепаков</td>
+					    <td>г. Комсомольск-на-А</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					</table>
+					<div class="flex-row"><a href="#">Показать весь список</a></div>
+				</div>
+				<div class="col-md-12 leagues">
+					<strong class="subject">Итоги Марафона / Лига Колледжей</strong>
+					<table>
+					  <tr>
+					    <th>п/п</th>
+					    <th>ФИО</th>
+					    <th>Город</th>
+					    <th>1 тур</th>
+					    <th>2 тур</th>
+					    <th>3 тур</th>
+					    <th>&#8721;</th>
+					  </tr>
+					  <tr>
+					  	<td>1. </td>
+					    <td>Ерёмин Иван</td>
+					    <td>г. Краснодар</td>
+					    <td>173.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>2. </td>
+					    <td>Дмитрий Белкин</td>
+					    <td>г. Краснодар</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>3. </td>
+					    <td>Степан Слепаков</td>
+					    <td>г. Комсомольск-на-А</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					</table>
+					<div class="flex-row"><a href="#">Показать весь список</a></div>
+				</div>
+				<div class="col-md-12 leagues">
+					<strong class="subject">Итоги Марафона / Школьная лига</strong>
+					<table>
+					  <tr>
+					    <th>п/п</th>
+					    <th>ФИО</th>
+					    <th>Город</th>
+					    <th>1 тур</th>
+					    <th>2 тур</th>
+					    <th>3 тур</th>
+					    <th>&#8721;</th>
+					  </tr>
+					  <tr>
+					  	<td>1. </td>
+					    <td>Ерёмин Иван</td>
+					    <td>г. Краснодар</td>
+					    <td>173.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>2. </td>
+					    <td>Дмитрий Белкин</td>
+					    <td>г. Краснодар</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					  <tr>
+					  	<td>3. </td>
+					    <td>Степан Слепаков</td>
+					    <td>г. Комсомольск-на-А</td>
+					    <td>174.25</td>
+					    <td>123.15</td>
+					    <td>23.9</td>
+					    <td>320.3</td>
+					  </tr>
+					</table>
+					<div class="flex-row"><a href="#">Показать весь список</a></div>
+				</div>
+			</div>
+			<div class="estimate-author">
+				<span>Оцените пакет вопросов: </span>
+				<a href="#">0</a>
+				<a href="#">1</a>
+				<a href="#">2</a>
+				<a href="#">3</a>
+				<a href="#">4</a>
+				<a href="#">5</a>
+				<a href="#">6</a>
+				<a href="#">7</a>
+				<a href="#">8</a>
+				<a href="#">9</a>
+				<a href="#">10</a>
+			</div>
+		</div>
+
+		<div class="mt40"></div>
+
+		<div class="container">
+			<a href="#" class="view-game">Посмотреть игру</a>
+		</div>
+
+		<div class="mt20"></div>
+
+    {% include "main/footer.html" %}
+
+		<script>
+			$(document).ready(function() {
+				$("header nav a:nth-child(2) > span").addClass("select");
+				$(".title > h2 > strong").html("Марафон недели №122");
+				$(".title span.timehide").css("display", "block");
+				$(".title span.stage").html("VII этап");
+			});
+		</script>
+
+		<style>
+		.rows .leagues {
+			border-bottom: 0;
+		}
+		.estimate-author {
+
+			color: #969696;
+
+			margin: 15px 0;
+			text-align: center;
+
+			font-family: Times New Roman;
+			font-size: 18px;
+
+		}
+		.estimate-author a {
+			color: #FF7F27;
+			padding: 0 5px;
+		}
+		.estimate-author a:hover {
+			border-bottom: 1px solid #FF7F27;
+		}
+		.rows .leagues table {
+			margin: 0 auto;
+		}
+		table tr {
+			border: 1px dashed #333;
+		}
+		.rows .leagues table td:first-child {
+			padding-left: 5px;
+		}
+		table td, th {
+			padding: 5px 20px;
+		}
+		</style>
+	</body>
+</html>

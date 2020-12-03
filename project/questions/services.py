@@ -111,7 +111,7 @@ def add_theme_blocks(post, author: User):
         block = add_marafon_theme_block(author, question_blocks[i])
         block_list.append(block)
     if author.is_staff:
-        marathon = MarathonRound.objects.create()
+        marathon = MarathonRound.objects.create(author=author)
         for block in block_list:
             marathon.question_blocks.add(block)
     return {'status': 'OK'}
