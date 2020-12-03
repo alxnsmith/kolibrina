@@ -29,7 +29,7 @@ def api_train(request):
                     )
                 d['category'] = str(i.category)
                 d['theme'] = str(i.theme)
-                del d['public'], d['premoderate'],
+                del d['public'], d['moderate'],
                 quest_list.append(d)
 
     if request.GET['games'] == 'train':

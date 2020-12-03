@@ -25,6 +25,7 @@ class TournamentWeek(WebsocketConsumer):
 
     @property
     def lose_num_question(self):
+        print(self.tournament_instance)
         attempts = self.scope['user'].attempt_set.filter(tournament=self.tournament_instance)
         if attempts.exists():
             attempt = attempts[0]
@@ -39,6 +40,11 @@ class TournamentWeek(WebsocketConsumer):
         self.tournament_shortname = self.scope['url_route']['kwargs']['tournament_shortname']
         self.tournament_instance = get_tournament_instance(self.tournament_shortname)
         self.accept()
+
+        if self.tournament_instance['status'] == 'error':
+            self.send(json.dumps({'type': 'no_events'}))
+            return
+
         self.game_session = services.TournamentWeekInstance(self.tournament_instance, self.scope['user'],
                                                             lose_question=self.lose_num_question)
         self.send(json.dumps({'type': 'timer_duration',
@@ -55,12 +61,16 @@ class TournamentWeek(WebsocketConsumer):
                 self.send(json.dumps({'type': 'many_attempts'}))
             if attempt == 3:
                 self.send(json.dumps({'type': 'many_attempts'}))
+        self.send(json.dumps({'type': 'ready'}))
 
     def disconnect(self, code):
         if code == 1001:
-            if self.game_session.is_started:
-                data = {'event': 'respond', 'answer': None}
-                self.check_respond(data)
+            try:
+                if self.game_session.is_started:
+                    data = {'event': 'respond', 'answer': None}
+                    self.check_respond(data)
+            except AttributeError:
+                pass
 
     def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
@@ -188,4 +198,3 @@ class TournamentWeek(WebsocketConsumer):
             return chance()
         else:
             return wrong()
-

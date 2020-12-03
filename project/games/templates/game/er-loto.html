@@ -92,6 +92,11 @@
             let data = JSON.parse(event.data)
             if (data.type === 'timer_duration') {
                 round_timer = new timer(data.timer, elem_timer, tournament_socket)
+            } else if (data.type === 'no_events') {
+                document.getElementById('start_game').remove()
+                show_modal_notification('Сейчас не проводится никаких мероприятий')
+            } else if (data.type === 'ready') {
+                add_start_game_listener()
             } else if (data.type === 'master_say') {
                 show_modal_notification(data.speech)
             } else if (data.type === 'fifty-fifty') {
@@ -103,11 +108,9 @@
                 console.log('log:', data.log)
             } else if (data.type === 'zamena') {
                 render_question(data.question.question, data.question.answers)
-
             } else if (data.type === 'chance') {
                 chance_wrong_question()
                 show_modal_notification(data.type)
-
             } else if (data.type === 'question') {
                 question_text = data.question.question
                 init_question(question_text, data.question.answers, data.question_num)
@@ -210,16 +213,19 @@
             event.target.onclick = void (0)
             event.target.style.opacity = 0
         }
-        document.getElementById('start_game').onclick = (event) => {  {# start game and get first question #}
-            toggle_show_start_btn()
-            if (!started) {
-                start_game()
-                started = true
-            } else {
-                next_question()
-            }
 
+        function add_start_game_listener() {
+            document.getElementById('start_game').onclick = (event) => {  {# start game and get first question #}
+                toggle_show_start_btn()
+                if (!started) {
+                    start_game()
+                    started = true
+                } else {
+                    next_question()
+                }
+            }
         }
+
         document.getElementById('save_score').onclick = () => {  {# save score #}
             tournament_socket.send(JSON.stringify({'event': 'save_score'}))
         }

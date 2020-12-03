@@ -123,7 +123,7 @@ def get_tournament_instance(tournament_shortname):
         is_active=True, purpose__codename=tournament_shortname,
         date__range=date_range)
     if active_tournaments_list.exists():
-        tournament_model = active_tournaments_list.order_by('date')[0]
+        tournament_model = {'status': 'ok', 'result': active_tournaments_list.order_by('date')[0]}
     else:
         tournament_model = {'status': 'error', 'error': 'Empty'}
     return tournament_model
