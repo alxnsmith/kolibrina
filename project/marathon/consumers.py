@@ -266,7 +266,6 @@ class MarafonWeek(JsonWebsocketConsumer):
                     and self.game_info['STATE'] == self.States.ANSWER:
 
                 self.next_step()
-                print('Answer timer is end!')
 
     def disconnect(self, message):
         if self.game_info['round_exists']:
@@ -321,6 +320,11 @@ class MarafonWeek(JsonWebsocketConsumer):
             {'type': 'send_reset_timer'}
         )
 
+        if len(self.active_questions) < 1:
+            print('Not enough active questions.')
+            self.end_game()
+            return
+
         async_to_sync(self.channel_layer.group_send)(
             self.GAME_GROUP_NAME,
             {'type': 'send_select_question',
@@ -346,9 +350,6 @@ class MarafonWeek(JsonWebsocketConsumer):
         self.send_json(content=self.game_info['timer'])
 
     def select_random_question(self):
-        if len(self.active_questions) < 1:
-            print('Not enough active questions.')
-            return
 
         question = self.round.get_random_question(self.active_questions)
         coords = (question['block'], question['pos'])
@@ -402,6 +403,7 @@ class MarafonWeek(JsonWebsocketConsumer):
         self.rating.clear()
         self.players_online.clear()
         self.watchers_online.clear()
+        self.deactivated_questions.clear()
 
         self.game_info['round_exists'] = False
         self.game_info['is_started'] = False
