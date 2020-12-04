@@ -96,12 +96,13 @@ class MarafonWeek(JsonWebsocketConsumer):
         TIMEOUT = 5
 
     game_info = {
+        'round_exists': False,
         'is_started': False,
         'STATE': States.READY_TO_START,
-        'marafon_id': None,
-        'response_end_time': None,
-        'select_question_end_time': None,
+        'marathon_id': int(),
         'current_question': None,
+        'end_timer': int(),
+        'timer': None
     }
 
     game_history = {'current_question': tuple(), 'questions_played': set()}
@@ -117,22 +118,22 @@ class MarafonWeek(JsonWebsocketConsumer):
 
     rating = MarafonRating()
 
-    GAME_GROUP_NAME = 'marafon_week'
+    GAME_GROUP_NAME = 'marathon_week'
 
     def connect(self):
 
         self.user = self.scope['user']
+        if not (round_instance := services.get_is_played_official_marathon_round()):
+            round_instance = services.get_nearest_official_marathon_round()
 
-        self.round_instance = services.get_nearest_official_marathon_round()
+        if round_instance:
+            self.round = services.MarathonWeekGP(round_instance)
 
-        if self.round_instance is not False:
-            self.round = services.MarathonWeekGP(self.round_instance)
-
-            marafon_id = self.round.marathon_id
-            if current_id := self.game_info['marafon_id']:
-                if current_id != marafon_id:
+            marathon_id = self.round.marathon_id
+            if current_id := self.game_info['marathon_id']:
+                if current_id != marathon_id:
                     self.end_game()  # resets the current game
-            self.game_info['marafon_id'] = marafon_id
+            self.game_info['marathon_id'] = marathon_id
 
             self.username = self.user.username
 
@@ -150,15 +151,13 @@ class MarafonWeek(JsonWebsocketConsumer):
                 self.channel_name
             )
 
+            self.game_info['is_started'] = self.round.instance.is_played
+            self.game_info['round_exists'] = True
+
         self.accept()
 
         if not self.game_info['is_started']:
-            if self.round_instance is False:
-                self.send_json(content={
-                    'type': 'no_events'
-                })
-                return
-            if self.round.datetime_start < timezone.now():
+            if not round_instance or self.round.datetime_start < timezone.now():
                 self.send_json(content={
                     'type': 'no_events'
                 })
@@ -170,6 +169,8 @@ class MarafonWeek(JsonWebsocketConsumer):
         self.update_rating(event='connect')
         self.send_base_static_info()
         self.send_themes()
+        if self.game_info['timer']:
+            self.send_json(content=self.game_info['timer'])
 
         #################################################################################
 
@@ -243,10 +244,8 @@ class MarafonWeek(JsonWebsocketConsumer):
                     and self.game_info['STATE'] is self.States.READY_TO_START \
                     and not self.game_info['is_started'] \
                     and self.round.datetime_start < timezone.now():
-
-                self.game_info['is_started'] = True
-                print('GAME IS STARTED!')
                 self.next_step()
+                print('GAME IS STARTED!')
 
             elif event == 'select_question_timer_is_end' \
                     and self.game_info['STATE'] == self.States.QUESTION:
@@ -270,7 +269,7 @@ class MarafonWeek(JsonWebsocketConsumer):
                 print('Answer timer is end!')
 
     def disconnect(self, message):
-        if self.round_instance is not False:
+        if self.game_info['round_exists']:
             async_to_sync(self.channel_layer.group_discard)(
                 self.role,
                 self.channel_name
@@ -284,6 +283,14 @@ class MarafonWeek(JsonWebsocketConsumer):
     def next_step(self):
         if self.game_info['STATE'] not in (self.States.READY_TO_START, self.States.ANSWER):
             return
+
+        if self.game_info['STATE'] is self.States.READY_TO_START and self.round.starter_username_or_none:
+            starter = self.round.starter_username_or_none
+            round = self.round.instance
+            round.is_played = self.game_info['is_started'] = True
+            round.save()
+        else:
+            starter = self._get_top_one_online()
 
         self.game_info['STATE'] = self.States.QUESTION
 
@@ -313,10 +320,11 @@ class MarafonWeek(JsonWebsocketConsumer):
             self.GAME_GROUP_NAME,
             {'type': 'send_reset_timer'}
         )
+
         async_to_sync(self.channel_layer.group_send)(
             self.GAME_GROUP_NAME,
             {'type': 'send_select_question',
-             'username': self._get_top_one_online()}
+             'username': starter}
         )
 
     def send_base_static_info(self, *_):
@@ -329,12 +337,13 @@ class MarafonWeek(JsonWebsocketConsumer):
     def send_select_question(self, event):
         username = event['username']
         select_question_end_time = timezone.now() + timezone.timedelta(seconds=self.round.select_question_timer)
-        self.game_info['select_question_end_time'] = select_question_end_time
-        self.send_json(content={
+        self.game_info['end_timer'] = select_question_end_time
+        self.game_info['timer'] = {
             'type': 'select_question',
             'username': username,
             'timer': str(select_question_end_time)
-        })
+        }
+        self.send_json(content=self.game_info['timer'])
 
     def select_random_question(self):
         if len(self.active_questions) < 1:
@@ -394,15 +403,20 @@ class MarafonWeek(JsonWebsocketConsumer):
         self.players_online.clear()
         self.watchers_online.clear()
 
+        self.game_info['round_exists'] = False
         self.game_info['is_started'] = False
-        self.game_info['marafon_id'] = None
         self.game_info['STATE'] = self.States.READY_TO_START
-        self.game_info['response_end_timer'] = None
-        self.game_info['select_question_end_timer'] = None
+        self.game_info['marathon_id'] = int()
+        self.game_info['end_timer'] = int()
+        self.game_info['timer'] = None
         self.game_info['current_question'] = None
 
         self.game_history['current_question'] = tuple()
         self.game_history['questions_played'] = set()
+
+        if round := self.round.instance:
+            round.is_played = False
+            round.save()
 
     def send_end_game(self, *_):
         self.send_json(content={
@@ -466,7 +480,7 @@ class MarafonWeek(JsonWebsocketConsumer):
         })
 
     def send_date_time_start(self, *_):
-        unix_time = str(self.round.round.date_time_start)
+        unix_time = str(self.round.instance.date_time_start)
         self.send_json(content={
             'type': 'date_time_start',
             'date_time_start': unix_time
@@ -486,11 +500,12 @@ class MarafonWeek(JsonWebsocketConsumer):
 
     def send_answer_timer(self, *_):
         response_end_time = timezone.now() + timezone.timedelta(seconds=self.round.response_timer)
-        self.game_info['response_end_time'] = response_end_time
-        self.send_json(content={
+        self.game_info['end_timer'] = response_end_time
+        self.game_info['timer'] = {
             'type': 'answer_timer',
             'unix_time_end': str(response_end_time),
-        })
+        }
+        self.send_json(content=self.game_info['timer'])
 
     def _get_top_one_online(self):
         rating = self.rating.rating_iter()

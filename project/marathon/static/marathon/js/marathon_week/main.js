@@ -62,6 +62,7 @@ marafon_socket.onopen = () => {
                     show_modal_notification(`${upFirst(data.username)} выбирает вопрос!`);
                     Render.state(`Выбирает ${upFirst(data.username)}`)
                 }
+                EventListener.rm_listen_answers()
                 timer = new Timer(data.timer, 'minutes', Render.timer, select_question_timer_is_end)
                 timer.start()
                 break

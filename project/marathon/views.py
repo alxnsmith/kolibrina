@@ -26,18 +26,18 @@ class MarathonWeek(View):
         if self._is_time_to_start:
             return {'status': 'error', 'error': 'Регистрация на марафон окончена, вы можете посмотреть за ходом игры.'}
         user = self.request.user
-        if not self.IS_BENEFIT_RECIPIENT and user.balance >= self.round.round.price:
-            user.balance -= self.round.round.price
+        if not self.IS_BENEFIT_RECIPIENT and user.balance >= self.round.instance.price:
+            user.balance -= self.round.instance.price
             user.save()
         else:
             return {'status': 'error',
                     'error': 'Недостаточно средств, для участия - пополните баланс в личном кабинете.'}
-        self.round.round.players.add(user)
+        self.round.instance.players.add(user)
         return {'status': 'OK'}
 
     @property
     def _is_time_to_start(self):
-        return timezone.now() > self.round.round.date_time_start
+        return timezone.now() > self.round.instance.date_time_start
 
 
 class SummaryMarathonWeek(View):

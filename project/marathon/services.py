@@ -22,22 +22,23 @@ class MarathonWeekGP:
                                        db=settings.REDIS_DB)
 
     def __init__(self, instance: MarathonRound):
-        self.round = instance
+        self.instance = instance
         self.marathon_instance = instance.official_marathon_round_set.first()
         self.marathon_id = self.marathon_instance.id
         self.response_timer = self.marathon_instance.response_timer
         self.select_question_timer = self.marathon_instance.select_question_timer
+        self.starter_username_or_none = instance.starter_player.username if instance.starter_player else None
 
         # self._init_round()
         self._init_questions()
-        self.datetime_start = self.round.date_time_start
+        self.datetime_start = self.instance.date_time_start
 
     def get_base_static_info(self):
         info = {
             'marathon_id': self.marathon_id,
-            'firstname': self.round.author.firstName,
-            'lastname': self.round.author.lastName,
-            'city': self.round.author.city
+            'firstname': self.instance.author.firstName,
+            'lastname': self.instance.author.lastName,
+            'city': self.instance.author.city
         }
         return info
 
@@ -51,20 +52,20 @@ class MarathonWeekGP:
 
     @property
     def theme_blocks_with_id(self):
-        themes = self.round.question_blocks.all()
+        themes = self.instance.question_blocks.all()
         themes = [(str(block.theme), block.id) for block in themes]
         return themes
 
     @property
     def players(self):
-        return self.round.players.all()
+        return self.instance.players.all()
 
     @staticmethod
     def get_all_question_coords_by_blocks(blocks: int):
         return set([(block, pos) for pos in range(8) for block in range(blocks)])
 
     def get_all_question_coords(self):
-        return set([(block, pos) for pos in range(8) for block in range(len(self.round.question_blocks.all()))])
+        return set([(block, pos) for pos in range(8) for block in range(len(self.instance.question_blocks.all()))])
 
     def get_random_question(self, active_questions):
         coords = random.choice(list(active_questions))
@@ -84,11 +85,11 @@ class MarathonWeekGP:
         return question
 
     def _init_round(self):
-        rounds = self.round.rounds.filter(date_time_start__gte=timezone.now()).order_by('date_time_start')
-        self.round = rounds.first()
+        rounds = self.instance.rounds.filter(date_time_start__gte=timezone.now()).order_by('date_time_start')
+        self.instance = rounds.first()
 
     def _init_questions(self):
-        questions_blocks = self.round.question_blocks.all()
+        questions_blocks = self.instance.question_blocks.all()
         questions = [[question for question in block.questions.all()] for block in questions_blocks]
         self.questions = questions
 
@@ -102,6 +103,17 @@ def get_active_official_marathon_rounds() -> dict:
         return {'status': 'OK', 'rounds_list': active_marafon_rounds}
     else:
         return {'status': 'error', 'error': 'Empty'}
+
+
+def get_is_played_official_marathon_round():
+    result = get_active_official_marathon_rounds()
+    if result['status'] == 'error':
+        return False
+    filtered = result['rounds_list'].filter(is_played=True)
+    if not filtered.exists():
+        return False
+    instance = filtered.last()
+    return instance
 
 
 def get_nearest_official_marathon_round():

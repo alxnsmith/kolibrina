@@ -40,8 +40,9 @@ class MarathonRoundAdmin(admin.ModelAdmin):
             kwargs['queryset'] = queryset
         return super(MarathonRoundAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
-    list_display = ('id', 'themes', 'date_time_start', 'create_date')
+    list_display = ('id', 'themes', 'date_time_start', 'create_date', 'is_played')
     list_display_links = ('themes',)
+    readonly_fields = ('is_played', )
 
 
 @admin.register(MarathonWeekOfficial)
@@ -54,6 +55,7 @@ class MarathonWeekOfficialAdmin(admin.ModelAdmin):
             to_display = []
             for round in obj.rounds.all().order_by('date_time_start'):
                 url = reverse('admin:marathon_marathonround_change', args=(f'{round.pk}', ))
+                style = 'style="color: lime"' if round.is_played else ''
                 text = 'None'
                 if date_time_start := timezone.localtime(round.date_time_start):
                     day = str(date_time_start.day).rjust(2, '0')
@@ -64,7 +66,7 @@ class MarathonWeekOfficialAdmin(admin.ModelAdmin):
                     second = str(date_time_start.second).rjust(2, '0')
                     text = f'{day}/{month}/{str(year)[:2]} в {hour}:{minute}:{second}'
 
-                html = f'<a href="{url}">{text}</a>'
+                html = f'<a href="{url}" {style}>{text}</a>'
                 to_display.append(html)
             return format_html(' | '.join(to_display))
         else:

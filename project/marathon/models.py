@@ -25,6 +25,8 @@ class MarathonRound(BaseRound):
     question_blocks = models.ManyToManyField(
         MarathonThemeBlock, verbose_name='Блоки вопросов', limit_choices_to={'is_active': True})
 
+    is_played = models.BooleanField('Сейчас играют', default=False)
+
     players = models.ManyToManyField(
         User, verbose_name='Зарегистрированные игроки', blank=True, related_name='MarathonRound_players_set')
     starter_player = models.ForeignKey(
