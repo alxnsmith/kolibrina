@@ -179,8 +179,7 @@ class MarafonWeek(JsonWebsocketConsumer):
 
         # ttt = [(3, 4), (3, 1), (3, 7), (0, 2), (0, 5), (2, 2), (1, 0), (1, 6), (1, 3), (3, 0), (3, 3), (3, 6),
         #        (0, 1), (0, 7), (2, 4), (1, 2), (0, 4), (2, 1), (2, 7), (1, 5), (3, 2), (
-        #            3, 5), (0, 0), (1, 1), (1, 4), (0, 6), (2, 3), (1, 7), (2, 6)]
-        # self.test = set()
+        #            3, 5), (0, 0), (1, 1), (1, 4), (0, 6), (2, 3), (1, 7),]
         # for t in ttt:
         #     self.deactivated_questions.add(t)
         #     self.game_history['questions_played'].add(t)
@@ -261,10 +260,8 @@ class MarafonWeek(JsonWebsocketConsumer):
                 self.wrong_answered_players_stack.clear()
 
                 self.select_random_question()
-
             elif event == 'select_answer_timer_is_end' \
                     and self.game_info['STATE'] == self.States.ANSWER:
-
                 self.next_step()
 
     def disconnect(self, message):
@@ -306,10 +303,17 @@ class MarafonWeek(JsonWebsocketConsumer):
                 self.rating.incr_score(username, delta_score_for_correct)
             for username in wrong_answers:
                 self.rating.decr_score(username, delta_score_for_wrong)
+
+            correct_answer = self.round.get_correct_answer(self.game_history['current_question'])
             async_to_sync(self.channel_layer.group_send)(
                 self.GAME_GROUP_NAME,
-                {'type': 'send_correct_answer'}
+                {'type': 'send_correct_answer',
+                 'correct_answer': correct_answer}
             )
+            if len(self.active_questions) < 1:
+                print('Not enough active questions.')
+                self.end_game()
+                return
 
         async_to_sync(self.channel_layer.group_send)(
             self.GAME_GROUP_NAME,
@@ -319,12 +323,6 @@ class MarafonWeek(JsonWebsocketConsumer):
             self.GAME_GROUP_NAME,
             {'type': 'send_reset_timer'}
         )
-
-        if len(self.active_questions) < 1:
-            print('Not enough active questions.')
-            self.end_game()
-            return
-
         async_to_sync(self.channel_layer.group_send)(
             self.GAME_GROUP_NAME,
             {'type': 'send_select_question',
@@ -350,13 +348,12 @@ class MarafonWeek(JsonWebsocketConsumer):
         self.send_json(content=self.game_info['timer'])
 
     def select_random_question(self):
-
         question = self.round.get_random_question(self.active_questions)
         coords = (question['block'], question['pos'])
         self.select_question(coords)
 
-    def send_correct_answer(self, *_):
-        correct_answer = self.round.get_correct_answer(self.game_history['current_question'])
+    def send_correct_answer(self, *args, **kwargs):
+        correct_answer = args[0]['correct_answer']
         self.send_json(content={
             'type': 'correct_answer',
             'correct_answer': correct_answer
@@ -424,6 +421,7 @@ class MarafonWeek(JsonWebsocketConsumer):
         self.send_json(content={
             'type': 'end_game'
         })
+        self.disconnect(1001)
 
     def send_game_history(self, *_):
         game_history = list(self.game_history['questions_played'])
