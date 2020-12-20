@@ -11,20 +11,21 @@ from userK.models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'city', 'gender', 'balance', 'swPlace', 'rating', 'league', 'view_team_link')
+    list_display = ('id', 'username', 'city', 'balance', 'discount_view', 'rating', 'league', 'view_team_link')
     list_display_links = ('username',)
 
-    readonly_fields = ('view_team_link', )
+    readonly_fields = ('view_team_link', 'date_joined')
 
     search_fields = ('id', 'username', 'firstName', 'lastName', 'swPlace', 'league', 'country', 'area', 'city')
     list_filter = ('is_staff', 'is_active', 'team_role', 'groups')
     fieldsets = (
         (None, {
-            'fields': (
+            'fields': (('date_joined',),
                 ('username', 'hide_my_name'),
                 ('firstName', 'lastName'),
                 ('birthday', 'gender'),
-                ('balance', 'rating')
+                ('balance', 'discount'),
+                ('rating', 'league')
             )
         }),
         ('Контакты', {
@@ -55,3 +56,7 @@ class UserAdmin(admin.ModelAdmin):
             html = f'<a href="{url}">{team.name}</a>'
         return format_html(html)
     view_team_link.short_description = 'Команда'
+
+    def discount_view(self, obj):
+        return f'{obj.discount}%'
+    discount_view.short_description = 'Скидка'

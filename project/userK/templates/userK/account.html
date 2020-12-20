@@ -17,7 +17,6 @@
 
     <link rel="stylesheet" href="{% static "css/pages/account.css" %}">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -35,11 +34,14 @@
         <div class="row">
             <div class="col-sm-4 col-md-4 col-lg-4">
                 <div id="avatar" class="flex-row">
-                    <h3>ID {{ userID }}</h3>
+                    <h3>ID {{ user_info.formatted_id }}</h3>
                     <div class="clear"></div>
                     <img src="
-
-                            {% if AvatarImage != False %}{{ AvatarImage }}{% else %}{% static 'img/default/defaultAvatar.jpg' %}{% endif %}"
+                            {% if user_info.avatar_image != False %}
+                                {{ user_info.avatar_image }}
+                            {% else %}
+                                {% static 'img/default/defaultAvatar.jpg' %}
+                            {% endif %}"
                          alt="">
                     <div class="clear"></div>
                     <div style="margin-top: 10px">
@@ -52,37 +54,30 @@
                           style="display: none"> {% csrf_token %}
                         <input type="file" name="image" accept=".jpg, .jpeg, .png, .bmp, .webp" required=""
                                id="id_image">
-
                         <input type="hidden" name="user" value="{{ request.user }}" id="id_user">
-
                         <button class="av-btn" value="submit">Загрузить новое фото</button>
                     </form>
                 </div>
                 <div id="rating">
                     <strong>Рейтинг игрока</strong>
-                    <span> {{ level.rating }} </span>
+                    <span> {{ user_info.level.rating }} </span>
                 </div>
                 <div class="mt40"></div>
                 <div id="level">
                     <strong>Уровень игрока</strong>
-                    <span style="color: #5752FF;">{{ level.level }} / {{ level.numLevel }}</span>
+                    <span style="color: #5752FF;">{{ user_info.level.level }} / {{ user_info.level.numLevel }}</span>
                     <span>J;L;Z;M;P / 1-10</span>
                 </div>
             </div>
             <div class="col-sm-8 col-md-8 col-lg-8" id="data">
                 <form action="" method="POST"> {% csrf_token %}
                     <div class="row">
-
-
                         <div class="col-md-6"><input type="text" name="firstName" placeholder="Имя игрока"
                                                      value="{{ request.user.firstName }}"
                                                      {% if request.user.firstName != '' %}disabled{% endif %}></div>
-
-
                         <div class="col-md-6"><input type="text" name="lastName" placeholder="Фамилия игрока"
                                                      value="{{ request.user.lastName }}"
                                                      {% if request.user.lastName != '' %}disabled{% endif %}></div>
-
                     </div>
                     <div>
                         <label for="hyde_my_name"><input type="checkbox" id='hyde_my_name' name="hide_my_name"
@@ -96,8 +91,10 @@
                         <div class="col-md-6" id="birth">
                             <span>Дата рождения</span>
                             <br>
-                            <input type="date" name="birthday" value="{{ form.birthday.value }}" required=""
-                                   id="id_birthday" min="{{ minDateField }}" max="{{ maxDateField }}"
+                            <input type="date" name="birthday" value="{{ user_info.form.form_object.birthday.value }}"
+                                   required=""
+                                   id="id_birthday" min="{{ user_info.form.minDateField }}"
+                                   max="{{ user_info.form.maxDateField }}"
                                    {% if request.user.birthday != None %}disabled{% endif %}>
                         </div>
                         <div class="col-md-6" id="gender">
@@ -105,31 +102,27 @@
                                 <span>Пол</span>
                                 <br>
                                 <label for="male"><input id="male" type="radio" name="gender" value="Male"
-                                                         {% if gender == 'Male' %}checked
-                                                         disabled{% elif gender == 'Female' %}disabled{% endif %}>
+                                                         {% if request.user.gender == 'Male' %}checked
+                                                         disabled{% elif request.user.gender == 'Female' %}disabled{% endif %}>
                                     Мужской</label>
                                 <label for="female"><input id="female" type="radio" name="gender" value="Female"
-                                                           {% if gender == 'Male' %}disabled{% elif gender == 'Female' %}checked
+                                                           {% if request.user.gender == 'Male' %}disabled{% elif request.user.gender == 'Female' %}checked
                                                            disabled{% endif %}> Женский</label>
                             </div>
                         </div>
-
-
                     </div>
                     <label for="country">Страна проживания: </label>
-                    {{ form.country }}
+                    {{ user_info.form.form_object.country }}
                     <br>
                     <div class="row">
                         <div class="col-md-6">
-                            {{ form.area }}
+                            {{ user_info.form.form_object.area }}
                         </div>
                         <div class="col-md-6">
-                            {{ form.city }}
+                            {{ user_info.form.form_object.city }}
                         </div>
                     </div>
-
                     <div class="row">
-
                         <div class="col-md-6"><input type="email" name="email" placeholder="Электронный адрес"
                                                      value="{{ request.user.email }}" maxlength="200" required=""
                                                      id="id_email" {% if request.user.email != '' %}disabled{% endif %}>
@@ -147,7 +140,7 @@
                     <div class="mt5"></div>
                     <div id="leagues" class="flex-row">
                         <span>Принадлежность к лиге</span>
-                        {% for choice in form.league %}
+                        {% for choice in user_info.form.form_object.league %}
                             <div class="league" style="margin: 2px">{{ choice }}</div>
                         {% endfor %}
                     </div>
@@ -163,18 +156,17 @@
                                 <span style="text-align: center;">Ваша команда</span>
                                 <div>
                                     <input id="team" type="text" list="team_list" placeholder="Название команды / ID"
-                                           value="{{ team }}" style="min-width: 210px;"
-{#                                           {% if request.user.team_role != "COMMANDER" and request.user.team_set.exists %}disabled{% endif %}#}
+                                           value="
+                                                   {% if request.user.team_set.exists %}{{ request.user.team_set.first }}{% else %}{% endif %}"
+                                           style="min-width: 210px;"
                                            {% if request.user.team_set.exists %}disabled{% endif %}
-                                           title="Команды, в которые вы приглашены:{% for team in invite_teams_list %}
-- {{ team.name }}{% endfor %}"
-                                    >
+                                           title="Команды, в которые вы приглашены:{% for team in invite_teams_list %}- {{ team.name }}{% endfor %}">
                                     <datalist id="team_list">
-                                        {% for team in invite_teams_list %}
+                                        {% for team in team.invite_teams_list %}
                                             <option value="{{ team.name }}"></option>
                                         {% endfor %}
                                     </datalist>
-                                    {% if team %}
+                                    {% if request.user.team_set.exists %}
                                         {% if request.user.team_role == "COMMANDER" %}
                                             <a id="del_team" href="javascript:void(0)" onclick="del_team()">Удалить
                                                 команду</a>
@@ -188,12 +180,12 @@
                                     {% endif %}
                                 </div>
 
-                                {% for teammate in team_players_list %}
+                                {% for teammate in team.team_players_list %}
                                     {% if teammate != request.user %}
                                         {% include 'userK/blocks/teammate_input.html' %}
                                     {% endif %}
                                 {% endfor %}
-                                {% if team_players_list|length < 6 and team and request.user.team_role == 'COMMANDER' %}
+                                {% if team.team_players_list|length < 6 and request.user.team_set.exists and request.user.team_role == 'COMMANDER' %}
                                     {% include 'userK/blocks/teammate_input.html' %}
                                 {% endif %}
                             </div>
@@ -234,7 +226,7 @@
                                     <span class="nums"
                                           style="text-align: center; display: none">Ваш номер в команде</span>
                                     <div class="nums flex" style="display: none">
-                                        {% for num in team_number %}
+                                        {% for num in team.team_number %}
                                             <div>
                                                 <label class="number_in_the_team" for="num{% cycle 1 2 3 4 5 6 %}">
                                                     <input id="num{% cycle 1 2 3 4 5 6 %}" class="num" name="team_pos"
@@ -252,7 +244,7 @@
             </div>
             <div class="clear"></div>
             <div class="mt40"></div>
-            <div id="tournaments" class="develop">
+            <div id="tournaments">
                 <div id="wrap-title">
                     <hr>
                     <div id="text1"><span>Открыта регистрация на турниры</span></div>
@@ -262,21 +254,28 @@
                         <th>Дата</th>
                         <th>Время</th>
                         <th>Код турнира</th>
-{#                        <th>Кол-во туров</th>#}
+                        <th>Кол-во туров</th>
                         <th>Сумма взноса (руб)</th>
                         <th>Название мероприятия</th>
+                        <th>Зарегистрироваться</th>
                     </tr>
-                    {% for tournament in open_for_registration %}
-                        {% if tournament.status != 'error' %}
-                            <tr>
-                                <td>{{ tournament.date_time_start.date }}</td>
-                                <td>{{ tournament.date_time_start.time }}</td>
-                                <td>{{ tournament.purpose}}-{{ tourVnament.id }}</td>
-{#                                <td>{{ tournament }}</td>#}
-                                <td>{{ tournament.price }}</td>
-                                <td>{{ tournament.name }}</td>
-                            </tr>
-                        {% endif %}
+                    {% for event in open_for_registration %}
+                        <tr>
+                            <td>{{ event.date_start }}</td>
+                            <td>{{ event.time_start }}</td>
+                            <td>{{ event.code_name_view }}-{{ event.id }}</td>
+                            <td>{{ event.number_of_rounds }}</td>
+                            <td>{{ event.price }}</td>
+                            <td>{{ event.name }}</td>
+                            <td>
+                                <a class="reg_btn {% if event.is_player %}is_player{% endif %}"
+                                   title="{% if event.is_player %}Вы уже зарегистрированы{% else %}Доступно к регистрации. С баланса будет списано {{ event.price }}руб.{% endif %}"
+                                   data-codename="{{ event.code_name }}"
+                                   data-url="{% url 'register_to_game' %}"
+                                   data-pk="{{ event.pk }}"
+                                >
+                                    {% if event.price %}Оплатить{% else %}Бесплатно{% endif %}</a></td>
+                        </tr>
                     {% endfor %}
                 </table>
             </div>
@@ -299,6 +298,10 @@
     }
 </style>
 <script src="{% static 'js/account/remote_team.js' %}"></script>
+<script src="{% static 'userK/js/render.js' %}"></script>
+<script src="{% static 'userK/js/services.js' %}"></script>
+<script src="{% static 'userK/js/event_listeners.js' %}"></script>
+<script src="{% static 'userK/js/main.js' %}"></script>
 <script>
     function format(elem) {
         elem.bind('input', function () {
@@ -311,19 +314,19 @@
             if (11 <= i) num.splice(15, num.length - 15);
             this.value = num.join('');
         });
-    };
+    }
     format($('#phoneNumber'))
     let phoneInput = document.getElementById('phoneNumber')
     phoneInput.onclick = (e) => e.target.value = '+7 '
 </script>
 
 <script>
-    $(document).ready(function () {
-        $("header nav a:nth-child(1) > span").addClass("select");
-        $(".title > h2 > strong").html("Личный Кабинет");
-        $(".footer__buttons").append('<a onclick="$(\'#SAVE\').click()">Сохранить изменения</a>');
-        $(".footer__buttons").append('<a href="#">Скачать бланк на обработку ПД</a>');
-        {#$(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');#}
+    document.addEventListener('load', ()=>{
+        document.querySelector("header nav a:nth-child(1) > span").classList.add("select");
+        document.querySelector(".title > h2 > strong").innerHTML = "Личный Кабинет";
+        document.querySelector(".footer__buttons").append('<a onclick="$(\'#SAVE\').click()">Сохранить изменения</a>');
+        document.querySelector(".footer__buttons").append('<a href="#">Скачать бланк на обработку ПД</a>');
+        {#document.querySelector(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');#}
     });
 </script>
 <script>

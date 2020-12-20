@@ -43,10 +43,24 @@ class MarathonRound(BaseRound):
 
 
 class MarathonWeekOfficial(BaseMarathon):
-    rounds = models.ManyToManyField(MarathonRound, verbose_name='Раунды', related_name='official_marathon_round_set')
+    """ Порядок определяется по дате старта в раундах,
+    но если стоит Непрерывная игра - то играется подряд с указанным перерывом
+    Если игра играется подряд, то цена берется из мероприятия, если нет, то из раунда,
+    таким образом - задаем цену за участие в непрерывной игре.
+    """
+    code_name = 'OMWEL'
+
+    rounds = models.ManyToManyField(MarathonRound, verbose_name='Раунды', related_name='marathonweekofficial_set')
     stage = models.SmallIntegerField('Этап', null=False, default=0)
 
-    is_rating = models.BooleanField(verbose_name='Рейтинговый', default=False)
+    is_rating = models.BooleanField('Рейтинговый', default=False)
+
+    is_continuous = models.BooleanField('Непрерывная игра', default=True)
+    date_time_start = models.DateTimeField('Дата и время проведения (для непрерывной игры)', blank=True, null=True)
+    timeout = models.IntegerField('Перерыв в минутах', default=10)
+    ends_time = models.DateTimeField('Время окончания последнего раунда.', null=True, blank=True)
+    players = models.ManyToManyField(
+        User, verbose_name='Зарегистрированные игроки', blank=True, related_name='marathonweekofficial_player_set')
 
     class Meta:
         verbose_name = _('Официальный марафон')
@@ -59,4 +73,3 @@ class MarathonWeekCommunity(BaseMarathon):
     class Meta:
         verbose_name = _('Пользовательский марафон')
         verbose_name_plural = _('Полльзовательские марафоны')
-

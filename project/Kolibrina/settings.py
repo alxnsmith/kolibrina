@@ -76,6 +76,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'common_tags': 'main.templatetags.common_tags',
+            }
         },
     },
 ]
@@ -179,7 +182,6 @@ QUESTION_SCORE_EQUALS = {'1': 0.1, '2': 0.3, '3': 0.5, '4': 0.7, '5': 0.9,
                          'zamena': 0
                          }
 TIME_SCORE_EQUALS = {'10': 0.007, '20': 0.08, '30': 0.14, '40': 0.2, '50': 0.23}
-
 
 DOMAIN = 'kolibrina.ru'
 

@@ -45,11 +45,15 @@
 <script src="{% static 'js/fetch.js' %}"></script>
 <script>
     let balance
-    let balance_url = '{% url 'API' %}?balance'
-    sendRequest('get', balance_url).then(data => {
-        balance = data.balance
-        document.querySelector('#balance span').innerText = balance
-    })
+    let balance_url = '{% url 'API' %}'
+
+    function update_balance() {
+        sendRequest('get', balance_url, 'balance').then(data => {
+            balance = data.balance
+            document.querySelector('#balance span').innerText = balance
+        })
+    }
+    update_balance()
 </script>
 <script>
     const onlineSocket = new WebSocket(

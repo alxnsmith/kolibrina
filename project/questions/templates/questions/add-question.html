@@ -17,7 +17,6 @@
 
     <link rel="stylesheet" href="{% static "css/pages/addquestion.min.css" %}">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -104,9 +103,9 @@
 {% include "main/footer.html" %}
 
 <script>
-    $(document).ready(function () {
-        $("header nav a:nth-child(4) > span").addClass("select");
-        $(".title > h2 > strong").html("Добавить вопрос");
+    document.addEventListener('load', ()=>{
+        document.querySelector("header nav a:nth-child(4) > span").classList.add("select");
+        document.querySelector(".title > h2 > strong").innerHTML = "Добавить вопрос";
     });
 </script>
 

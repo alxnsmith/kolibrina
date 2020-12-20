@@ -1,7 +1,9 @@
 import datetime
 
 from django.conf import settings
+from django.utils import timezone
 
+# from games.services import get_all_nearest_events           | on 161s. It's need for avoid circular import
 from media import forms as media_forms, services as media_services
 from userK.models import User
 from . import forms
@@ -35,37 +37,37 @@ def create_render_data(request, ):
     user_model = get_user_model(request.user)
     max_date_field = '-'.join((str(datetime.date.today().year), datetime.date.today().strftime('%m-%d')))
     min_date_field = '-'.join((str(datetime.date.today().year - 100), datetime.date.today().strftime('%m-%d')))
-    # open_for_registration = get_open_for_registration()
-    # print(open_for_registration)
     team_players_list = _get_teammates(request.user)
 
     data = {
-        'userID': f'{request.user.id}'.rjust(7, '0'),
-        'gender': user_model.gender,
-        'form': _get_form_values(user_model=user_model),
-        'errors': [],
-        'error_phone': '',
-        'level': get_user_rating_lvl_dif(user_model.rating),
-        'AvatarForm': media_forms.AvatarForm(initial={'user': request.user}),
-        'AvatarImage': media_services.get_avatar(user=request.user),
+        'user_info': {
+            'formatted_id': f'{request.user.id}'.rjust(7, '0'),
+            'level': get_user_rating_lvl_dif(user_model.rating),
+            'avatar_image': media_services.get_avatar(user=request.user),
+            'form': {
+                'form_object': _get_form_values(user_model=user_model),
+                'league': str(request.user.league),
+                'AvatarForm': media_forms.AvatarForm(initial={'user': request.user}),
+                'maxDateField': max_date_field,
+                'minDateField': min_date_field,
+                'error_phone': '',
+            },
+        },
+        'team': {
+            'users_list': _get_users_and_id_list(request.user),
+            'team_players_list': team_players_list,
+            'new_teammate_num': len(team_players_list) + 1,
+            'team_number': settings.TEAM_NUMBERS,
+            'invite_teams_list': _get_invite_teams_list(request.user),
+        },
+        'open_for_registration': get_open_for_registration(request.user),
         'mainBanner': media_services.get_banner(),
-        'league': str(request.user.league),
-        'maxDateField': max_date_field,
-        'minDateField': min_date_field,
-        'users_list': _get_users_and_id_list(request.user),
-        'team': _get_name_or_blank(request.user),
-        'team_players_list': team_players_list,
-        'new_teammate_num': len(team_players_list) + 1,
-        'team_number': settings.TEAM_NUMBERS,
-        'invite_teams_list': _get_invite_teams_list(request.user),
-        # 'open_for_registration': open_for_registration
+        'errors': [],
     }
     return data
 
 
 def get_user_rating_lvl_dif(rating):
-    # rating = round(float(rating), 3)
-
     def r(rating, max, deltamax, level):
         for i in range(0, 981):
             if rating < max:
@@ -104,13 +106,6 @@ def get_user_model(username: str) -> User:
     return User.objects.get(username=username)
 
 
-def increase_user_balance(amount, user_id):
-    if amount['currency'] == 'RUB':
-        user = User.objects.get(id=user_id)
-        user.balance = round(float(amount['value']) + user.balance, 2)
-        user.save()
-
-
 def _get_users_and_id_list(current_user):
     users_list = User.objects.filter(is_active=1)
     users_and_id_list = []
@@ -123,22 +118,23 @@ def _get_users_and_id_list(current_user):
 
 
 def _get_form_values(user_model):
-    user_model = user_model.__dict__
     try:
         form = forms.EditUser(initial={
-            'birthday': user_model['birthday'].__format__('%Y-%m-%d'),
-            'gender': user_model['gender'],
-            'country': user_model['country'],
-            'area': user_model['area'],
-            'city': user_model['city'],
+            'birthday': format(user_model.birthday, '%Y-%m-%d'),
+            'gender': user_model.gender,
+            'country': user_model.country,
+            'area': user_model.area,
+            'city': user_model.city,
+            'league': user_model.league
         })
     except TypeError:
         form = forms.EditUser(initial={
             'birthday': '',
-            'gender': user_model['gender'],
-            'country': user_model['country'],
-            'area': user_model['area'],
-            'city': user_model['city'],
+            'gender': user_model.gender,
+            'country': user_model.country,
+            'area': user_model.area,
+            'city': user_model.city,
+            'league': user_model.league
         })
     return form
 
@@ -160,3 +156,73 @@ def _get_teammates(user):
         return user.team_set.first().players.all()
     else:
         return ''
+
+
+def get_open_for_registration(user):
+    from games.services import get_all_nearest_events
+    events = []
+    nearest_events = get_all_nearest_events()
+
+    for event in nearest_events['marathon_rounds']:
+        events.append(EventsTableData.marathon_rounds(event, user))
+
+    for event in nearest_events['continuous_marathons']:
+        events.append(EventsTableData.continuous_marathon(event, user))
+
+    return sorted(events, key=lambda x: x['date_time_start'])
+
+
+class EventsTableData:
+    @staticmethod
+    def marathon_rounds(event, user):
+        date_time_start = timezone.localtime(event.date_time_start)
+        marathon = event.marathonweekofficial_set.first()
+        num_of_rounds = marathon.rounds.count()
+        code_name = 'OMWEL_round'
+        pk = event.pk
+        price = EventsTableData._get_price(event.price, user.discount)
+        rounds = marathon.rounds.order_by('date_time_start')
+        is_player = user in event.players.all()
+        if num_of_rounds > 1:
+            for i, round in enumerate(rounds):
+                if event.pk == round.pk:
+                    num_of_round = i + 1
+                    num_of_rounds = f'{num_of_rounds}/{num_of_round}'
+
+        return EventsTableData._get_row_data(
+            date_time_start, marathon.code_name, marathon.id,
+            num_of_rounds, price, marathon.name, code_name, pk, is_player)
+
+    @staticmethod
+    def continuous_marathon(event, user):
+        date_time_start = timezone.localtime(event.date_time_start)
+        num_of_rounds = event.rounds.count()
+        price = EventsTableData._get_price(event.price, user.discount)
+        codename = 'OMWEL_continuous'
+        pk = event.pk
+        is_player = user in event.players.all()
+
+        return EventsTableData._get_row_data(
+            date_time_start, event.code_name, event.id, num_of_rounds, price, event.name, codename, pk, is_player)
+
+    @staticmethod
+    def _get_row_data(date_time_start, code_name_view, id, number_of_rounds, price, name, codename, pk, is_player):
+        return {
+            'date_time_start': date_time_start,
+            'date_start': format(date_time_start, '%d.%m.%y'),
+            'time_start': format(date_time_start, '%H:%M'),
+            'code_name_view': code_name_view,
+            'id': id,
+            'number_of_rounds': number_of_rounds,
+            'price': price,
+            'name': name or '______________________',
+            'code_name': codename,
+            'pk': pk,
+            'is_player': is_player
+        }
+
+    @staticmethod
+    def _get_price(price, discount):
+        raw_price = price - (price / 100 * discount)
+        price = ','.join((str(int(raw_price)), str(raw_price).split('.')[-1].rjust(2, '0')))
+        return price

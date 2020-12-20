@@ -1,6 +1,9 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'rating/marathon/summary-of-round/css/summary-of-round.css' %}">
+
 <div class="user-stat">
     <div class="user-avatar user_div">
-        <img class="user_img" src="{% if user_info.avatar %}{{ user_info.avatar }}{% endif %}"/>
+        <img class="user_img" {% if user_info.avatar %}src="{{ user_info.avatar }}"{% endif %}/>
         <div class="user-name">
             <span>{{ user.lastName }}</span>
             <span>{{ user.firstName }}</span>

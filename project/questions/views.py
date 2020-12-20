@@ -26,7 +26,7 @@ class QuestionAPI(View):
         event = get['event']
 
         if event == 'get_categories':
-            categories = Category.objects.all().values_list('id', 'category')
+            categories = Category.objects.values_list('id', 'category')
             categories = [cat for cat in categories]
             return JsonResponse({'status': 'OK', 'categories': categories})
         elif event == 'get_themes_in_category':

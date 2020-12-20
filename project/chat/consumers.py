@@ -1,28 +1,28 @@
 from asgiref.sync import async_to_sync
-from channels.generic.websocket import JsonWebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import redis
 from django.conf import settings
 
 
-class ChatConsumer(JsonWebsocketConsumer):
+class ChatConsumer(AsyncJsonWebsocketConsumer):
     redis_instance = redis.StrictRedis(host=settings.REDIS_HOST,
                                        port=settings.REDIS_PORT,
                                        db=settings.REDIS_DB)
     redis_instance.set('ChatOnline', '0')
 
-    def connect(self):
+    async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'chat_{self.room_name}'
         self.messages_redis_key = f'{self.room_group_name}_messages'
         self.redis_instance.incr('ChatOnline')
 
-        self.accept()
-        async_to_sync(self.channel_layer.group_add)(
+        await self.accept()
+        await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
 
-        async_to_sync(self.channel_layer.group_send)(
+        await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_online',
@@ -32,26 +32,26 @@ class ChatConsumer(JsonWebsocketConsumer):
 
         if history := self.redis_instance.lrange(self.messages_redis_key, 0, -1):  # get all messages
             for mes in history:
-                mes = self.decode_json(mes)
+                mes = await self.decode_json(mes)
                 message = {'type': 'message',
                            'message': mes['message'],
                            'username': mes['username'],
                            'time': mes['time']}
-                self.send_json(message)
+                await self.send_json(message)
 
-    def disconnect(self, code):
+    async def disconnect(self, code):
         self.redis_instance.decr('ChatOnline')
-        async_to_sync(self.channel_layer.group_discard)(  # Leave room group
+        await self.channel_layer.group_discard(  # Leave room group
             self.room_group_name,
             self.channel_name
         )
-        async_to_sync(self.channel_layer.group_send)(
+        await self.channel_layer.group_send(
             self.room_group_name,
             {'type': 'chat_online',
              'online': self.redis_instance.get('ChatOnline').decode()}
         )
 
-    def receive_json(self, content, **kwargs):
+    async def receive_json(self, content, **kwargs):
         """Receive message from WebSocket"""
         message = {
             'type': 'message',
@@ -59,19 +59,19 @@ class ChatConsumer(JsonWebsocketConsumer):
             'time': content['time'],
             'username': str(self.scope['user'])
         }
-        self._message_buffer(message=self.encode_json(message))
+        self._message_buffer(message=await self.encode_json(message))
 
-        async_to_sync(self.channel_layer.group_send)(  # Send message to room group
+        await self.channel_layer.group_send(  # Send message to room group
             self.room_group_name,
             {'type': 'chat_message', 'message': message})
 
-    def chat_message(self, event):
+    async def chat_message(self, event):
         message = event['message']
-        self.send_json(content={**message})
+        await self.send_json({**message})
 
-    def chat_online(self, event):
+    async def chat_online(self, event):
         online = event['online']
-        self.send_json(content={
+        await self.send_json({
             'type': 'online',
             'online': online,
         })

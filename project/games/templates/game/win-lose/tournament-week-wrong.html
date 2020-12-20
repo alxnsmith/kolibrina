@@ -124,10 +124,10 @@
         <script src="{% static 'js/games/libs/tournament_week/calculate_and_render_tournament_score.js' %}"></script>
 
 		<script>
-			$(document).ready(function() {
-				$("header nav a:nth-child(2) > span").addClass("select");
-				$(".title > h2 > strong").html("Эрудит-Лото / Турнир Недели");
-				$(".footer__buttons").append('<a href="#ask-question" class="open-modal">Уточнение по вопросу</a>');
+			document.addEventListener('load', ()=>{
+				document.querySelector("header nav a:nth-child(2) > span").classList.add("select");
+				document.querySelector(".title > h2 > strong").innerHTML = "Эрудит-Лото / Турнир Недели";
+				document.querySelector(".footer__buttons").append('<a href="#ask-question" class="open-modal">Уточнение по вопросу</a>');
 			});
 		</script>
 		

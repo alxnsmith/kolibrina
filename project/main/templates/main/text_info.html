@@ -1,0 +1,18 @@
+<div class="text-information" id="text_info">
+    <p>Текстовая информация</p>
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+        let game_type = '{{ game_type }}'
+        let text_info_socket = new WebSocket('wss://' + window.location.host + `/ws/text-info-${game_type}/`)
+        text_info_socket.onmessage = (e) => {
+            let data = JSON.parse(e.data)
+            switch (data.type){
+                case 'text_info':
+                    document.querySelector('#text_info p').innerText = data.text_info
+                    break
+            }
+        }
+    })
+</script>

@@ -3,6 +3,7 @@
 <html lang="ru">
 <head>
     {% load static %}
+    {% load common_tags %}
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,9 +34,7 @@
 <div class="container">
 
     <div class="marafon-top">
-        <div class="text-information">
-            <p>Текстовая информация</p>
-        </div>
+        {% include 'main/text_info.html' %}
         <div class="marafon-top_right">
             <div class="btn_choose">_________________</div>
             <div class="marafon-timer" id="timer">00:00</div>
@@ -45,58 +44,21 @@
 
     <form action="" method="POST" class="game">
         <div class="topics">
-            <div class="topic">
-                <div class="topic-name">__________</div>
-                <div class="topic-points">
-                    <div class="topic-point" data-block="0" data-pos="0">100</div>
-                    <div class="topic-point" data-block="0" data-pos="1">200</div>
-                    <div class="topic-point" data-block="0" data-pos="2">300</div>
-                    <div class="topic-point" data-block="0" data-pos="3">400</div>
-                    <div class="topic-point" data-block="0" data-pos="4">500</div>
-                    <div class="topic-point" data-block="0" data-pos="5">600</div>
-                    <div class="topic-point" data-block="0" data-pos="6">700</div>
-                    <div class="topic-point" data-block="0" data-pos="7">800</div>
+
+            {% range 4 as block_number silent %}
+
+            {% multiply 4 %}
+                <div class="topic">
+                    <div class="topic-name">__________</div>
+                    <div class="topic-points">
+                        {% multiply 8 %}
+                            <div class="topic-point" data-block="{{ block_number }}"
+                                 data-pos="{% range 8 %}">{% range 100 900 100 %}</div>
+                        {% endmultiply %}
+                    </div>
                 </div>
-            </div>
-            <div class="topic">
-                <div class="topic-name">__________</div>
-                <div class="topic-points">
-                    <div class="topic-point" data-block="1" data-pos="0">100</div>
-                    <div class="topic-point" data-block="1" data-pos="1">200</div>
-                    <div class="topic-point" data-block="1" data-pos="2">300</div>
-                    <div class="topic-point" data-block="1" data-pos="3">400</div>
-                    <div class="topic-point" data-block="1" data-pos="4">500</div>
-                    <div class="topic-point" data-block="1" data-pos="5">600</div>
-                    <div class="topic-point" data-block="1" data-pos="6">700</div>
-                    <div class="topic-point" data-block="1" data-pos="7">800</div>
-                </div>
-            </div>
-            <div class="topic">
-                <div class="topic-name">__________</div>
-                <div class="topic-points">
-                    <div class="topic-point" data-block="2" data-pos="0">100</div>
-                    <div class="topic-point" data-block="2" data-pos="1">200</div>
-                    <div class="topic-point" data-block="2" data-pos="2">300</div>
-                    <div class="topic-point" data-block="2" data-pos="3">400</div>
-                    <div class="topic-point" data-block="2" data-pos="4">500</div>
-                    <div class="topic-point" data-block="2" data-pos="5">600</div>
-                    <div class="topic-point" data-block="2" data-pos="6">700</div>
-                    <div class="topic-point" data-block="2" data-pos="7">800</div>
-                </div>
-            </div>
-            <div class="topic">
-                <div class="topic-name">__________</div>
-                <div class="topic-points">
-                    <div class="topic-point" data-block="3" data-pos="0">100</div>
-                    <div class="topic-point" data-block="3" data-pos="1">200</div>
-                    <div class="topic-point" data-block="3" data-pos="2">300</div>
-                    <div class="topic-point" data-block="3" data-pos="3">400</div>
-                    <div class="topic-point" data-block="3" data-pos="4">500</div>
-                    <div class="topic-point" data-block="3" data-pos="5">600</div>
-                    <div class="topic-point" data-block="3" data-pos="6">700</div>
-                    <div class="topic-point" data-block="3" data-pos="7">800</div>
-                </div>
-            </div>
+            {% endmultiply %}
+
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-7 col-lg-7">
@@ -104,29 +66,16 @@
                     ___________________________________________________?
                 </div>
                 <div class="game__options">
-                    <label>
-                        <input class="answer" type="radio" name="answer" value="" checked>
-                        <div class="text">_______</div>
-                        <span></span>
-                    </label>
-                    <label>
-                        <input class="answer" type="radio" name="answer" value="">
-                        <div class="text">_______</div>
-                        <span></span>
-                    </label>
-                    <label>
-                        <input class="answer" type="radio" name="answer" value="">
-                        <div class="text">_______</div>
-                        <span></span>
-                    </label>
-                    <label>
-                        <input class="answer" type="radio" name="answer" value="">
-                        <div class="text">_______</div>
-                        <span></span>
-                    </label>
+                    {% multiply 4 %}
+                        <label>
+                            <input class="answer" type="radio" name="answer" value="">
+                            <div class="text">_______</div>
+                            <span></span>
+                        </label>
+                    {% endmultiply %}
                 </div>
                 <div class="game__button">
-                    <a class="btn" href="#">Пропустить</a>
+                    <a class="btn" id="skip_btn">Пропустить</a>
                 </div>
                 <div class="correct_answer">
                     Правильный ответ: <span></span>
@@ -134,89 +83,26 @@
             </div>
             <div class="col-sm-12 col-md-5 col-lg-5 rating">
                 <div class="rating-title">Рейтинг топ 15 марафона</div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">1</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">2</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">3</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">4</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">5</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">6</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">7</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">8</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">9</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">10</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">11</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">12</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">13</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">14</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
-                <div class="rating-place" id="username">
-                    <div class="rt-user"><span class="num">15</span>. <span class="username"></span> <span
-                            class="last_name"></span> <span class="first_name"></span> <span class="city"></span></div>
-                    <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)</div>
-                </div>
+                {% multiply 15 %}
+                    <div class="rating-place" id="username">
+                        <div class="rt-user"><span class="num">{% range 1 16 %}</span>. <span class="username"></span>
+                            <span
+                                    class="last_name"></span> <span class="first_name"></span> <span
+                                    class="city"></span>
+                        </div>
+                        <div class="rt-points"> = <span class="score">0</span> (<span class="score_delta">0</span>)
+                        </div>
+                    </div>
+                {% endmultiply %}
                 <div class="players">ИГРОКИ (<span id="online_players">0</span>)</div>
                 <div class="viewers">ЗРИТЕЛИ (<span id="online_watchers">0</span>)</div>
             </div>
         </div>
     </form>
-    {% include 'marathon/blocks/user-stat.html'%}
+    {% include 'marathon/blocks/user-stat.html' %}
 </div>
 {% include "main/footer.html" %}
+<script src="{% static 'js/services.js' %}"></script>
 <script src="{% static 'games/js/time_counter.js' %}"></script>
 <script src="{% static 'games/js/timer.js' %}"></script>
 <script src="{% static 'marathon/js/marathon_week/main.js' %}"></script>

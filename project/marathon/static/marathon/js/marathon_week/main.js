@@ -1,5 +1,4 @@
 "use strict"
-
 let marafon_socket = new WebSocket('wss://' + window.location.host + '/ws/marafon-week/');
 marafon_socket.onopen = () => {
     let username;
@@ -7,11 +6,9 @@ marafon_socket.onopen = () => {
     let timer;
 
     disable_answers()
-/////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // send_start()
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
     marafon_socket.onmessage = e => {
         let data = JSON.parse(e.data);
@@ -40,8 +37,9 @@ marafon_socket.onopen = () => {
                 Render.update_top_fifteen(data.rows);
                 break
             case 'end_game':
+                EventListener.rm_listen_skip_btn(skip_question)
                 show_modal_notification('Игра окончена!');
-                Render.state('Игра окончена!')
+                Render.state(`Игра окончена! Посмотреть итоги можно <a style="margin-left: .3rem; color: #09f; text-decoration-line: underline" href="${data.summary_url}">здесь</a>`)
                 timer.reset()
                 break
             case 'selected_question':
@@ -49,7 +47,7 @@ marafon_socket.onopen = () => {
                 Render.state('Выбор ответа');
                 Render.correct_answer('')
                 EventListener.rm_listen_question_btns(select_question);
-                if (role === 'player' && data.expected_players.includes(username)){
+                if (role === 'player' && data.expected_players.includes(username)) {
                     EventListener.add_listen_answers(select_answer);
                 }
                 break
@@ -65,6 +63,7 @@ marafon_socket.onopen = () => {
                 EventListener.rm_listen_answers()
                 timer = new Timer(data.timer, 'minutes', Render.timer, select_question_timer_is_end)
                 timer.start()
+                EventListener.add_listen_skip_btn(skip_question)
                 break
             case 'game_history':
                 data.game_history.forEach(btn => {
@@ -83,15 +82,22 @@ marafon_socket.onopen = () => {
                 Render.state('Ожидание начала')
                 break
             case 'stop_timer':
-                if (timer) {timer.stop()}
+                if (timer) {
+                    timer.stop()
+                }
                 break
             case 'reset_timer':
-                if (timer) {timer.reset()}
+                if (timer) {
+                    timer.reset()
+                }
+                break
+            case 'redirect':
+                window.location = window.location.origin + data.url
                 break
             case 'no_events':
                 Render.state('Сейчас нет мероприятий.')
                 marafon_socket.close()
-            }
+        }
 
     }
 

@@ -89,6 +89,6 @@ class Render {
 
     static state(state){
         let elem = document.querySelector('.btn_choose');
-        elem.innerText = state
+        elem.innerHTML = state
     }
 }

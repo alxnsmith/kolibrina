@@ -1,3 +1,4 @@
+import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
@@ -10,6 +11,8 @@ from main.sendmail import sendmail
 from questions.models import Question
 from userK import services as user_services, models as user_models
 from . import defs, services
+from .services import Game
+from marathon.models import MarathonWeekOfficial, MarathonRound
 
 
 def api_train(request):
@@ -127,4 +130,22 @@ def clarify_question(request):
         sendmail('Уточнение по вопросу', message, settings.EMAIL_ADMIN_USERS)
         return redirect('account')
 
+
+class RegisterToGame(View):
+    def post(self, request):
+        post = json.loads(request.body)
+        user = request.user
+        codename = post.get('codename')
+        if codename == 'OMWEL_round':
+            event = Game.OMWELRound(post['pk'], user)
+            pay_status = event.register_player(user)
+            return JsonResponse({'status': 'OK', 'result': 'round', 'pay_status': pay_status})
+        if codename == 'OMWEL_continuous':
+            event = Game.OMWELContinuous(post['pk'], user)
+            pay_status = event.register_player(user)
+            return JsonResponse({'status': 'OK', 'result': 'continuous', 'pay_status': pay_status})
+
+    #
+    # def _get_user_balance(self):
+    #     return self.request.user.balance
 

@@ -17,7 +17,6 @@
 
     <link rel="stylesheet" href="{% static "css/style.css" %}">
     <link rel="stylesheet" href="{% static "css/pages/er-loto.css" %}">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -34,9 +33,7 @@
 <div class="container">
 
     <div class="marafon-top">
-        <div class="text-information">
-            <p>Текстовая информация</p>
-        </div>
+        {% include 'main/text_info.html' %}
         <div class="marafon-top_right">
             <div id="timer" class="marafon-timer">:</div>
         </div>
@@ -68,9 +65,9 @@
 
 {% include "main/footer.html" %}
 <script>
-    $(document).ready(function () {
-        $("header nav a:nth-child(2) > span").addClass("select");
-        $(".title > h2 > strong").html("Тренировка Эрудит-Лото / Турнир Недели");
+    document.addEventListener('load', ()=>{
+        document.querySelector("header nav a:nth-child(2) > span").classList.add("select");
+        document.querySelector(".title > h2 > strong").innerHTML = "Тренировка Эрудит-Лото / Турнир Недели";
     });
 </script>
 <script src="{% static 'js/games/libs/tournament_week/init_question.js' %}"></script>

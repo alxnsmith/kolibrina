@@ -1,0 +1,25 @@
+{% load common_tags %}
+<div class="table-wrap">
+    <table>
+        <tr>
+            <th>п/п</th>
+            <th>ФИО</th>
+            <th>Город</th>
+            <th>1 тур</th>
+            <th>2 тур</th>
+            <th>3 тур</th>
+            <th>&#8721;</th>
+        </tr>
+        {% multiply 3 %}
+            <tr>
+                <td>_.</td>
+                <td>______ ____</td>
+                <td>_________</td>
+                <td>____</td>
+                <td>____</td>
+                <td>____</td>
+                <td>____</td>
+            </tr>
+        {% endmultiply %}
+    </table>
+</div>

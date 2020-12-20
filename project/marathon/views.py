@@ -10,7 +10,7 @@ class MarathonWeek(View):
     def get(self, request):
         self.user = self.request.user
         if round_instance := services.get_nearest_official_marathon_round():
-            self.round = services.MarathonWeekGP(round_instance)
+            self.round = services.MarathonWeekGP(round_instance['instance'], round_instance['date_time_start'])
             get = self.request.GET
             query = list(get.keys())
             if 'pay' in query:
@@ -19,14 +19,14 @@ class MarathonWeek(View):
 
         return render(self.request, 'marathon/marathon.html', {
             'user_info': get_user_info(self.user),
+            'game_type': 'marathon_week_official',
         })
 
     def pay(self):
-        self.IS_BENEFIT_RECIPIENT = None
         if self._is_time_to_start:
             return {'status': 'error', 'error': 'Регистрация на марафон окончена, вы можете посмотреть за ходом игры.'}
         user = self.request.user
-        if not self.IS_BENEFIT_RECIPIENT and user.balance >= self.round.instance.price:
+        if user.balance >= self.round.instance.price:
             user.balance -= self.round.instance.price
             user.save()
         else:
@@ -38,11 +38,3 @@ class MarathonWeek(View):
     @property
     def _is_time_to_start(self):
         return timezone.now() > self.round.instance.date_time_start
-
-
-class SummaryMarathonWeek(View):
-    def get(self, request):
-        self.user = self.request.user
-        return render(request, 'marathon/summary-of-round.html', {
-            'user_info': get_user_info(self.user),
-        })

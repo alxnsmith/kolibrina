@@ -4,7 +4,7 @@ import redis
 from django.conf import settings
 from django.utils import timezone
 
-from marathon.models import MarathonRound
+from marathon.models import MarathonRound, MarathonWeekOfficial
 
 
 def round3(func):
@@ -21,9 +21,15 @@ class MarathonWeekGP:
                                        port=settings.REDIS_PORT,
                                        db=settings.REDIS_DB)
 
-    def __init__(self, instance: MarathonRound):
+    def __init__(self, instance: MarathonRound, date_time_start):
         self.instance = instance
-        self.marathon_instance = instance.official_marathon_round_set.first()
+        self.marathon_instance = instance.marathonweekofficial_set.first()
+        self.is_continuous = self.marathon_instance.is_continuous
+
+        if self.is_continuous:
+            self.rounds = self.marathon_instance.rounds.order_by('date_time_start')
+            self.stage = self.marathon_instance.stage
+
         self.marathon_id = self.marathon_instance.id
         self.response_timer = self.marathon_instance.response_timer
         self.select_question_timer = self.marathon_instance.select_question_timer
@@ -31,7 +37,7 @@ class MarathonWeekGP:
 
         # self._init_round()
         self._init_questions()
-        self.datetime_start = self.instance.date_time_start
+        self.date_time_start = date_time_start
 
     def get_base_static_info(self):
         info = {
@@ -58,6 +64,8 @@ class MarathonWeekGP:
 
     @property
     def players(self):
+        if self.is_continuous:
+            return self.marathon_instance.players.all()
         return self.instance.players.all()
 
     @staticmethod
@@ -94,35 +102,77 @@ class MarathonWeekGP:
         self.questions = questions
 
 
-def get_active_official_marathon_rounds() -> dict:
+def get_active_official_marathon_rounds():
     active_marafon_rounds = MarathonRound.objects.filter(
-        is_active=True, purpose=MarathonRound.Purposes.OFFICIAL, date_time_start__isnull=False,
-        official_marathon_round_set__isnull=False
+        purpose=MarathonRound.Purposes.OFFICIAL, date_time_start__isnull=False,
+        marathonweekofficial_set__isnull=False, marathonweekofficial_set__is_active=True,
+        date_time_start__gte=timezone.now()
     ).order_by('date_time_start')
-    if active_marafon_rounds.exists():
-        return {'status': 'OK', 'rounds_list': active_marafon_rounds}
-    else:
-        return {'status': 'error', 'error': 'Empty'}
+    return active_marafon_rounds
 
 
 def get_is_played_official_marathon_round():
-    result = get_active_official_marathon_rounds()
-    if result['status'] == 'error':
+    active_official_rounds = MarathonRound.objects.filter(
+        purpose=MarathonRound.Purposes.OFFICIAL,
+        marathonweekofficial_set__isnull=False,
+        marathonweekofficial_set__is_active=True)
+    is_played_rounds = active_official_rounds.filter(is_played=True)
+    if is_played_rounds.exists():
+        round_instance = is_played_rounds.first()
+        date_time_start = round_instance.date_time_start
+
+        if (marathon_instance := round_instance.marathonweekofficial_set).exists():
+            date_time_start = marathon_instance.first().date_time_start
+
+        return {'instance': round_instance, 'date_time_start': date_time_start}
+    else:
         return False
-    filtered = result['rounds_list'].filter(is_played=True)
-    if not filtered.exists():
-        return False
-    instance = filtered.last()
-    return instance
+
+
+def get_nearest_official_continuous_marathons():
+    base_query = {'is_active': True, 'date_time_start__isnull': False, 'is_continuous': True}
+    nearest_continuous_marathon = None
+    expected = MarathonWeekOfficial.objects.filter(**base_query, date_time_start__gte=timezone.now())
+
+    ends_time = timezone.now() - timezone.timedelta(minutes=10)
+    started = MarathonWeekOfficial.objects.filter(
+        **base_query, ends_time__isnull=False, ends_time__gte=ends_time)
+    if expected or started:
+        nearest_continuous_marathon = expected.union(started).order_by('date_time_start')
+    return nearest_continuous_marathon
 
 
 def get_nearest_official_marathon_round():
-    result = get_active_official_marathon_rounds()
-    if result['status'] == 'error':
-        return False
-    filtered = result['rounds_list'].filter(date_time_start__gte=timezone.now())
-    if not filtered.exists():
-        return False
+    round = continuous_marathon = False
 
-    instance = filtered.first()
-    return instance
+    active_rounds = get_active_official_marathon_rounds()
+    filtered_active_rounds = active_rounds.filter(date_time_start__gte=timezone.now())
+    if filtered_active_rounds.exists():
+        round = filtered_active_rounds.first()
+
+    filtered_continuous_marathon = get_nearest_official_continuous_marathons()
+    if filtered_continuous_marathon.exists():
+        continuous_marathon = filtered_continuous_marathon.first()
+
+    if round and continuous_marathon:
+        instance = round if round.date_time_start < continuous_marathon.date_time_start else continuous_marathon
+    else:
+        instance = round or continuous_marathon
+
+    if isinstance(instance, MarathonWeekOfficial):
+        stage = instance.stage
+        round_instance =\
+            instance.rounds.order_by('date_time_start')[stage] if stage < instance.rounds.count() else None
+        if instance.stage == 0:
+            date_time_start = timezone.localtime(instance.date_time_start)
+        else:
+            date_time_start = timezone.localtime(instance.ends_time + timezone.timedelta(minutes=10))
+    else:
+        round_instance = instance
+        date_time_start = timezone.localtime(instance.date_time_start)
+
+    if round_instance:
+
+        return {'instance': round_instance, 'date_time_start': date_time_start}
+    else:
+        return False

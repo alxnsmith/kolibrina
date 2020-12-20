@@ -9,8 +9,12 @@ from django.utils import timezone
 from questions.services import get_questions_from_tournament
 from stats.services import UserScore
 from stats.services import get_sum_from_history
-from userK import services as user_services
+from userK.services import get_user_rating_lvl_dif
+from media.services import get_avatar
 from .models import Attempt
+from marathon.models import MarathonRound, MarathonWeekOfficial
+from payment.services import UserBalance
+from userK.models import User
 
 
 def round3(func):
@@ -22,18 +26,19 @@ def round3(func):
 
 def create_render_data_for_tournament_week_el(request):
     user = request.user
-    avatar_image = user_services.media_services.get_avatar(user)
+    avatar_image = get_avatar(user)
     last_month_date_range = (timezone.now() - datetime.timedelta(days=30), timezone.now())
     month_score = get_sum_from_history(user.scorehistoryelement_set, last_month_date_range)
     league = request.user.get_league_display()
-    level = user_services.get_user_rating_lvl_dif(user.rating)
+    level = get_user_rating_lvl_dif(user.rating)
     quest_nums = [str(i).rjust(2, '0') for i in range(1, 25)]
     return {'status': 'OK',
             'level': level,
             'AvatarImage': avatar_image,
             'month_score': month_score,
             'quest_nums': quest_nums,
-            'league': league}
+            'league': league,
+            'game_type': 'tournament_week'}
     # else:
     #     return {'status': 'error', 'error': "This tournament doesn't exist"}
 
@@ -43,7 +48,8 @@ def create_render_data_for_train_el():
     return {'status': 'OK',
             'quest_nums': quest_nums,
             'title': 'ТРЕНИРОВКА ЭРУДИТ-ЛОТО',
-            'hide_start': True
+            'hide_start': True,
+            'game_type': 'train'
             }
 
 
@@ -109,21 +115,21 @@ class TournamentWeekInstance:
                 if 12 < int(self.current_question_num):
                     self.attempt_instance.attempt3 = True
                 self.attempt_instance.save()
-            """Тут должна быть конструкция для занесения в таблицу рейтинга, с которой потом рейтинг и раздается"""
-            # user = self.player_instance
-            # tournament_instance = self.tournament_instance
-            # score_link_instance = tournament_instance.tournamentscoreuserlink_set
-            # score_link_query_set = score_link_instance.filter(user_instance=user)
-            # if score_link_query_set.exists():
-            #     score_instance = score_link_query_set[0].score_instance
-            #     score_instance.score = score
-            #     score_instance.save()
-            # else:
-            #     player_score_instance = self.player_score_instance
-            #     score_instance = player_score_instance.add(score)
-            #     score_link_instance.create(user_instance=user,
-            #                                score_instance=score_instance,
-            #                                tournament_instance=tournament_instance)
+                """конструкция для занесения в рейтинговую таблицу по этому игровому событию"""
+            user = self.player_instance
+            tournament_instance = self.tournament_instance
+            score_link_instance = tournament_instance.tournamentweekscoreuserlink_set
+            score_link_query_set = score_link_instance.filter(user_instance=user)
+            if score_link_query_set.exists():
+                score_instance = score_link_query_set[0].score_instance
+                score_instance.score = score
+                score_instance.save()
+            else:
+                player_score_instance = self.player_score_instance
+                score_instance = player_score_instance.add(score)
+                score_link_instance.create(user_instance=user,
+                                           score_instance=score_instance,
+                                           tournament_instance=tournament_instance)
 
     def _get_next_question_number(self):
         quantity_questions = 25
@@ -317,17 +323,68 @@ class ScoreTournamentWeek:
                 70 - self.question_difficulty)
 
 
-def get_user_info(user: user_services.User) -> dict:
+def get_user_info(user: User) -> dict:
     last_month_date_range = (timezone.now() - datetime.timedelta(days=30), timezone.now())
     return {
         'league': user.get_league_display(),
-        'level': user_services.get_user_rating_lvl_dif(user.rating),
+        'level': get_user_rating_lvl_dif(user.rating),
         'month_score': get_sum_from_history(user.scorehistoryelement_set, last_month_date_range),
         'total_score': get_sum_from_history(user.scorehistoryelement_set),
-        'avatar': user_services.media_services.get_avatar(user),
-        'is_benefit_recipient': user.groups.filter(name='Benefit recipients').exists()
+        'avatar': get_avatar(user),
     }
 
 
 def get_all_nearest_events():
-    pass
+    events = {}
+    continuous_marathons = MarathonWeekOfficial.objects.filter(
+        date_time_start__isnull=False, date_time_start__gte=timezone.now(), is_continuous=True,
+    )
+    events['continuous_marathons'] = [marathon for marathon in continuous_marathons]
+
+    marathon_rounds = MarathonRound.objects.filter(
+        date_time_start__isnull=False, date_time_start__gte=timezone.now(), purpose=MarathonRound.Purposes.OFFICIAL,
+        marathonweekofficial_set__isnull=False, marathonweekofficial_set__is_continuous=False
+    )
+    events['marathon_rounds'] = [round for round in marathon_rounds]
+
+    return events
+
+
+class Game:
+    class BaseGame:
+        def __init__(self, id, user):
+            self.user = user
+
+        def register_player(self, user: User):
+            price = self.price
+            if self.user in self.instance.players.all():
+                return 'The user is already player'
+            if not self._date_time_start_is_out:
+                return 'Time is out'
+            if not UserBalance.check_balance(user, price):
+                return 'Not enough money'
+            if not UserBalance.pay({'value': price, 'currency': 'RUB'}, user.id):
+                return 'Unsuitable currency'
+            self.instance.players.add(user)
+            return True
+
+        @property
+        def _date_time_start_is_out(self):
+            return self.instance.date_time_start >= timezone.now()
+
+        @property
+        def price(self):
+            discount = self.user.discount
+            start_price = self.instance.price
+            price = start_price * (1-discount/100)
+            return price
+
+    class OMWELContinuous(BaseGame):
+        def __init__(self, id, user):
+            super().__init__(id, user)
+            self.instance = MarathonWeekOfficial.objects.filter(is_continuous=True).get(id=id)
+
+    class OMWELRound(BaseGame):
+        def __init__(self, id, user):
+            super().__init__(id, user)
+            self.instance = MarathonRound.objects.filter(marathonweekofficial_set__isnull=False).get(id=id)

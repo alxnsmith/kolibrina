@@ -1,9 +1,9 @@
-$(document).ready(function() {
-	$("a.open-modal").click(function() {
-		var idModal = $(this).attr("href");
-		$(idModal).css("display", "block");
+document.addEventListener('load', ()=>{
+	document.querySelector("a.open-modal").click((e)=>{
+		let idModal = e.target.getAttribute("href");
+		document.querySelector(idModal).style.display = "block";
 	});
-	$("a.close").click(function() {
-		$(".modal").css("display", "none");
+	document.querySelector("a.close").click(function() {
+		document.querySelector(".modal").style.display = 'none';
 	});
 });

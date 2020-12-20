@@ -25,7 +25,6 @@ class TournamentWeek(WebsocketConsumer):
 
     @property
     def lose_num_question(self):
-        print(self.tournament_instance)
         attempts = self.scope['user'].attempt_set.filter(tournament=self.tournament_instance)
         if attempts.exists():
             attempt = attempts[0]

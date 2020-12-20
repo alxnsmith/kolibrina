@@ -10,6 +10,9 @@ class EventListener {
     static get question_buttons(){
         return document.querySelectorAll('.topic-point');
     }
+    static get skip_btn(){
+        return document.querySelector('#skip_btn')
+    }
 
     static rm_listen_question_btns(func) {
         this.question_buttons.forEach(btn => {
@@ -55,5 +58,13 @@ class EventListener {
             this.toggle_answer(answer, 'enable')
             answer.addEventListener('click', func);
         })
+    }
+
+    static add_listen_skip_btn(func){
+        this.skip_btn.addEventListener('click', func)
+    }
+
+    static rm_listen_skip_btn(func){
+        this.skip_btn.removeEventListener('click', func)
     }
 }

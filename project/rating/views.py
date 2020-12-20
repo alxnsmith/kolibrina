@@ -1,7 +1,13 @@
 from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views import View
 
+from . import services
+from games.services import get_user_info
 from userK.models import User as User
 from userK.services import get_user_rating_lvl_dif
+from marathon.models import MarathonWeekOfficial
 
 
 def ratings(request):
@@ -42,3 +48,18 @@ def ratings(request):
 
     return render(request, 'rating/ratings.html', {'league_count': league_count, 'level': level,
                                                    'opLVL_top15': opLVL_top15})
+
+
+class SummaryMarathonWeek(View):
+    def get(self, request, id):
+        get = request.GET
+        if get:
+            if 'get_data' in get:
+                data = services.get_data(id)
+                return JsonResponse(data)
+
+        self.user = self.request.user
+        get_object_or_404(MarathonWeekOfficial, id=int(id))
+        return render(request, 'rating/summary-of-round.html', {
+            'user_info': get_user_info(self.user),
+        })

@@ -4,6 +4,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import MaxValueValidator
 
 from media.models import Avatar
 from stats.services import init_league
@@ -24,6 +25,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     area = models.CharField('Область', max_length=128)
     swPlace = models.CharField('Место работы/учёбы', max_length=128, blank=True)
     balance = models.FloatField('Баланс', default=0.00)
+
+    discount = models.SmallIntegerField('Скидка %', default=0, validators=[MaxValueValidator(100)])
 
     # team
     team_role = models.CharField('Роль в команде', choices=settings.TEAM_ROLES, max_length=10, null=True, blank=True)

@@ -4,3 +4,4 @@ def check_fill_profile(request):
                    'error': 'свой профиль для полноценного пользования сервисом.',
                    }]
         return errors
+

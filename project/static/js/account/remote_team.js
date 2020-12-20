@@ -1,7 +1,7 @@
 let team_info
 let current_user_info
 
-function init(){
+function init_team(){
     let team = get_team()
     if (team !== '') {
         get_team_info(team).then(r => {
@@ -191,7 +191,9 @@ function del_team (){
 }
 
 function get_team(){
-    return  document.getElementById('team').defaultValue
+    let input = document.getElementById('team')
+    input.defaultValue = input.defaultValue.trim()
+    return  input.defaultValue
 }
 
 function get_current_user(){
@@ -390,5 +392,4 @@ function _show_nums(){
         setTimeout(()=>{nums[i].style.opacity = '1'}, 100)
     }
 }
-
-init()
+init_team()

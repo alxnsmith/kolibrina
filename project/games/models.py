@@ -3,7 +3,6 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from questions.models import Question, Purpose
-from stats.models import ScoreHistoryElement
 from userK.models import User
 
 
@@ -48,25 +47,16 @@ class Attempt(models.Model):
         verbose_name_plural = _('Попытки')
 
 
-class TournamentScoreUserLink(models.Model):
-    user_instance = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Игрок')
-    score_instance = models.ForeignKey(ScoreHistoryElement, on_delete=models.CASCADE, verbose_name='Счет')
-    tournament_instance = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, verbose_name='Турнир')
-
-    class Meta:
-        verbose_name = _('Связь между турниром, игроком и счетом')
-        verbose_name_plural = _('Связи между турниром, игроком и счетом')
-
-
 class BaseGame(models.Model):
     name = models.CharField('Название', max_length=128, blank=True, null=True)
     code_name = models.CharField('Кодовое имя', max_length=128, blank=True, null=True)
+    price = models.SmallIntegerField('Цена', null=False, default=0)
 
     is_active = models.BooleanField('Активный', default=False)
+    # is active for a round will be used when the admin will set rounds for a game event in custom admin
 
     create_date = models.DateField('Дата создания', default=timezone.now)
-    author = models.ForeignKey(
-        User, null=True, verbose_name='Автор', on_delete=models.SET_NULL)
+    author = models.ForeignKey(User, null=True, verbose_name='Автор', on_delete=models.SET_NULL)
 
     class Meta:
         abstract = True

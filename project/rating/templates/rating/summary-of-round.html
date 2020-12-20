@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+    {% load static %}
+    {% load common_tags %}
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="robots" content="index,follow">
+
+    <title>КОЛИБРИНА - Марафон недели №122</title>
+
+    <meta name="description" content="">
+
+    {% include 'main/headPiece.html' %}
+
+    <link rel="stylesheet" href="{% static 'css/blocks/user-stat.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pages/70.css' %}">
+    <link rel="stylesheet" href="{% static 'rating/marathon/summary-of-round/css/summary-of-round.css' %}">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+
+{% include "main/header.html" %}
+<div class="full-table">
+    <div class="full-table-container">
+        <div class="close" title="Закрыть"></div>
+        <div class="window" title="Открыть в новом окне"><img src="{% static 'img/window.svg' %}" alt="Открыть в новом окне"></div>
+        <div class="print" title="Печать"><img src="{% static 'img/printer.svg' %}" alt="Печать"></div>
+        <div class="content"></div>
+    </div>
+</div>
+<div class="container">
+    <div class="marafon-top">
+        <div class="text-information">
+            <p>Текстовая информация</p>
+        </div>
+    </div>
+    {% include 'marathon/blocks/user-stat.html' %}
+
+    <div class="table" id="common_rating">
+        <strong class="subject">
+           ИТОГИ МАРАФОНА / ОБЩИЙ РЕЙТИНГ
+        </strong>
+        {% include 'rating/blocks/summary_of_round/table.html' %}
+        <a class="show-all-btn">Показать весь список</a>
+    </div>
+    <div class="table" id="super_league">
+        <strong class="subject">
+            ИТОГИ МАРАФОНА / СУПЕР-ЛИГА
+        </strong>
+        {% include 'rating/blocks/summary_of_round/table.html' %}
+        <a class="show-all-btn">Показать весь список</a>
+    </div>
+    <div class="table" id="premier_league">
+        <strong class="subject">
+            ИТОГИ МАРАФОНА / ПРЕМЬЕР-ЛИГА
+        </strong>
+        {% include 'rating/blocks/summary_of_round/table.html' %}
+        <a class="show-all-btn">Показать весь список</a>
+    </div>
+    <div class="table" id="highest_league">
+        <strong class="subject">
+            ИТОГИ МАРАФОНА / ВЫСШАЯ ЛИГА
+        </strong>
+        {% include 'rating/blocks/summary_of_round/table.html' %}
+        <a class="show-all-btn">Показать весь список</a>
+    </div>
+    <div class="table" id="student_league">
+        <strong class="subject">
+            ИТОГИ МАРАФОНА / СТУДЕНЧЕСКАЯ ЛИГА
+        </strong>
+        {% include 'rating/blocks/summary_of_round/table.html' %}
+        <a class="show-all-btn">Показать весь список</a>
+    </div>
+    <div class="table" id="college_league">
+        <strong class="subject">
+            ИТОГИ МАРАФОНА / ЛИГА КОЛЛЕДЖЕЙ
+        </strong>
+        {% include 'rating/blocks/summary_of_round/table.html' %}
+        <a class="show-all-btn">Показать весь список</a>
+    </div>
+    <div class="table" id="school_league">
+        <strong class="subject">
+            ИТОГИ МАРАФОНА / ШКОЛЬНАЯ ЛИГА
+        </strong>
+        {% include 'rating/blocks/summary_of_round/table.html' %}
+        <a class="show-all-btn">Показать весь список</a>
+    </div>
+    <div class="estimate-author">
+        <span>Оцените пакет вопросов: </span>
+        <a href="#">0</a>
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+        <a href="#">5</a>
+        <a href="#">6</a>
+        <a href="#">7</a>
+        <a href="#">8</a>
+        <a href="#">9</a>
+        <a href="#">10</a>
+    </div>
+</div>
+
+<div class="mt40"></div>
+
+<div class="container">
+    <a href="#" class="view-game">Посмотреть игру</a>
+</div>
+
+<div class="mt20"></div>
+
+{% include "main/footer.html" %}
+
+<script src="{% static 'js/services.js' %}"></script>
+<script src="{% static 'rating/marathon/summary-of-round/js/services.js' %}"></script>
+<script src="{% static 'rating/marathon/summary-of-round/js/render.js' %}"></script>
+<script src="{% static 'rating/marathon/summary-of-round/js/event-listeners.js' %}"></script>
+<script src="{% static 'rating/marathon/summary-of-round/js/main.js' %}"></script>
+
+
+</body>
+</html>

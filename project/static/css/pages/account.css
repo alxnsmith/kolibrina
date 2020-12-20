@@ -221,11 +221,8 @@
     transform: translate(-50%, -50%) scale(1)
 }
 
-@media (max-width: 600px) {
-    #tournaments {
-        width: 100%;
-        overflow-x: scroll
-    }
+#tournaments {
+    overflow-x: auto
 }
 
 #tournaments #wrap-title {
@@ -255,7 +252,8 @@
 }
 
 #tournaments table {
-    margin: 30px auto
+    margin: 30px auto;
+    min-width: max-content;
 }
 
 #tournaments table td, #tournaments table th {
@@ -269,8 +267,42 @@
 }
 
 #tournaments table td {
-    border: #00978F
+    border: 1px dashed #00978F;
+    padding: 5px;
 }
+#tournaments table td a.reg_btn{
+    display: block;
+    cursor: pointer;
+    border: 1px solid #0f74fe;
+    background-color: #bfdaff;
+    color: black;
+    padding: 2px;
+    transition: .2s;
+}
+#tournaments table td a.reg_btn.is_player{
+    display: block;
+    cursor: pointer;
+    border: 1px solid #0fff0f;
+    background-color: #bfffbf;
+    color: #000000;
+    padding: 2px;
+    transition: .2s;
+}
+#tournaments table td a.reg_btn.is_player:hover{
+    display: block;
+    border: 1px solid #bfffbf;
+    background-color: #0cb30c;
+    color: white;
+    padding: 2px;
+}
+#tournaments table td a.reg_btn:hover{
+    display: block;
+    border: 1px solid #bfdaff;
+    background-color: #0f74fe;
+    color: white;
+    padding: 2px;
+}
+
 
 #tournaments table td:first-child {
     text-align: left
@@ -297,6 +329,9 @@
 
 .number_in_the_team, .role, .teammate_role {
     position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px;
 }
 
 .number_in_the_team > span, .role > span, .teammate_role > span {

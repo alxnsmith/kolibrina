@@ -44,8 +44,6 @@ class Command(BaseCommand):
         admin = user.objects.create_superuser(username='admin', email='admin@kolibrina.ru', password='admin')
         admins = Group.objects.create(name='Admins')
         admin.groups.add(admins)
-        benefit_recipients = Group.objects.create(name='Benefit recipients')
-        admin.groups.add(benefit_recipients)
 
         purposes = [purpose for purpose in Purpose.Purposes]
         for purpose in purposes:
