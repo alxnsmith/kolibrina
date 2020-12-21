@@ -157,6 +157,9 @@
                                 <div>
                                     <input id="team" type="text" list="team_list" placeholder="Название команды / ID"
                                            value="
+
+
+
                                                    {% if request.user.team_set.exists %}{{ request.user.team_set.first }}{% else %}{% endif %}"
                                            style="min-width: 210px;"
                                            {% if request.user.team_set.exists %}disabled{% endif %}
@@ -303,29 +306,35 @@
 <script src="{% static 'userK/js/event_listeners.js' %}"></script>
 <script src="{% static 'userK/js/main.js' %}"></script>
 <script>
-    function format(elem) {
-        elem.addEventListener('input', function () {
-            let num = this.value.replace('+7', '').replace(/\D/g, '').split(/(?=.)/), i = num.length;
-            if (0 <= i) num.unshift('+7');
-            if (1 <= i) num.splice(1, 0, ' ');
-            if (4 <= i) num.splice(5, 0, ' ');
-            if (7 <= i) num.splice(9, 0, '-');
-            if (9 <= i) num.splice(12, 0, '-');
-            if (11 <= i) num.splice(15, num.length - 15);
-            this.value = num.join('');
-        });
-    }
-    format(document.querySelector("#phoneNumber"))
-    let phoneInput = document.getElementById('phoneNumber')
-    phoneInput.onclick = (e) => e.target.value = '+7 '
+    let phoneInput = document.querySelector('#phoneNumber')
+    phoneInput.addEventListener('input', (e) => {
+        let num = e.target.value.replace('+7', '').replace(/\D/g, '').split('')
+        let i = num.length;
+        if (0 <= i) num.unshift('+7');
+        if (1 <= i) num.splice(1, 0, ' ');
+        if (4 <= i) num.splice(5, 0, ' ');
+        if (7 <= i) num.splice(9, 0, '-');
+        if (9 <= i) num.splice(12, 0, '-');
+        if (11 <= i) num.splice(15, num.length - 15);
+        e.target.value = num.join('');
+    });
+    phoneInput.addEventListener('click', (e) => {
+        if (e.target.value === '') e.target.value = '+7';
+    })
 </script>
 
 <script>
-    window.addEventListener('load', ()=>{
+    window.addEventListener('load', () => {
+        let footer_buttons = document.querySelector(".footer__buttons")
         document.querySelector("header nav a:nth-child(1) > span").classList.add("select");
         document.querySelector(".title > h2 > strong").innerHTML = "Личный Кабинет";
-        document.querySelector(".footer__buttons").innerHTML += '<a onclick="">Сохранить изменения</a>';
-        document.querySelector(".footer__buttons").innerHTML += '<a href="#">Скачать бланк на обработку ПД</a>';
+        footer_buttons.innerHTML += '<a href="#">Скачать бланк на обработку ПД</a>';
+        footer_buttons.innerHTML += '<a id="submit_profile_changes" onclick="">Сохранить изменения</a>';
+
+        footer_buttons.querySelector('#submit_profile_changes').addEventListener(
+            'click', () => document.getElementById('SAVE').click()
+        )
+
         {#document.querySelector(".footer__buttons").innerHTML += '<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>';#}
     });
 </script>
@@ -384,20 +393,14 @@
         }
     }
 
+    document.querySelector('#id_birthday').addEventListener('input', () => initLeagues())
     initLeagues()
-    document.querySelector('#id_birthday').oninput = function () {
-        initLeagues()
-    }
 </script>
 <script>
     let inpAvatar = document.querySelector('#id_image')
     let btn = document.querySelector('button.av-btn')
-    inpAvatar.oninput = function () {
-        btn.click()
-    }
-    document.querySelector('.set-av').onclick = function () {
-        inpAvatar.click()
-    }
+    document.querySelector('.set-av').addEventListener('click', () => inpAvatar.click())
+    inpAvatar.addEventListener('input', () => btn.click())
 </script>
 
 </body>

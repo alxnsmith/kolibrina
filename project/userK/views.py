@@ -8,6 +8,7 @@ class Account(View):
         return render(request, 'userK/account.html', self.render_data)
 
     def post(self, request):
+        data = services.create_render_data(request)
         result = services.write_user_model(request.user, request.POST)
         if result['status'] == 'OK':
             return redirect('account')
