@@ -10,7 +10,7 @@ REDIS_DB = 1
 
 DOMAIN = 'dev.kolibrina.ru'
 del STATIC_ROOT
-STATICFILES_DIRS = [BASE_DIR / 'static/']
+STATICFILES_DIRS = [BASE_DIR / 'static/']  # может вызывать ошибку статики в daphne.
 
 YANDEX_CHECKOUT_CONFIG = {'account_id': '742930',
                           'secret_key': 'test_4Yc8ayWUcMtNKy8RlHjKtgP4aDrcnIy9Xyiq_GYkOVI'}

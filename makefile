@@ -52,6 +52,7 @@ migrate:
 
 dev:
 	$(ENV) ; \
+	export DJANGO_SETTINGS_MODULE=Kolibrina.settings_dev ; \
 	python3.9 manage.py runserver --settings=Kolibrina.settings_dev 127.0.0.1:8002
 
 shell:

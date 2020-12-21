@@ -1,23 +1,22 @@
-import os
+from pathlib import Path
 
 
 class InitProject:
-    def __init__(self):
-        self.project = os.getcwd().replace(os.path.basename(os.getcwd()), 'project')
+    BASE_DIR = Path(__file__).parent.parent / 'project'
 
     def __call__(self, *args, **kwargs):
         self.init_users_folder()
         self.init_banners_folder()
 
     def init_banners_folder(self):
-        path = os.path.join(self.project, 'mediacontent/banners/')
-        if not os.path.exists(path):
-            os.makedirs(path)
+        path = self.BASE_DIR / 'mediacontent' / 'banners'
+        if not path.is_dir():
+            path.mkdir(parents=True)
 
     def init_users_folder(self):
-        path = os.path.join(self.project, 'mediacontent/users/')
-        if not os.path.exists(path):
-            os.makedirs(path)
+        path = self.BASE_DIR / 'mediacontent' / 'users'
+        if not path.is_dir():
+            path.mkdir(parents=True)
 
 
 def main():
