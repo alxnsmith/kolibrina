@@ -30,7 +30,7 @@ def api_train(request):
                         i.author.firstName,
                         i.author.lastName, city,
                     )
-                d['category'] = str(i.category)
+                d['category'] = str(i.theme.category)
                 d['theme'] = str(i.theme)
                 del d['public'], d['moderate'],
                 quest_list.append(d)

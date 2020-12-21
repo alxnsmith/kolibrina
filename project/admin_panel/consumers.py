@@ -16,7 +16,6 @@ class OnlineConsumer(JsonWebsocketConsumer):
         self.send_online()
 
     def receive_json(self, content, **kwargs):
-        print(content)
         if content['event'] == 'get_online':
             self.send_online()
 

@@ -65,7 +65,7 @@
 
 {% include "main/footer.html" %}
 <script>
-    document.addEventListener('load', ()=>{
+    window.addEventListener('load', ()=>{
         document.querySelector("header nav a:nth-child(2) > span").classList.add("select");
         document.querySelector(".title > h2 > strong").innerHTML = "Тренировка Эрудит-Лото / Турнир Недели";
     });
@@ -104,14 +104,14 @@
             } else if (data.type === 'log') {
                 console.log('log:', data.log)
             } else if (data.type === 'zamena') {
-                render_question(data.question.question, data.question.answers)
+                render_question(data.question.text, data.question.answers)
             } else if (data.type === 'chance') {
                 chance_wrong_question()
                 show_modal_notification(data.type)
             } else if (data.type === 'question') {
-                question_text = data.question.question
+                question_text = data.question.text
                 init_question(question_text, data.question.answers, data.question_num)
-                old_answers = data.question.answers  /* нужен ли? */
+                {#old_answers = data.question.answers  /* нужен ли? */#}
             } else if (data.type === 'tournament_author') {
                 tournament_author = data.author
                 document.getElementById('tournament_author').innerText = tournament_author

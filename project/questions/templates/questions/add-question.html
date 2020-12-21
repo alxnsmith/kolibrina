@@ -103,7 +103,7 @@
 {% include "main/footer.html" %}
 
 <script>
-    document.addEventListener('load', ()=>{
+    window.addEventListener('load', ()=>{
         document.querySelector("header nav a:nth-child(4) > span").classList.add("select");
         document.querySelector(".title > h2 > strong").innerHTML = "Добавить вопрос";
     });

@@ -106,9 +106,9 @@
 
 		
 		<script>
-			document.addEventListener('load', ()=>{
+			window.addEventListener('load', ()=>{
 				document.querySelector(".title > h2 > strong").innerHTML = "Тренировка Эрудит-Лото";
-				document.querySelector(".footer__buttons").append('<a href="#ask-question" class="open-modal">Уточнение по вопросу</a>');
+				document.querySelector(".footer__buttons").innerHTML += '<a href="#ask-question" class="open-modal">Уточнение по вопросу</a>';
 			});
 		</script>
 		

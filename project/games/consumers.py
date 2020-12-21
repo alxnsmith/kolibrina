@@ -25,7 +25,7 @@ class TournamentWeek(WebsocketConsumer):
 
     @property
     def lose_num_question(self):
-        attempts = self.scope['user'].attempt_set.filter(tournament=self.tournament_instance)
+        attempts = self.user.attempt_set.filter(tournament=self.tournament_instance)
         if attempts.exists():
             attempt = attempts[0]
             self._lose_num_question = attempt.lose_num_question
@@ -36,11 +36,12 @@ class TournamentWeek(WebsocketConsumer):
         return self.game_session.correct_answer
 
     def connect(self):
+        self.user = self.scope['user']
         self.tournament_shortname = self.scope['url_route']['kwargs']['tournament_shortname']
         self.tournament_instance = get_tournament_instance(self.tournament_shortname)
         self.accept()
 
-        if self.tournament_instance['status'] == 'error':
+        if not self.tournament_instance:
             self.send(json.dumps({'type': 'no_events'}))
             return
 

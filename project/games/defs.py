@@ -22,7 +22,8 @@ def counter(template, diff):
 
 def get_question_list_separated_by_difficulty(question_instance):
     separated_question_list = []
-    conditions = {'moderate': False, 'public': True}  # условия для выборки отработанных вопросов
+    # conditions = {'moderate': False, 'public': True}  # условия для выборки отработанных вопросов
+    conditions = {}  # условия для выборки отработанных вопросов
     for difficulty in difficulty_list:
         separated_question_list.append(question_instance.objects.filter(difficulty=difficulty, **conditions))
     return separated_question_list

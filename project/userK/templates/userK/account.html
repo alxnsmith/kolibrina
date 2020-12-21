@@ -304,7 +304,7 @@
 <script src="{% static 'userK/js/main.js' %}"></script>
 <script>
     function format(elem) {
-        elem.bind('input', function () {
+        elem.addEventListener('input', function () {
             let num = this.value.replace('+7', '').replace(/\D/g, '').split(/(?=.)/), i = num.length;
             if (0 <= i) num.unshift('+7');
             if (1 <= i) num.splice(1, 0, ' ');
@@ -315,18 +315,18 @@
             this.value = num.join('');
         });
     }
-    format($('#phoneNumber'))
+    format(document.querySelector("#phoneNumber"))
     let phoneInput = document.getElementById('phoneNumber')
     phoneInput.onclick = (e) => e.target.value = '+7 '
 </script>
 
 <script>
-    document.addEventListener('load', ()=>{
+    window.addEventListener('load', ()=>{
         document.querySelector("header nav a:nth-child(1) > span").classList.add("select");
         document.querySelector(".title > h2 > strong").innerHTML = "Личный Кабинет";
-        document.querySelector(".footer__buttons").append('<a onclick="$(\'#SAVE\').click()">Сохранить изменения</a>');
-        document.querySelector(".footer__buttons").append('<a href="#">Скачать бланк на обработку ПД</a>');
-        {#document.querySelector(".footer__buttons").append('<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>');#}
+        document.querySelector(".footer__buttons").innerHTML += '<a onclick="">Сохранить изменения</a>';
+        document.querySelector(".footer__buttons").innerHTML += '<a href="#">Скачать бланк на обработку ПД</a>';
+        {#document.querySelector(".footer__buttons").innerHTML += '<div><i class="fa fa-check-square" aria-hidden="true" style="color: #00978F"></i> Аккаунт ведётся родителями: <input type="text" placeholder="ID / ФИО родителя ведущего аккаунт"> <span style="font-weight: 500">- для несовершеннолетних</span></div>';#}
     });
 </script>
 <script>

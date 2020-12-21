@@ -119,7 +119,7 @@ class TournamentWeekInstance:
             user = self.player_instance
             tournament_instance = self.tournament_instance
             score_link_instance = tournament_instance.tournamentweekscoreuserlink_set
-            score_link_query_set = score_link_instance.filter(user_instance=user)
+            score_link_query_set = score_link_instance.filter(score_link_instance__player=user)
             if score_link_query_set.exists():
                 score_instance = score_link_query_set[0].score_instance
                 score_instance.score = score
@@ -182,12 +182,13 @@ class TournamentWeekInstance:
         return self.questions_queryset.get(pos=pos)
 
     def prepare_question_to_send(self, fifty_fifty=False):
-        question = model_to_dict(self.current_question)
-        question['answers'] = [question['correct_answer'],
-                               question['answer2'],
-                               question['answer3'],
-                               question['answer4']]
-        del question['correct_answer'], question['answer2'], question['answer3'], question['answer4']
+        question = {
+            'text': self.current_question.question,
+            'answers': [self.current_question.correct_answer,
+                        self.current_question.answer2,
+                        self.current_question.answer3,
+                        self.current_question.answer4]
+        }
         if fifty_fifty:
             del question['answers'][0]
             random.shuffle(question['answers'])
@@ -376,7 +377,7 @@ class Game:
         def price(self):
             discount = self.user.discount
             start_price = self.instance.price
-            price = start_price * (1-discount/100)
+            price = start_price * (1 - discount / 100)
             return price
 
     class OMWELContinuous(BaseGame):

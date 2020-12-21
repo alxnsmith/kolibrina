@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter, SimpleDropdownFilter
 from rangefilter.filter import DateTimeRangeFilter
 
 from questions.models import Question, Theme, Category, Purpose, MarathonThemeBlock
@@ -61,7 +61,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display_links = ('short_question',)
     readonly_fields = ('create_date',)
     list_display = ('id', 'short_question', 'short_correct_answer', 'category', 'theme', 'create_date',)
-    search_fields = ('question', 'correct_answer', 'theme__theme')
+    search_fields = ('question', 'correct_answer', 'theme__theme', 'difficulty')
 
     list_filter = (
         ('purpose', RelatedDropdownFilter),
@@ -70,4 +70,5 @@ class QuestionAdmin(admin.ModelAdmin):
         ('theme__category', RelatedDropdownFilter),
         ('author', RelatedDropdownFilter),
         ('create_date', DateDropdownFilter),
-        ('create_date', DateTimeRangeFilter),)
+        ('create_date', DateTimeRangeFilter),
+    )

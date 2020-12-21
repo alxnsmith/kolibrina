@@ -118,14 +118,14 @@ def add_theme_blocks(post, author: User):
 
 
 def get_tournament_instance(tournament_shortname):
+    tournament_model = None
     date_range = (timezone.now() - timezone.timedelta(days=7), timezone.now())  # last 7 days
     active_tournaments_list = Tournament.objects.filter(
         is_active=True, purpose__codename=tournament_shortname,
-        date__range=date_range)
+        date__range=date_range
+    )
     if active_tournaments_list.exists():
-        tournament_model = {'status': 'ok', 'result': active_tournaments_list.order_by('date')[0]}
-    else:
-        tournament_model = {'status': 'error', 'error': 'Empty'}
+        tournament_model = active_tournaments_list.order_by('date').first()
     return tournament_model
 
 

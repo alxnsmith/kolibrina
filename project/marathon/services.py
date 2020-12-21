@@ -137,8 +137,8 @@ def get_nearest_official_continuous_marathons():
     ends_time = timezone.now() - timezone.timedelta(minutes=10)
     started = MarathonWeekOfficial.objects.filter(
         **base_query, ends_time__isnull=False, ends_time__gte=ends_time)
-    if expected or started:
-        nearest_continuous_marathon = expected.union(started).order_by('date_time_start')
+    # if expected or started:
+    nearest_continuous_marathon = expected.union(started).order_by('date_time_start')
     return nearest_continuous_marathon
 
 
@@ -151,6 +151,7 @@ def get_nearest_official_marathon_round():
         round = filtered_active_rounds.first()
 
     filtered_continuous_marathon = get_nearest_official_continuous_marathons()
+
     if filtered_continuous_marathon.exists():
         continuous_marathon = filtered_continuous_marathon.first()
 
@@ -159,6 +160,8 @@ def get_nearest_official_marathon_round():
     else:
         instance = round or continuous_marathon
 
+    round_instance = None
+    date_time_start = None
     if isinstance(instance, MarathonWeekOfficial):
         stage = instance.stage
         round_instance =\
@@ -167,7 +170,7 @@ def get_nearest_official_marathon_round():
             date_time_start = timezone.localtime(instance.date_time_start)
         else:
             date_time_start = timezone.localtime(instance.ends_time + timezone.timedelta(minutes=10))
-    else:
+    elif instance:
         round_instance = instance
         date_time_start = timezone.localtime(instance.date_time_start)
 

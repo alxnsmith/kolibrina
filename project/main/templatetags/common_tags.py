@@ -48,7 +48,6 @@ def do_range(parser, token):
         name = args[-1]
         values = [parser.compile_filter(arg) for arg in args[1:-2]]
         node = CycleNode(values, name, silent=silent)
-        print(node.silent)
         if not hasattr(parser, '_named_cycle_nodes'):
             parser._named_cycle_nodes = {}
         parser._named_cycle_nodes[name] = node
