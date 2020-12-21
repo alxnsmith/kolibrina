@@ -150,7 +150,7 @@ SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = '647012277RosTelecom'
 EMAIL_USE_SSL = True
 EMAIL_ADMIN_USERS = 'kotovvsan@ya.ru'
-ADMINS = [('Nillkizz', 'kotovvsan@ya.ru')]
+ADMINS = [('Nillkizz', 'kotovvsan@ya.ru'), ('Zadorozhny', 'Advokat555@yandex.ru'), ('CenterSirius', '89167271327@yandex.ru')]
 
 ASGI_APPLICATION = 'Kolibrina.asgi.application'
 
