@@ -34,8 +34,7 @@ def api_train(request):
                 d['theme'] = str(i.theme)
                 del d['public'], d['moderate'],
                 quest_list.append(d)
-
-    if request.GET['games'] == 'train':
+    if request.GET.get('games') == 'train':
 
         if str(request.user) != 'AnonymousUser':
             league = user_services.get_user_rating_lvl_dif(float(request.user.rating))['level']

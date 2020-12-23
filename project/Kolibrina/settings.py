@@ -28,6 +28,7 @@ INSTALLED_APPS = [
 
     'django_admin_listfilter_dropdown',
     'rangefilter',
+    'celery',
 
     'accountConfirmation',
     'admin_panel',
@@ -142,6 +143,8 @@ MEDIA_ROOT = BASE_DIR / "mediacontent"
 AUTH_USER_MODEL = 'userK.User'
 LOGIN_URL = 'login'
 
+DOMAIN = 'kolibrina.ru'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = '465'
@@ -166,6 +169,7 @@ CHANNEL_LAYERS = {
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
+REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
 
 GENDER_CHOICES = (('Male', 'М'), ('Female', 'Ж'))
 COUNTRY_CHOICES = (('RU', 'Россия'), ('UK', 'Украина'), ('BY', 'Беларусь'), ('KZ', 'Казахстан'))
@@ -182,7 +186,6 @@ QUESTION_SCORE_EQUALS = {'1': 0.1, '2': 0.3, '3': 0.5, '4': 0.7, '5': 0.9,
                          }
 TIME_SCORE_EQUALS = {'10': 0.007, '20': 0.08, '30': 0.14, '40': 0.2, '50': 0.23}
 
-DOMAIN = 'kolibrina.ru'
 
 YANDEX_CHECKOUT_CONFIG = {'account_id': '734853',
                           'secret_key': 'live_sXm5J__8xhwtHjZzVWX7Hkog4DKD59yGtDqpd_qzinI'}

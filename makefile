@@ -1,22 +1,30 @@
-ENV = . ./venv/bin/activate ; \
-	  cd ./project
+ENV = . ./venv/bin/activate ; cd ./project
 
 CREATE_ENV = python3.9 -m venv ./venv ; \
 			 $(ENV) ; \
 			 pip install -U pip ; \
 			 pip install -r requirements.txt
 
-
-
 ENV_SELENIUM = . ./bin/selenium/venv/bin/activate
-
 
 MIGRATIONS = python3.9 manage.py makemigrations ; \
 			 python3.9 manage.py migrate
 
-COLLECT_STATIC = python3.9 manage.py collectstatic ; \
+COLLECT_STATIC = python3.9 manage.py collectstatic
 
+RUNSERVER_DEV = python3.9 manage.py runserver --settings=Kolibrina.settings_dev 127.0.0.1:8002
+START_DAPHNE = daphne -p 8001 Kolibrina.asgi\:application
 
+#-----------CELERY----------------------------------------#
+SETTINGS_DEV = export DJANGO_SETTINGS_MODULE=Kolibrina.settings_dev
+SETTINGS_PROD = export DJANGO_SETTINGS_MODULE=Kolibrina.settings
+CELERY_WORKER = celery -A Kolibrina worker -l info
+CELERY_BEAT = celery -A Kolibrina beat -l info
+#-----------CELERY----------------------------------------#
+dev:
+	$(ENV) ; \
+	$(SETTINGS_DEV) ; \
+	$(RUNSERVER_DEV)
 init_prod:
 	$(CREATE_ENV) ; \
 	$(MIGRATIONS) ; \
@@ -50,19 +58,36 @@ migrate:
 	$(ENV) ; \
 	$(MIGRATIONS)
 
-dev:
+celery_worker_prod:
 	$(ENV) ; \
-	export DJANGO_SETTINGS_MODULE=Kolibrina.settings_dev ; \
-	python3.9 manage.py runserver --settings=Kolibrina.settings_dev 127.0.0.1:8002
-
-shell:
+	$(SETTINGS_PROD) ; \
+	$(CELERY_WORKER)
+celery_worker_dev:
 	$(ENV) ; \
-	python3.9 manage.py shell
+	$(SETTINGS_DEV) ; \
+	$(CELERY_WORKER)
 
+celery_beat_prod:
+	$(ENV) ; \
+	$(SETTINGS_PROD) ; \
+	$(CELERY_BEAT)
+
+celery_beat_dev:
+	$(ENV) ; \
+	$(SETTINGS_DEV) ; \
+	$(CELERY_BEAT)
+shell_dev:
+	$(ENV) ; \
+	$(SETTINGS_DEV) ; \
+    python3.9 manage.py shell
+shell_prod:
+	$(ENV) ; \
+	$(SETTINGS_PROD) ; \
+    python3.9 manage.py shell
 start_daphne:
 	$(ENV) ; \
-	export DJANGO_SETTINGS_MODULE=Kolibrina.settings ; \
-	daphne -p 8001 Kolibrina.asgi\:application
+	$(SETTINGS_PROD) ; \
+	$(START_DAPHNE)
 
 
 clean_all:
@@ -96,3 +121,47 @@ add_tournament_EL:
 
 zip:
 	zip -r kolibrina.zip . -x '*/venv/*' 'venv/*' '.git/*' '.idea/*' '.gitignore' '*/__pycache__/*' '*/db.sqlite3' 'README.md';
+
+
+cold_start_prod:
+	tmux new -s prod -d ; \
+	tmux split-window -v -t prod:1.1 ; \
+	tmux split-window -h -t prod:1.2 ; \
+	tmux split-window -v -t prod:1.3 ; \
+	tmux send-keys -t prod:1.4 '$(ENV)' Enter ; \
+	tmux send-keys -t prod:1.4 '$(SETTINGS_PROD)' Enter ; \
+	tmux send-keys -t prod:1.4 '$(CELERY_BEAT)' Enter ; \
+	tmux send-keys -t prod:1.3 '$(ENV)' Enter ; \
+	tmux send-keys -t prod:1.3 '$(SETTINGS_PROD)' Enter ; \
+	tmux send-keys -t prod:1.4 'htop1' ; \
+	tmux send-keys -t prod:1.4 'htop1' ; \
+	tmux send-keys -t prod:1.2 '$(ENV)' Enter ; \
+	tmux send-keys -t prod:1.2 '$(SETTINGS_PROD)' Enter ; \
+	tmux send-keys -t prod:1.2 'redis-cli' Enter ; \
+	tmux send-keys -t prod:1.1 '$(ENV)' Enter ; \
+	tmux send-keys -t prod:1.1 '$(SETTINGS_PROD)' Enter ; \
+	tmux send-keys -t prod:1.1 '$(START_DAPHNE)' Enter ; \
+	tmux split-window -h -t prod:1.2 ; \
+	tmux send-keys -t prod:1.3 '$(ENV)' Enter ; \
+	tmux send-keys -t prod:1.3 '$(SETTINGS_PROD)' Enter ; \
+	tmux send-keys -t prod:1.3 '$(SETTINGS_PROD)' Enter ; \
+	tmux attach -t prod
+
+cold_start_dev:
+	tmux new -s dev -d ; \
+	tmux split-window -v -t dev:1.1 ; \
+	tmux split-window -h -t dev:1.2 ; \
+	tmux split-window -v -t dev:1.3 ; \
+	tmux send-keys -t dev:1.4 '$(ENV)' Enter ; \
+	tmux send-keys -t dev:1.4 '$(SETTINGS_DEV)' Enter ; \
+	tmux send-keys -t dev:1.4 '$(CELERY_BEAT)' Enter ; \
+	tmux send-keys -t dev:1.3 '$(ENV)' Enter ; \
+	tmux send-keys -t dev:1.3 '$(SETTINGS_DEV)' Enter ; \
+	tmux send-keys -t dev:1.3 '$(CELERY_WORKER)' Enter ; \
+	tmux send-keys -t dev:1.2 '$(ENV)' Enter ; \
+	tmux send-keys -t dev:1.2 '$(SETTINGS_DEV)' Enter ; \
+	tmux send-keys -t dev:1.2 'redis-cli' Enter ; \
+	tmux send-keys -t dev:1.1 '$(ENV)' Enter ; \
+	tmux send-keys -t dev:1.1 '$(SETTINGS_DEV)' Enter ; \
+	tmux send-keys -t dev:1.1 '$(RUNSERVER_DEV)' Enter ; \
+	tmux attach -t dev
