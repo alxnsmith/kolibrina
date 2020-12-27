@@ -79,7 +79,6 @@
     AdminSocket.onmessage = e => {
         let data = JSON.parse(e.data)
         if (data.event === 'online'){
-            console.log(data)
             fill_online_table(data.online)
         }
     }

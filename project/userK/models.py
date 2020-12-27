@@ -6,13 +6,28 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator
 
-from media.models import Avatar
 from stats.services import init_league
 from .managers import UserManager
+
+from pathlib import Path
+
+
+def avatar_processing(user, filename):
+    filename = filename.split('.')
+    filename = f'{user.pk}.{filename[-1]}'
+    avatars_dir = Path(settings.MEDIA_ROOT).resolve() / 'Avatars'
+    if not avatars_dir.is_dir():
+        avatars_dir.mkdir()
+    for i in avatars_dir.iterdir():
+        if str(user.pk) == '.'.join(i.resolve().name.split('.')[:-1]):
+            i.unlink()
+
+    return f'Avatars/{filename}'
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     # personal data
+    avatar = models.ImageField('Аватар', null=True, upload_to=avatar_processing)
     username = models.CharField('Никнейм', unique=True, max_length=30)
     firstName = models.CharField('Имя', max_length=128)
     lastName = models.CharField('Фамилия', max_length=128)

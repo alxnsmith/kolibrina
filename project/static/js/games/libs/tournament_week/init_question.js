@@ -22,7 +22,6 @@ function del_questions(to_del){
     answers[0].parentElement.style.height = `${answers[0].parentElement.clientHeight}px`
 
     for (let i = 0; i < answers.length; i++){
-        console.log(answers[i].querySelector('input').value, to_del)
         if (to_del.indexOf(answers[i].querySelector('input').value) !== -1){
             console.log(answers[i].parentElement.style.height, answers[i].offsetHeight+10)
             answers[i].parentElement.style.height = `calc(${answers[i].parentElement.style.height} - ${answers[i].offsetHeight+10}px)`

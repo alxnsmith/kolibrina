@@ -2,62 +2,28 @@ import os
 import re
 from django.conf import settings
 from . import models
-
-
-def create_avatar(instance, filename):
-    user = User(instance.user)
-    path = user.choose_avatar(filename)
-    return path
-
-
-def get_avatar(user):
-    user = User(user)
-    return user.full_avatar_path
+from userK.models import User as UserModel
 
 
 def get_banner():
-    if main_banner := models.Banner.objects.filter(name='MainBanner').exists():
-        main_banner = f"{settings.MEDIA_URL}/{str(models.Banner.objects.filter(name='MainBanner')[0].image)}"
-    return main_banner
+    main_banner = models.Banner.objects.filter(name='main_banner')
+    banner = main_banner.first().image.url if main_banner.exists() else False
+
+    return banner
 
 
 class User:
     def __init__(self, username):
         self.username = str(username)
+        self.user = UserModel.objects.get(username=str(username))
         self.full_user_media_path = self._get_full_user_media_path()
         self._init_user_media_dir()
-        self.avatar = self._avatar()
-        self.full_avatar_path = self._get_avatar_path()
-
-    def choose_avatar(self, filename):
-        def _image_valid(image_name=filename):
-            return image_name.split('.')[-1] in ['png', 'jpg', 'jpeg', 'bmp', 'webp', ]
-
-        if _image_valid():
-            user_path = os.path.join(*self.full_user_media_path.split('/')[-2:])
-            if os.path.exists(os.path.join(settings.MEDIA_ROOT, user_path)):
-                avatarPath = os.path.join(user_path, f'Avatar.{filename.split(".")[-1]}')
-                if self.avatar:
-                    for avatar in self.avatar:
-                        os.remove(os.path.join(self.full_user_media_path, avatar))
-                return avatarPath
+        self.avatar = self.user.avatar.url if self.user.avatar else False
 
     def _get_full_user_media_path(self):
         media = settings.MEDIA_ROOT
         full_user_media_path = os.path.join(media, 'users', f'user_{self.username}')
         return full_user_media_path
-
-    def _get_avatar_path(self):
-        if self.avatar:
-            ava = os.path.join(self.full_user_media_path, self.avatar[0])
-            return '/' + '/'.join(ava.split('/')[6:])
-        else:
-            return False
-
-    def _avatar(self):
-        regexAva = re.compile(r'Avatar.(jpg|png|jpeg|bmp|webp)')
-        existAva = list(filter(regexAva.search, os.listdir(self.full_user_media_path)))
-        return existAva
 
     def _init_user_media_dir(self):
         if not os.path.exists(self.full_user_media_path):

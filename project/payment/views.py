@@ -7,6 +7,7 @@ from django.views import View
 from yandex_checkout import Configuration
 
 from .services import make_payment_and_get_url, UserBalance
+from yandex_checkout.client import BadRequestError
 
 
 class PaymentAPI(View):
@@ -17,11 +18,16 @@ class PaymentAPI(View):
         user = request.user
         payment_method = request.GET['payment_method']
         value = request.GET['value']
-        confirmation_url = make_payment_and_get_url(str(user),
-                                                    str(user.id),
-                                                    int(value),
-                                                    str(payment_method))
-        return redirect(confirmation_url)
+        try:
+            args = (str(user), str(user.id), int(value), str(payment_method), settings.DOMAIN)
+            confirmation_url = make_payment_and_get_url(*args)
+            return JsonResponse({
+                'status': 'ok',
+                'redirect_to': confirmation_url
+            })
+        except BadRequestError as exception:
+            error = {'status': 'error', 'text_error': exception.args[0]}
+            return JsonResponse(error)
 
 
 class Notifications(View):

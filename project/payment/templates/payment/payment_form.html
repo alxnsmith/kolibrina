@@ -1,16 +1,8 @@
 <form action="{% url 'PaymentAPI' %}" method="GET" class=" develop" id="pay">
     <div class="row">
-{#        <div class="col-md-6">#}
-{#            <strong>Код турнира</strong>#}
-{#            <select id="turnir">#}
-{#                <option label="СИРАИК 002" value="СИРАИК 002" selected>СИРАИК 002</option>#}
-{#                <option value="Название2">Название2</option>#}
-{#                <option value="Название3">Название3</option>#}
-{#            </select>#}
-{#        </div>#}
         <div class="col-md-6" style="width: 100%">
             <strong>Сумма (руб)</strong>
-            <input type="number" name="value" value="300">
+            <input class="value" type="number" name="value" title="Укажите сумму" pattern="[\d]*" required>
         </div>
         <div class="clear"></div>
         <strong style="padding-top: 10px;">Оплатить</strong>
@@ -20,11 +12,6 @@
                 Банковской картой
                 <span></span>
             </label>
-{#            <label>#}
-{#                <input type="radio" name="payment_method" value="mobile_balance">#}
-{#                Со счёта мобильного телефона#}
-{#                <span></span>#}
-{#            </label>#}
             <label>
                 <input type="radio" name="payment_method" value="sberbank">
                 Сбербанк Онлайн
@@ -35,11 +22,6 @@
                 Альфа-Клик
                 <span></span>
             </label>
-{#            <label>#}
-{#                <input type="radio" name="payment_method" value="qiwi">#}
-{#                QIWI Wallet#}
-{#                <span></span>#}
-{#            </label>#}
             <label>
                 <input type="radio" name="payment_method" value="yandex_money">
                 Яндекс.Деньги
@@ -52,7 +34,25 @@
             </label>
         </div>
         <div style="padding: 0 15px;">
-            <button value="submit" id="pay__button">Оплатить</button>
+            <button type="button" id="pay__button" onclick="void 0">Оплатить</button>
         </div>
     </div>
 </form>
+<script>
+    let form = document.querySelector('#pay')
+    form.querySelector('button').addEventListener('click', ()=>{
+        if (form.querySelector('.value').reportValidity()){
+            let method = form.method
+            let request_url = form.action
+            let value = form.querySelector('[name=value]')
+            let payment_method = form.querySelector('[name=payment_method]:checked')
+            sendRequest(method, request_url, {'value': value.value, 'payment_method': payment_method.value}).then(e=>{
+                if (e.status === 'ok'){
+                    window.location.replace(e.redirect_to)
+                } else if (e.status === 'error'){
+                    show_modal_notification('Сервис временно не доступен, попробуйте другой способ оплаты.')
+                }
+            })
+        }
+    })
+</script>

@@ -20,7 +20,6 @@
         disableScroll()
         url = window.location.origin + event.target.dataset.url
         sendRequest('get', url + '?info').then(e => {
-            console.log(e)
             if (e.status === 'error') {
                 enableScroll()
                 show_modal_notification('В данный момент марафоны не проводятся.')

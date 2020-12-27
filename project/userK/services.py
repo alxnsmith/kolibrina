@@ -11,30 +11,41 @@ from .phone_validate import phone_validate
 
 
 def write_user_model(username, values):
-    user_model = get_user_model(username=username)
-    fields = []
-    for value in values:
-        fields.append(value)
-        if value != 'hide_my_name' and value != 'phoneNumber':
-            user_model.__dict__[value] = values[value]
-        elif value == 'phoneNumber':
-            result = phone_validate(values['phoneNumber'])
-            if result['status'] == 'OK':
-                user_model.__dict__[value] = result['phone']
-            elif result['status'] == 'error':
-                return result
+    user_model = User.objects.get(username=username)
+    fields = ['firstName', 'lastName', 'hide_my_name', 'birthday', 'gender',
+              'country', 'area', 'city', 'phoneNumber', 'swPlace', 'league']
 
-    if 'hide_my_name' in fields:
-        user_model.__dict__['hide_my_name'] = True
-    else:
-        user_model.__dict__['hide_my_name'] = False
+    for key in fields:
+        if value := values.get(key, False):
+            if key == 'firstName':
+                user_model.firstName = value
+            elif key == 'lastName':
+                user_model.lastName = value
+            elif key == 'birthday':
+                user_model.birthday = value
+            elif key == 'gender':
+                user_model.gender = value
+            elif key == 'country':
+                user_model.country = value
+            elif key == 'area':
+                user_model.area = value
+            elif key == 'city':
+                user_model.city = value
+            elif key == 'phoneNumber':
+                user_model.phoneNumber = value
+            elif key == 'swPlace':
+                user_model.swPlace = value
+            elif key == 'league':
+                user_model.league = value
+
+    user_model.hide_my_name = True if 'hide_my_name' in values else False
 
     user_model.save()
     return {'status': 'OK'}
 
 
 def create_render_data(request, ):
-    user_model = get_user_model(request.user)
+    user_model = request.user
     max_date_field = '-'.join((str(datetime.date.today().year), datetime.date.today().strftime('%m-%d')))
     min_date_field = '-'.join((str(datetime.date.today().year - 100), datetime.date.today().strftime('%m-%d')))
     team_players_list = _get_teammates(request.user)
@@ -43,11 +54,10 @@ def create_render_data(request, ):
         'user_info': {
             'formatted_id': f'{request.user.id}'.rjust(7, '0'),
             'level': get_user_rating_lvl_dif(user_model.rating),
-            'avatar_image': media_services.get_avatar(user=request.user),
+            'avatar_image': request.user.avatar.url if request.user.avatar else False,
             'form': {
                 'form_object': _get_form_values(user_model=user_model),
                 'league': str(request.user.league),
-                'AvatarForm': media_forms.AvatarForm(initial={'user': request.user}),
                 'maxDateField': max_date_field,
                 'minDateField': min_date_field,
                 'error_phone': '',
@@ -61,7 +71,7 @@ def create_render_data(request, ):
             'invite_teams_list': _get_invite_teams_list(request.user),
         },
         'open_for_registration': get_open_for_registration(request.user),
-        'mainBanner': media_services.get_banner(),
+        'main_banner': media_services.get_banner(),
         'errors': [],
     }
     return data
@@ -100,10 +110,6 @@ def get_user_rating_lvl_dif(rating):
         deltamax = 500
         level = 'P (профи)'
         return r(rating, max, deltamax, level)
-
-
-def get_user_model(username: str) -> User:
-    return User.objects.get(username=username)
 
 
 def _get_users_and_id_list(current_user):

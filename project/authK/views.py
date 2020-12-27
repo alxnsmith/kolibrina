@@ -17,14 +17,14 @@ class Login(View):
         password = request.POST['password']
         valid = authenticate(username=username, password=password) or False
         user = User.objects.get(username=username) if User.objects.filter(username=username).exists() else None
-
+        context = {'errors': []}
         if not valid and user is None:
-            return render(request, 'loginK/login.html', {'errors': [{'error': 'Неверный логин или пароль'}]})
-
-        if not user.is_active:
-            return render(request, 'loginK/login.html',
-                          {'errors': [{'error': 'Ваш аккаунт не активирован, проверьте почту. После регистрации '
-                                                'вам на почту была выслана ссылка на активацию аккаунта'}]})
+            context['errors'].append({'error': 'Неверный логин или пароль'})
+        elif not user.is_active:
+            context['errors'].append({'error': 'Ваш аккаунт не активирован, проверьте почту. После регистрации '
+                                               'вам на почту была выслана ссылка на активацию аккаунта'})
+        if context['errors']:
+            return render(request, 'loginK/login.html', context)
 
         login(request, user)
         next_page = request.GET.get('next') or settings.LOGIN_URL

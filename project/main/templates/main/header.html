@@ -12,8 +12,10 @@
                 </div>
             </a>
             <div id="online">ONLINE: <span></span></div>
-            <div class="header_balance" id="balance">Баланс: <span></span></div>
 
+            {% if not request.user.is_authenticated %}
+            <div class="header_balance" id="balance">Баланс: <span></span></div>
+            {% endif %}
         </div>
     </div>
     <nav>
@@ -43,6 +45,7 @@
     </div>
 {% endif %}
 <script src="{% static 'js/fetch.js' %}"></script>
+{% if request.user.is_athenticated %}
 <script>
     let balance
     let balance_url = '{% url 'API' %}'
@@ -55,6 +58,7 @@
     }
     update_balance()
 </script>
+{% endif %}
 <script>
     const onlineSocket = new WebSocket(
         'wss://' + window.location.host + '/ws/online/'

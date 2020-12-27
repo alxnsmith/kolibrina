@@ -10,7 +10,6 @@ from questions.services import get_questions_from_tournament
 from stats.services import UserScore
 from stats.services import get_sum_from_history
 from userK.services import get_user_rating_lvl_dif
-from media.services import get_avatar
 from .models import Attempt
 from marathon.models import MarathonRound, MarathonWeekOfficial
 from payment.services import UserBalance
@@ -26,7 +25,7 @@ def round3(func):
 
 def create_render_data_for_tournament_week_el(request):
     user = request.user
-    avatar_image = get_avatar(user)
+    avatar_image = user.avatar.url if user.avatar else False
     last_month_date_range = (timezone.now() - datetime.timedelta(days=30), timezone.now())
     month_score = get_sum_from_history(user.scorehistoryelement_set, last_month_date_range)
     league = request.user.get_league_display()
@@ -331,7 +330,7 @@ def get_user_info(user: User) -> dict:
         'level': get_user_rating_lvl_dif(user.rating),
         'month_score': get_sum_from_history(user.scorehistoryelement_set, last_month_date_range),
         'total_score': get_sum_from_history(user.scorehistoryelement_set),
-        'avatar': get_avatar(user),
+        'avatar': user.avatar.url if user.avatar else False,
     }
 
 

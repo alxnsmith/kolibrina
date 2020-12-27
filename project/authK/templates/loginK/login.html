@@ -37,12 +37,12 @@
             <form action="" method="POST">{% csrf_token %}
                 <div class="input-group">
                     <div class="input-group-text"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
-                    <input id="id_username" name="username" type="text" placeholder="Username" class="string" required>
+                    <input id="id_username" name="username" type="text" placeholder="Логин (Username)" class="string" pattern="[a-zA-Z\d_]*" title='Только латинские символы, цифры и "_"' required>
                     {{ form.username.errors }}
                 </div>
                 <div class="input-group">
                     <div class="input-group-text"><i class="fa fa-key" aria-hidden="true"></i></div>
-                    <input id="password" name="password" type="password" placeholder="Повторите пароль" class="string"
+                    <input id="password" name="password" type="password" placeholder="Пароль" class="string"
                            required>
                 </div>
                 <br>
@@ -56,12 +56,14 @@
     <div class="mt20"></div>
 </div>
 {% include "main/footer.html" %}
-
+<script src="{% static 'main/js/validate_input.js' %}"></script>
 <script>
+    document.querySelector(".title > h2 > strong").innerHTML = "Вход";
     window.addEventListener('load', ()=>{
         document.querySelector("header nav a:nth-child(7) > span").classList.add("select");
         document.querySelector(".footer__buttons").innerHTML += '<a href="#">Скачать бланк</a>';
     });
+    validate_input('#id_username')
 </script>
 </body>
 </html>

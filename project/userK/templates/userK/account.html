@@ -50,12 +50,11 @@
                             аватар
                         </button>
                     </div>
-                    <form action="/media/" method="POST" enctype="multipart/form-data"
+                    <form action="{% url 'account' %}" method="POST" enctype="multipart/form-data"
                           style="display: none"> {% csrf_token %}
                         <input type="file" name="image" accept=".jpg, .jpeg, .png, .bmp, .webp" required=""
                                id="id_image">
-                        <input type="hidden" name="user" value="{{ request.user }}" id="id_user">
-                        <button class="av-btn" value="submit">Загрузить новое фото</button>
+                        <button class="av-btn" name='type' value="avatar">Загрузить новое фото</button>
                     </form>
                 </div>
                 <div id="rating">
@@ -147,7 +146,7 @@
                     <div class="mt10"></div>
                     <div class="line"></div>
                     <div class="mt5"></div>
-                    <button hidden id="SAVE" value="submit">SAVE</button>
+                    <button hidden id="SAVE" name="type" value="user_info">SAVE</button>
                 </form>
                 <form action="javascript:void(0)">
                     <div class="row" id="panel-captain">
@@ -157,9 +156,6 @@
                                 <div>
                                     <input id="team" type="text" list="team_list" placeholder="Название команды / ID"
                                            value="
-
-
-
                                                    {% if request.user.team_set.exists %}{{ request.user.team_set.first }}{% else %}{% endif %}"
                                            style="min-width: 210px;"
                                            {% if request.user.team_set.exists %}disabled{% endif %}

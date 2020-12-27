@@ -12,7 +12,6 @@ marafon_socket.onopen = () => {
 
     marafon_socket.onmessage = e => {
         let data = JSON.parse(e.data);
-        console.log(data.type)
         switch (data.type) {
             case 'online_watchers':
                 Render.update_online('watchers', data.online);

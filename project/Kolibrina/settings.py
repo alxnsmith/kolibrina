@@ -143,15 +143,14 @@ MEDIA_ROOT = BASE_DIR / "mediacontent"
 AUTH_USER_MODEL = 'userK.User'
 LOGIN_URL = 'login'
 
-DOMAIN = 'kolibrina.ru'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = '465'
-EMAIL_HOST_USER = 'kotovvsan@ya.ru'
+EMAIL_HOST_USER = '89167271327@yandex.ru'
 SERVER_EMAIL = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = '647012277RosTelecom'
+EMAIL_HOST_PASSWORD = 'kghjnvxpqchzckcq'
 EMAIL_USE_SSL = True
+EMAIL_SUBJECT_PREFIX = '[КОЛИБРИНА]'
 EMAIL_ADMIN_USERS = 'kotovvsan@ya.ru'
 ADMINS = [('Nillkizz', 'kotovvsan@ya.ru'), ('Zadorozhny', 'Advokat555@yandex.ru'), ('CenterSirius', '89167271327@yandex.ru')]
 
@@ -189,3 +188,6 @@ TIME_SCORE_EQUALS = {'10': 0.007, '20': 0.08, '30': 0.14, '40': 0.2, '50': 0.23}
 
 YANDEX_CHECKOUT_CONFIG = {'account_id': '734853',
                           'secret_key': 'live_sXm5J__8xhwtHjZzVWX7Hkog4DKD59yGtDqpd_qzinI'}
+
+RESERVED_USERNAME_WORDS = ('admin', 'administrator', 'moderator', 'developer')
+DOMAIN = 'kolibrina.ru'

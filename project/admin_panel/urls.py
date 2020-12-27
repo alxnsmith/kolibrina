@@ -1,6 +1,6 @@
 from django.urls import path, include
-from .views import *
+from . import views
 
 urlpatterns = [
-    path('', AdminPanel.as_view(), name='admin_panel'),
+    path('', views.AdminPanel.as_view(), name='admin_panel'),
 ]

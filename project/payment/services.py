@@ -5,7 +5,7 @@ from django.conf import settings
 from yandex_checkout import Payment
 
 
-def make_payment_and_get_url(user: str, user_id: str, value: int, payment_method: str):
+def make_payment_and_get_url(user: str, user_id: str, value: int, payment_method: str, host: str):
     idempotence_key = str(uuid.uuid4())
     payment = Payment.create({
         "amount": {
@@ -17,7 +17,7 @@ def make_payment_and_get_url(user: str, user_id: str, value: int, payment_method
         },
         "confirmation": {
             "type": "redirect",
-            "return_url": f"{settings.DOMAIN}"
+            "return_url": host
         },
         "capture": True,
         "description": f"Пополнение баланса пользователя {user}",

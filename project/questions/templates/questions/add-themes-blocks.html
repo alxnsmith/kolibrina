@@ -179,7 +179,6 @@
             show_modal_notification('Чтобы сохранить турнир- выберите четыре темы и заполните все вопросы.')
         } else if (filling_status === 'questions') {
             let question = read_question()
-            console.log(list_questions.check_enough_questions())
             if (question !== false || list_questions.quantity_questions < list_questions.enough_questions) {
                 list_questions.write_question(question)
                 if (list_questions.check_enough_questions()) {

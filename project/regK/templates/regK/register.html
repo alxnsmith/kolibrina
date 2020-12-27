@@ -34,16 +34,17 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-8 col-md-8 col-lg-8">
-            <form action="" method="POST">{% csrf_token %}
+            <form action="" method="POST" id="reg-form">{% csrf_token %}
                 <div class="input-group">
                     <div class="input-group-text"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
-                    <input id="id_username" name="username" type="text" placeholder="Username" class="string" required>
+                    <input id="id_username" name="username" type="text" placeholder="Username" class="string"
+                           pattern="[a-zA-Z\d_]*" title='Только латинские символы, цифры и "_"' required>
                     {{ form.username.errors }}
                 </div>
                 <div class="input-group">
                     <div class="input-group-text"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
                     <input id="id_email" name="email" maxlength="200" type="email" placeholder="Электронный адрес"
-                           class="string" requireds>
+                           class="string" required>
                     {{ form.email.errors }}
                 </div>
                 <div class="input-group">
@@ -65,23 +66,60 @@
                 <input type="checkbox" id="cbx3" required>
                 <label for="cbx3"> Согласен с условиями авторского соглашения</label><br>
                 <input type="checkbox" id="cbx4" required>
-                <label for="cbx4"> С правилами игр ознакомлен(а), обязуюсь выполнять </label><br>
-                <button href="#" id="reg">Зарегистрироваться</button>
+                <label for="cbx4"> С правилами игр ознакомлен(а), обязуюсь выполнять</label><br>
+                <button type="button" id="reg">Зарегистрироваться</button>
                 <a href="/auth/login" id="auth">Войти</a>
             </form>
         </div>
         <div class="col-sm-4 col-md-4 col-lg-4"></div>
     </div>
-
     <div class="mt20"></div>
+</div>
 
-    {% include "main/footer.html" %}
+{% include "main/footer.html" %}
+<script src="{% static 'main/js/validate_input.js' %}"></script>
+<script>
+    document.querySelector(".title > h2 > strong").innerHTML = "Регистрация";
+    window.addEventListener('load', () => {
+        document.querySelector("header nav a:nth-child(7) > span").classList.add("select");
+        document.querySelector(".footer__buttons").innerHTML += '<a href="#">Скачать бланк</a>';
+    });
+    validate_input('#id_username')
+    validate_password_inputs('#id_password1', '#id_password2')
+    let submit = document.getElementById('reg')
+    submit.addEventListener('click', e => {
+        let form = document.getElementById('reg-form')
+        let method = form.method
+        let request_url = form.action
+        let username_input = form.querySelector('[name=username]')
+        let email_input = form.querySelector('[name=email]')
+        let pass1_input = form.querySelector('[name=password1]')
+        let pass2_input = form.querySelector('[name=password2]')
+        let body = {
+            'username': username_input.value,
+            'email': email_input.value,
+            'password1': pass1_input.value,
+            'password2': pass2_input.value
+        }
 
-    <script>
-        window.addEventListener('load', ()=>{
-            document.querySelector("header nav a:nth-child(7) > span").classList.add("select");
-            document.querySelector(".footer__buttons").innerHTML += '<a href="#">Скачать бланк</a>';
-        });
-    </script>
+        let csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value
+        let header_addition = {"X-CSRFToken": csrftoken};
+        if (form.checkValidity() && body.password1 === body.password2) {
+            sendRequest(method, request_url, body, header_addition).then(e => {
+                let notify_text = []
+                if (e.status === 'error' && e.errors.length > 0) {
+                    e.errors.forEach(e => {
+                        notify_text.push(e.error)
+                        show_modal_notification(notify_text.join('\n'))
+                    })
+                } else if (e.status === 'ok') {
+                    show_modal_notification('Успешная регистрация.\n' +
+                        ' Для активации аккаунта - перейдите по ссылке в письме, отправленном на вaшу электронную почту.')
+                    window.location.reload()
+                }
+            })
+        }
+    })
+</script>
 </body>
 </html>
