@@ -28,6 +28,7 @@ dev:
 init_prod:
 	$(CREATE_ENV) ; \
 	$(MIGRATIONS) ; \
+	$(COLLECT_STATIC) ; \
 	python3.9 manage.py init ; \
 	cd .. ; \
 	python3.9 ./bin/initProject.py
@@ -133,19 +134,15 @@ cold_start_prod:
 	tmux send-keys -t prod:1.4 '$(CELERY_BEAT)' Enter ; \
 	tmux send-keys -t prod:1.3 '$(ENV)' Enter ; \
 	tmux send-keys -t prod:1.3 '$(SETTINGS_PROD)' Enter ; \
-	tmux send-keys -t prod:1.4 'htop1' ; \
-	tmux send-keys -t prod:1.4 'htop1' ; \
+	tmux send-keys -t prod:1.3 '$(CELERY_WORKER)' Enter ; \
 	tmux send-keys -t prod:1.2 '$(ENV)' Enter ; \
 	tmux send-keys -t prod:1.2 '$(SETTINGS_PROD)' Enter ; \
 	tmux send-keys -t prod:1.2 'redis-cli' Enter ; \
 	tmux send-keys -t prod:1.1 '$(ENV)' Enter ; \
 	tmux send-keys -t prod:1.1 '$(SETTINGS_PROD)' Enter ; \
 	tmux send-keys -t prod:1.1 '$(START_DAPHNE)' Enter ; \
-	tmux split-window -h -t prod:1.2 ; \
-	tmux send-keys -t prod:1.3 '$(ENV)' Enter ; \
-	tmux send-keys -t prod:1.3 '$(SETTINGS_PROD)' Enter ; \
-	tmux send-keys -t prod:1.3 '$(SETTINGS_PROD)' Enter ; \
 	tmux attach -t prod
+
 
 cold_start_dev:
 	tmux new -s dev -d ; \
