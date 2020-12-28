@@ -87,23 +87,26 @@
     validate_input('#id_username')
     validate_password_inputs('#id_password1', '#id_password2')
     let submit = document.getElementById('reg')
+    let inputs = document.getElementsByTagName('input')
+    for (let i=0; i<inputs.length; i++){
+        inputs[i].addEventListener('keypress', e=>{
+            if (e.key === 'Enter'){
+                submit.click()
+            }
+        })
+    }
     submit.addEventListener('click', e => {
         let form = document.getElementById('reg-form')
         let method = form.method
         let request_url = form.action
-        let username_input = form.querySelector('[name=username]')
-        let email_input = form.querySelector('[name=email]')
-        let pass1_input = form.querySelector('[name=password1]')
-        let pass2_input = form.querySelector('[name=password2]')
-        let body = {
-            'username': username_input.value,
-            'email': email_input.value,
-            'password1': pass1_input.value,
-            'password2': pass2_input.value
-        }
 
-        let csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value
-        let header_addition = {"X-CSRFToken": csrftoken};
+        let body = {
+            'username': inputs.username.value,
+            'email': inputs.email.value,
+            'password1': inputs.password1.value,
+            'password2': inputs.password2.value
+        }
+        let header_addition = {"X-CSRFToken": inputs.csrfmiddlewaretoken.value};
         if (form.checkValidity() && body.password1 === body.password2) {
             sendRequest(method, request_url, body, header_addition).then(e => {
                 let notify_text = []
@@ -115,7 +118,15 @@
                 } else if (e.status === 'ok') {
                     show_modal_notification('Успешная регистрация.\n' +
                         ' Для активации аккаунта - перейдите по ссылке в письме, отправленном на вaшу электронную почту.')
-                    window.location.reload()
+                    inputs.email.value = ''
+                    inputs.username.value = ''
+                    inputs.password1.value = ''
+                    inputs.password2.value = ''
+                    inputs.cbx1.checked = false
+                    inputs.cbx2.checked = false
+                    inputs.cbx3.checked = false
+                    inputs.cbx4.checked = false
+                    setTimeout(()=>{document.getElementById('auth').click()}, 6000)
                 }
             })
         }

@@ -17,7 +17,7 @@ def confirmAccount(request):
                       f'(id: {user.id}, username: {user.username}, email: {decoded_email})'
             sendmail_admins('Новая регистрация', message)
             logout(request)
-            login(request, user)
+            # login(request, user)
             return redirect('account')
         else:
             return HttpResponse('User is active!')

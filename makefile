@@ -10,7 +10,8 @@ ENV_SELENIUM = . ./bin/selenium/venv/bin/activate
 MIGRATIONS = python3.9 manage.py makemigrations ; \
 			 python3.9 manage.py migrate
 
-COLLECT_STATIC = python3.9 manage.py collectstatic
+COLLECT_STATIC = $(SETTINGS_PROD) ; \
+				 python3.9 manage.py collectstatic
 
 RUNSERVER_DEV = python3.9 manage.py runserver --settings=Kolibrina.settings_dev 127.0.0.1:8002
 START_DAPHNE = daphne -p 8001 Kolibrina.asgi\:application
@@ -43,6 +44,7 @@ init_dev:
 
 collectstatic:
 	$(ENV) ; \
+	$(SETTINGS_PROD) ; \
 	$(COLLECT_STATIC)
 
 
