@@ -13,7 +13,7 @@
             </a>
             <div id="online">ONLINE: <span></span></div>
 
-            {% if not request.user.is_authenticated %}
+            {% if request.user.is_authenticated %}
             <div class="header_balance" id="balance">Баланс: <span></span></div>
             {% endif %}
         </div>
@@ -45,7 +45,7 @@
     </div>
 {% endif %}
 <script src="{% static 'js/fetch.js' %}"></script>
-{% if request.user.is_athenticated %}
+{% if request.user.is_authenticated %}
 <script>
     let balance
     let balance_url = '{% url 'API' %}'
@@ -53,6 +53,7 @@
     function update_balance() {
         sendRequest('get', balance_url, 'balance').then(data => {
             balance = data.balance
+            console.log(balance)
             document.querySelector('#balance span').innerText = balance
         })
     }

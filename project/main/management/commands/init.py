@@ -13,6 +13,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         dev = True if options.get('develop') == 1 else False
+        admins = Group.objects.create(name='Admins')
+        purposes = [purpose for purpose in Purpose.Purposes]
+        for purpose in purposes:
+            Purpose.objects.create(codename=purpose)
         if dev:
             from questions.models import Category, Theme
             category = Category.objects.create(category='Программирование')
@@ -40,13 +44,8 @@ class Command(BaseCommand):
             Theme.objects.create(category=category, theme='Figma', is_active=True)
             print('Added theme "Figma" top parent category')
 
-        user = get_user_model()
-        admin = user.objects.create_superuser(username='admin', email='admin@kolibrina.ru', password='admin')
-        admins = Group.objects.create(name='Admins')
-        admin.groups.add(admins)
-
-        purposes = [purpose for purpose in Purpose.Purposes]
-        for purpose in purposes:
-            Purpose.objects.create(codename=purpose)
+            user = get_user_model()
+            admin = user.objects.create_superuser(username='admin', email='admin@kolibrina.ru', password='admin')
+            admin.groups.add(admins)
 
         print('Success!')

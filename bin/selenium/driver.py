@@ -10,7 +10,8 @@ class Driver:
         self.driver = webdriver.Chrome(chrome_options=options)
 
     def sign_in(self):
-        self.driver.get('http://dev.kolibrina.ru/auth/login/')
+        self.driver.get('http://Nillkizz:Vyjujxtujgjregfntkm@dev.kolibrina.ru/auth/login/')
+        sleep(10)
         self.driver.find_element_by_id('id_username').send_keys('admin')
         self.driver.find_element_by_id('password').send_keys('admin')
         self.driver.find_element_by_id('sign_in').click()
