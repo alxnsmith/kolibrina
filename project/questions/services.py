@@ -55,7 +55,6 @@ def _add_question_to_db(author_id, category_id, theme_id, difficulty,
 
     return Question.objects.create(
         author_id=author_id,
-        category_id=category_id,
         theme_id=theme_id,
         difficulty=difficulty,
         question=question.strip(),
