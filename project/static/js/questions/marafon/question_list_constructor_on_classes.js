@@ -36,9 +36,7 @@ class QuestionList {
     start_event_listener_for_circle_buttons(reader) {
         let questions = Array.from(document.querySelectorAll('.circle_btn'))
         questions.forEach(btn => {
-            console.log(btn)
             btn.onclick = e => {
-                console.log(e)
                 let class_list = e.target.parentElement.classList
                 if (!class_list.contains('act')) {
                     let question = reader()

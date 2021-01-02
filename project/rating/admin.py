@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import TournamentWeekScoreUserLink, ScoreHistoryElement, MarathonWeekScoreUserLink
+from .models import TournamentWeekScoreLink, ScoreHistoryElement, MarathonWeekScoreLink
 
-admin.site.register((ScoreHistoryElement, TournamentWeekScoreUserLink))
+admin.site.register((ScoreHistoryElement, TournamentWeekScoreLink))
 
 
-@admin.register(MarathonWeekScoreUserLink)
-class MarathonWeekScoreUserLinkAdmin(admin.ModelAdmin):
+@admin.register(MarathonWeekScoreLink)
+class MarathonWeekScoreLinkAdmin(admin.ModelAdmin):
     list_display = ('round_instance', 'marathon_id', 'user_instance', 'score_instance')
     sortable_by = ('round_instance', 'user_instance', 'score_instance')
 

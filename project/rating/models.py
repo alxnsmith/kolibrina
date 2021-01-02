@@ -13,23 +13,23 @@ class ScoreHistoryElement(models.Model):
     date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'{get_sym_plus_if_num_is_positive(self.value)}{self.value}'
+        return f'{self.player.username} | {get_sym_plus_if_num_is_positive(self.value)}{self.value}'
 
     class Meta:
         verbose_name = _('Элемент истории счета')
         verbose_name_plural = _('Элементы истории счета')
 
 
-class TournamentWeekScoreUserLink(models.Model):
+class TournamentWeekScoreLink(models.Model):
     score_instance = models.ForeignKey(ScoreHistoryElement, on_delete=models.CASCADE, verbose_name='Счет')
     tournament_instance = models.ForeignKey(Tournament, on_delete=models.SET_NULL, null=True, verbose_name='Турнир')
 
     class Meta:
-        verbose_name = _('Связь (турнир недели)-(игрок)-(счет)')
-        verbose_name_plural = _('Связи (турнир недели)-(игрок)-(счет)')
+        verbose_name = _('Связь (турнир недели)-(счет)')
+        verbose_name_plural = _('Связи (турнир недели)-(счет)')
 
 
-class MarathonWeekScoreUserLink(models.Model):
+class MarathonWeekScoreLink(models.Model):
     score_instance = models.ForeignKey(ScoreHistoryElement, on_delete=models.CASCADE, verbose_name='Счет')
     round_instance = models.ForeignKey(MarathonRound, on_delete=models.SET_NULL, null=True, verbose_name='Раунд')
 

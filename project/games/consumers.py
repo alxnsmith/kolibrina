@@ -56,11 +56,14 @@ class TournamentWeek(WebsocketConsumer):
             attempt2 = self.game_session.attempt2
             if attempt > 0 and not attempt2:
                 self.send(json.dumps({'type': 'many_attempts'}))
+                self.disconnect()
             attempt3 = self.game_session.attempt3
             if attempt > 1 and not attempt3:
                 self.send(json.dumps({'type': 'many_attempts'}))
+                self.disconnect()
             if attempt == 3:
                 self.send(json.dumps({'type': 'many_attempts'}))
+                self.disconnect()
         self.send(json.dumps({'type': 'ready'}))
 
     def disconnect(self, code):
@@ -102,6 +105,8 @@ class TournamentWeek(WebsocketConsumer):
                     self.send(json.dumps({'type': 'fifty-fifty', 'to_del': f'{to_del}'}))
                 elif data['event'] == 'skip_hint':
                     zamena = self.game_session.zamena()
+                    # next_question = list(self.current_question_and_question_num)
+                    # next_question[0] = zamena
                     self._send_next_question(zamena)
                 elif data['event'] == 'chance_hint':
                     self.chance += 1
@@ -160,7 +165,7 @@ class TournamentWeek(WebsocketConsumer):
         if isinstance(question, tuple):
             question, question_num = question
         else:
-            question_num = question['pos']
+            question_num = question[-1]
         if question_num != 'zamena':
             self.send(json.dumps({'type': 'question', 'question': question, 'question_num': question_num}))
         else:

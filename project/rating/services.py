@@ -1,7 +1,7 @@
 from django.contrib.staticfiles import finders
 
 from marathon.models import MarathonWeekOfficial
-from .models import ScoreHistoryElement, MarathonWeekScoreUserLink
+from .models import ScoreHistoryElement, MarathonWeekScoreLink
 from userK.models import User
 from stats.models import RatingHistoryElement, MarathonWeekRatingUserLink
 
@@ -45,9 +45,9 @@ def get_sorted_ratings_by_rounds(rounds, league=None):
         sort_helper = {}
         for round in rounds:
             if league == 'super':
-                link_instance = round.marathonweekscoreuserlink_set.filter(score_instance__player=player)
+                link_instance = round.marathonweekscorelink_set.filter(score_instance__player=player)
             else:
-                link_instance = round.marathonweekscoreuserlink_set.filter(score_instance__player=player)
+                link_instance = round.marathonweekscorelink_set.filter(score_instance__player=player)
 
             if link_instance.exists():
                 round_id = link_instance.first().round_instance.id
@@ -93,7 +93,7 @@ def write_rating(rating, round):
         player = User.objects.get(username=row['username'])
         value = row['score']
         score_instance = ScoreHistoryElement.objects.create(player=player, value=value)
-        MarathonWeekScoreUserLink.objects.create(score_instance=score_instance, round_instance=round)
+        MarathonWeekScoreLink.objects.create(score_instance=score_instance, round_instance=round)
 
 
 def give_rating_to_players(rounds, add_rating=100, num_positions=100):

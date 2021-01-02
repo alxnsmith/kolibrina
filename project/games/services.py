@@ -87,7 +87,7 @@ class TournamentWeekInstance:
         position = 'zamena'
         self.current_question = self._get_question(position)
         question = self.prepare_question_to_send()
-        return question
+        return question, position
 
     def time_delta(self, event=None):
         if event == 'reset':
@@ -107,6 +107,7 @@ class TournamentWeekInstance:
         return question, current_question_num
 
     def end_game(self, score):
+        print('is_started', self.is_started)
         if self.is_started:
             if 8 < int(self.current_question_num):
                 if 8 < int(self.current_question_num):
@@ -117,17 +118,16 @@ class TournamentWeekInstance:
                 """конструкция для занесения в рейтинговую таблицу по этому игровому событию"""
             user = self.player_instance
             tournament_instance = self.tournament_instance
-            score_link_instance = tournament_instance.tournamentweekscoreuserlink_set
-            score_link_query_set = score_link_instance.filter(score_link_instance__player=user)
+            score_link_instance = tournament_instance.tournamentweekscorelink_set
+            score_link_query_set = score_link_instance.filter(score_instance__player=user)
             if score_link_query_set.exists():
-                score_instance = score_link_query_set[0].score_instance
-                score_instance.score = score
+                score_instance = score_link_query_set.first().score_instance
+                score_instance.value = score
                 score_instance.save()
             else:
                 player_score_instance = self.player_score_instance
                 score_instance = player_score_instance.add(score)
-                score_link_instance.create(user_instance=user,
-                                           score_instance=score_instance,
+                score_link_instance.create(score_instance=score_instance,
                                            tournament_instance=tournament_instance)
 
     def _get_next_question_number(self):

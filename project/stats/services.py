@@ -46,10 +46,10 @@ class UserScore:
         return self.score_history_instance.all()
 
     def add(self, score):
-        return self.score_history_instance.create(player=self.user_instance, score=score)
+        return self.score_history_instance.create(player=self.user_instance, value=score)
 
     def subtract(self, score):
-        return self.score_history_instance.create(player=self.user_instance, score=-score)
+        return self.score_history_instance.create(player=self.user_instance, value=-score)
 
     def remove_last(self):
         self.score_history_instance.last().delete()

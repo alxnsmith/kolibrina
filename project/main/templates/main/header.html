@@ -53,7 +53,6 @@
     function update_balance() {
         sendRequest('get', balance_url, 'balance').then(data => {
             balance = data.balance
-            console.log(balance)
             document.querySelector('#balance span').innerText = balance
         })
     }
