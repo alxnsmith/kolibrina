@@ -21,5 +21,5 @@ def confirmAccount(request):
             return redirect('account')
         else:
             return HttpResponse('User is active!')
-    except:
-        return HttpResponse('Ссылка не действительна!')
+    except Exception as exc:
+        return HttpResponse(f'Ссылка не действительна! {exc}')
