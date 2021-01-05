@@ -7,6 +7,8 @@ from Kolibrina.settings import *
 # }
 
 
+ALLOWED_HOSTS.append(['dev.kolibrina.ru', 'www.dev.kolibrina.ru'])
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
