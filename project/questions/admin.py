@@ -66,6 +66,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_filter = (
         ('purpose', RelatedDropdownFilter),
         ('public', DropdownBooleanFieldFilter),
+        ('moderate', DropdownBooleanFieldFilter),
         ('theme', RelatedDropdownFilter),
         ('theme__category', RelatedDropdownFilter),
         ('author', RelatedDropdownFilter),
