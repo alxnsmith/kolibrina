@@ -56,18 +56,18 @@ class TournamentWeek(WebsocketConsumer):
             attempt2 = self.game_session.attempt2
             if attempt > 0 and not attempt2:
                 self.send(json.dumps({'type': 'many_attempts'}))
-                self.disconnect(1000)
+                self.close(code=1000)
             attempt3 = self.game_session.attempt3
             if attempt > 1 and not attempt3:
                 self.send(json.dumps({'type': 'many_attempts'}))
-                self.disconnect(1000)
+                self.close(code=1000)
             if attempt == 3:
                 self.send(json.dumps({'type': 'many_attempts'}))
-                self.disconnect(1000)
+                self.close(code=1000)
         self.send(json.dumps({'type': 'ready'}))
 
     def disconnect(self, code):
-        if code == 1001:
+        if code in (1001, 1000):
             try:
                 if self.game_session.is_started:
                     data = {'event': 'respond', 'answer': None}

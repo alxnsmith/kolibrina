@@ -474,7 +474,7 @@ class MarafonWeek(JsonWebsocketConsumer):
             'type': 'end_game',
             'summary_url': self.summary_the_marathon_url
         })
-        self.disconnect(1001)
+        self.close(code=1001)
 
     def send_game_history(self, *_):
         game_history = list(self.game_history['questions_played'])

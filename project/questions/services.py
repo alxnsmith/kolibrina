@@ -121,10 +121,10 @@ def get_tournament_instance(tournament_shortname):
     date_range = (timezone.now() - timezone.timedelta(days=7), timezone.now())  # last 7 days
     active_tournaments_list = Tournament.objects.filter(
         is_active=True, purpose__codename=tournament_shortname,
-        date__range=date_range
+        date_time_start__range=date_range
     )
     if active_tournaments_list.exists():
-        tournament_model = active_tournaments_list.order_by('date').first()
+        tournament_model = active_tournaments_list.order_by('date_time_start').first()
     return tournament_model
 
 
