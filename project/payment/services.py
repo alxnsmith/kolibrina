@@ -1,6 +1,6 @@
 import uuid
 
-from userK.models import User
+from account.models import User
 from django.conf import settings
 from yandex_checkout import Payment
 

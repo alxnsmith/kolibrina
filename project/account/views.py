@@ -4,14 +4,14 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
-from userK.services import activate_user
+from account.services import activate_user
 from .forms import RegistrationForm
 from .services import do_register, create_render_data, write_user_model
 
 
 class Account(View):
     def get(self, request):
-        return render(request, 'userK/account.html', self.render_data)
+        return render(request, 'account/account.html', self.render_data)
 
     def post(self, request):
         post = request.POST
@@ -28,7 +28,7 @@ class Account(View):
             if avatar := request.FILES.get('image'):
                 user_model.avatar = avatar
                 user_model.save()
-        return render(request, 'userK/account.html', self.render_data)
+        return render(request, 'account/account.html', self.render_data)
 
     @property
     def render_data(self):
@@ -40,12 +40,12 @@ class Register(View):
         if self.request.user.is_authenticated:
             return redirect('account')
         form = RegistrationForm()
-        return render(request, 'userK/register.html', {'form': form})
+        return render(request, 'account/register.html', {'form': form})
 
     def post(self, request):
         form = RegistrationForm(request.POST)
         if not form.is_valid():
-            return render(request, 'userK/register.html', {'form': form})
+            return render(request, 'account/register.html', {'form': form})
         data = form.cleaned_data
         do_register(username=data.get('username'), email=data.get('email'), birthday=data.get('birthday'),
                     password=data.get('password1'))

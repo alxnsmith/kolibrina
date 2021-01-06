@@ -9,11 +9,11 @@ from django.utils import timezone
 from questions.services import get_questions_from_tournament
 from stats.services import UserScore
 from stats.services import get_sum_from_history
-from userK.services import get_user_rating_lvl_dif
+from account.services import get_user_rating_lvl_dif
 from .models import Attempt
 from marathon.models import MarathonRound, MarathonWeekOfficial
 from payment.services import UserBalance
-from userK.models import User
+from account.models import User
 
 
 def round3(func):

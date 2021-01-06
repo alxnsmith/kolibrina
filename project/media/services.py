@@ -2,7 +2,7 @@ import os
 import re
 from django.conf import settings
 from . import models
-from userK.models import User as UserModel
+from account.models import User as UserModel
 
 
 def get_banner():

@@ -9,7 +9,7 @@ from django.views import View
 
 from main.sendmail import sendmail
 from questions.models import Question
-from userK import services as user_services, models as user_models
+from account import services as user_services, models as user_models
 from . import defs, services
 from .services import Game
 from marathon.models import MarathonWeekOfficial, MarathonRound

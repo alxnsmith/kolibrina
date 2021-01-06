@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'rating',
     'rules',
     'stats',
-    'userK',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -138,7 +138,7 @@ STATICFILES_FINDERS = (
 MEDIA_URL = '/mediacontent/'
 MEDIA_ROOT = BASE_DIR / "mediacontent"
 
-AUTH_USER_MODEL = 'userK.User'
+AUTH_USER_MODEL = 'account.User'
 LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

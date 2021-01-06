@@ -8,7 +8,7 @@ from django.utils import timezone
 # from games.services import get_all_nearest_events           | on 161s. It's need for avoid circular import
 from main.sendmail import sendmail, sendmail_admins
 from media import services as media_services
-from userK.models import User, ConfirmKey
+from account.models import User, ConfirmKey
 from . import forms
 
 

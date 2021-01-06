@@ -5,8 +5,8 @@ from django.views import View
 
 from . import services
 from games.services import get_user_info
-from userK.models import User as User
-from userK.services import get_user_rating_lvl_dif
+from account.models import User as User
+from account.services import get_user_rating_lvl_dif
 from marathon.models import MarathonWeekOfficial
 
 

@@ -1,6 +1,6 @@
 from django.http import JsonResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404
-from userK.models import User as User
+from account.models import User as User
 
 
 def api(request):

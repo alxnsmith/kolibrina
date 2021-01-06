@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-from userK.models import User
+from account.models import User
 from .models import Team
 
 

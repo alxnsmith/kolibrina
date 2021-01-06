@@ -181,11 +181,11 @@
 
                                 {% for teammate in team.team_players_list %}
                                     {% if teammate != request.user %}
-                                        {% include 'userK/blocks/teammate_input.html' %}
+                                        {% include 'account/blocks/teammate_input.html' %}
                                     {% endif %}
                                 {% endfor %}
                                 {% if team.team_players_list|length < 6 and request.user.team_set.exists and request.user.team_role == 'COMMANDER' %}
-                                    {% include 'userK/blocks/teammate_input.html' %}
+                                    {% include 'account/blocks/teammate_input.html' %}
                                 {% endif %}
                             </div>
                         </div>
@@ -297,10 +297,10 @@
     }
 </style>
 <script src="{% static 'js/account/remote_team.js' %}"></script>
-<script src="{% static 'userK/js/render.js' %}"></script>
-<script src="{% static 'userK/js/services.js' %}"></script>
-<script src="{% static 'userK/js/event_listeners.js' %}"></script>
-<script src="{% static 'userK/js/main.js' %}"></script>
+<script src="{% static 'account/js/render.js' %}"></script>
+<script src="{% static 'account/js/services.js' %}"></script>
+<script src="{% static 'account/js/event_listeners.js' %}"></script>
+<script src="{% static 'account/js/main.js' %}"></script>
 <script>
     let phoneInput = document.querySelector('#phoneNumber')
     phoneInput.addEventListener('input', (e) => {

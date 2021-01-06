@@ -19,8 +19,8 @@ START_DAPHNE = daphne -p 8001 Kolibrina.asgi\:application
 #-----------CELERY----------------------------------------#
 SETTINGS_DEV = export DJANGO_SETTINGS_MODULE=Kolibrina.settings_dev
 SETTINGS_PROD = export DJANGO_SETTINGS_MODULE=Kolibrina.settings
-CELERY_WORKER = celery -A Kolibrina worker -l info
-CELERY_BEAT = celery -A Kolibrina beat -l info
+CELERY_WORKER = python3.9 -m celery -A Kolibrina worker -l info
+CELERY_BEAT = python3.9 -m celery -A Kolibrina beat -l info
 #-----------CELERY----------------------------------------#
 dev:
 	$(ENV) ; \

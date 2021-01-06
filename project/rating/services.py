@@ -2,7 +2,7 @@ from django.contrib.staticfiles import finders
 
 from marathon.models import MarathonWeekOfficial
 from .models import ScoreHistoryElement, MarathonWeekScoreLink
-from userK.models import User
+from account.models import User
 from stats.models import RatingHistoryElement, MarathonWeekRatingUserLink
 
 

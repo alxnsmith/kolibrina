@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.utils import timezone
 
-from userK.models import User
+from account.models import User
 
 
 class RegistrationForm(forms.Form):

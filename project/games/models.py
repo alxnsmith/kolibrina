@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from questions.models import Question, Purpose
-from userK.models import User
+from account.models import User
 
 
 class Tournament(models.Model):

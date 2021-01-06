@@ -1,5 +1,5 @@
 from django.db import models
-from userK.models import User
+from account.models import User
 from .services import get_sym_plus_if_num_is_positive, get_sum_from_history, init_league
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _

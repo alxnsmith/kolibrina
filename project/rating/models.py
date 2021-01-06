@@ -1,5 +1,5 @@
 from django.db import models
-from userK.models import User
+from account.models import User
 from games.models import Tournament
 from marathon.models import MarathonRound
 from django.utils import timezone

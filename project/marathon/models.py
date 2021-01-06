@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from questions.models import MarathonThemeBlock
 from games.models import BaseGame, BaseRound
-from userK.models import User
+from account.models import User
 
 
 class BaseMarathon(BaseGame):

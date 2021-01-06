@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 
-from userK.models import User, ConfirmKey
+from account.models import User, ConfirmKey
 
 
 admin.site.register(ConfirmKey)

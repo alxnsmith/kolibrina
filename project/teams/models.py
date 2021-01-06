@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from userK.models import User
+from account.models import User
 
 
 class Team(models.Model):
