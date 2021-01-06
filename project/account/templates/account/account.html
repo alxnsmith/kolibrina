@@ -16,6 +16,7 @@
     {% include 'main/headPiece.html' %}
 
     <link rel="stylesheet" href="{% static "css/pages/account.css" %}">
+    <link rel="stylesheet" href="{% static "account/css/account.css" %}">
 
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -142,11 +143,13 @@
                         {% for choice in user_info.form.form_object.league %}
                             <div class="league" style="margin: 2px">{{ choice }}</div>
                         {% endfor %}
+                        <a id="submit_profile_changes" onclick="">Сохранить изменения</a>
                     </div>
                     <div class="mt10"></div>
                     <div class="line"></div>
                     <div class="mt5"></div>
                     <button hidden id="SAVE" name="type" value="user_info">SAVE</button>
+
                 </form>
                 <form action="javascript:void(0)">
                     <div class="row" id="panel-captain">
@@ -156,6 +159,8 @@
                                 <div>
                                     <input id="team" type="text" list="team_list" placeholder="Название команды / ID"
                                            value="
+
+
 
                                                    {% if request.user.team_set.exists %}{{ request.user.team_set.first }}{% else %}{% endif %}"
                                            style="min-width: 210px;"
@@ -325,9 +330,8 @@
         document.querySelector("header nav a:nth-child(1) > span").classList.add("select");
         document.querySelector(".title > h2 > strong").innerHTML = "Личный Кабинет";
         footer_buttons.innerHTML += '<a href="#">Скачать бланк на обработку ПД</a>';
-        footer_buttons.innerHTML += '<a id="submit_profile_changes" onclick="">Сохранить изменения</a>';
 
-        footer_buttons.querySelector('#submit_profile_changes').addEventListener(
+        document.querySelector('#submit_profile_changes').addEventListener(
             'click', () => document.getElementById('SAVE').click()
         )
 

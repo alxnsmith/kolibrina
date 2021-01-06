@@ -1,0 +1,19 @@
+#submit_profile_changes {
+    font-family: Segoe UI, Arial, sans-serif;
+    box-sizing: border-box;
+    width: 100%;
+    user-select: none;
+    color: #222;
+    text-decoration: none;
+    margin-top: 10px;
+    border: 2px solid #333;
+    padding: 5px 30px;
+    font-weight: bolder;
+    font-size: 14px;
+}
+
+#submit_profile_changes:hover {
+    cursor: pointer;
+    border: 2px solid #2D06FF;
+    color: #2D06FF;
+}
