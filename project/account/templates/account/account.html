@@ -156,6 +156,7 @@
                                 <div>
                                     <input id="team" type="text" list="team_list" placeholder="Название команды / ID"
                                            value="
+
                                                    {% if request.user.team_set.exists %}{{ request.user.team_set.first }}{% else %}{% endif %}"
                                            style="min-width: 210px;"
                                            {% if request.user.team_set.exists %}disabled{% endif %}
@@ -271,8 +272,7 @@
                                    title="{% if event.is_player %}Вы уже зарегистрированы{% else %}Доступно к регистрации. С баланса будет списано {{ event.price }}руб.{% endif %}"
                                    data-codename="{{ event.code_name }}"
                                    data-url="{% url 'register_to_game' %}"
-                                   data-pk="{{ event.pk }}"
-                                >
+                                   data-pk="{{ event.pk }}">
                                     {% if event.price %}Оплатить{% else %}Бесплатно{% endif %}</a></td>
                         </tr>
                     {% endfor %}

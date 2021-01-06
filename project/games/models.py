@@ -13,7 +13,7 @@ class Tournament(models.Model):
     author = models.ForeignKey(User, default=None, null=True, on_delete=models.SET_NULL,
                                verbose_name="Автор турнира")
     timer = models.IntegerField(verbose_name='Время таймера', default=30)
-    date = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)
+    date_time_start = models.DateTimeField(verbose_name='Дата и время проведения', blank=True, null=True)
     create_date = models.DateField(verbose_name='Дата создания', default=timezone.now)
     is_active = models.BooleanField(verbose_name="Активный турнир", default=False)
     questions = models.ManyToManyField(Question)

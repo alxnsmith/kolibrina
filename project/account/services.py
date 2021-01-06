@@ -203,6 +203,9 @@ def get_open_for_registration(user):
     for event in nearest_events['continuous_marathons']:
         events.append(EventsTableData.continuous_marathon(event, user))
 
+    for event in nearest_events['tournaments_week']:
+        events.append(EventsTableData.tournament_week(event))
+
     return sorted(events, key=lambda x: x['date_time_start'])
 
 
@@ -238,6 +241,18 @@ class EventsTableData:
 
         return EventsTableData._get_row_data(
             date_time_start, event.code_name, event.id, num_of_rounds, price, event.name, codename, pk, is_player)
+
+    @staticmethod
+    def tournament_week(event):
+        date_time_start = timezone.localtime(event.date_time_start)
+        num_of_rounds = 1
+        codename = 'TWEL'
+        pk = event.pk
+        is_player = True
+        price = 0
+
+        return EventsTableData._get_row_data(
+            date_time_start, codename, event.id, num_of_rounds, price, event.name, codename, pk, is_player)
 
     @staticmethod
     def _get_row_data(date_time_start, code_name_view, id, number_of_rounds, price, name, codename, pk, is_player):

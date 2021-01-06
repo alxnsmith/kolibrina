@@ -10,7 +10,7 @@ from questions.services import get_questions_from_tournament
 from stats.services import UserScore
 from stats.services import get_sum_from_history
 from account.services import get_user_rating_lvl_dif
-from .models import Attempt
+from .models import Attempt, Tournament
 from marathon.models import MarathonRound, MarathonWeekOfficial
 from payment.services import UserBalance
 from account.models import User
@@ -345,7 +345,14 @@ def get_all_nearest_events():
         date_time_start__isnull=False, date_time_start__gte=timezone.now(), purpose=MarathonRound.Purposes.OFFICIAL,
         marathonweekofficial_set__isnull=False, marathonweekofficial_set__is_continuous=False
     )
+
+    tournament_date_start = timezone.now().date() - timezone.timedelta(days=7)
+    tournaments_week = Tournament.objects.filter(
+        date_time_start__isnull=False, date_time_start__gte=tournament_date_start, date_time_start__lte=timezone.now(),
+        is_active=True
+    )
     events['marathon_rounds'] = [round for round in marathon_rounds]
+    events['tournaments_week'] = [tournament for tournament in tournaments_week]
 
     return events
 
