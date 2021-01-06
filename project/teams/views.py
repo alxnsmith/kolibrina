@@ -31,7 +31,7 @@ def team_api(request):
             if event == 'add_player_to_invite_list':
                 return _add_player_to_invite_list(post['player_id'], user.team_set.first())
             elif event == 'create_team':
-                return _create_team(user, post['name'])
+                return JsonResponse(_create_team(user, post['name']))
             else:
                 return JsonResponse({'error': 'Error! Unknown event.'})
         else:
@@ -78,8 +78,7 @@ def _set_team_role(user, put):
 
 
 def _create_team(user, name):
-    result = team_services.create_team(user=user, name=name)
-    return JsonResponse(result)
+    return team_services.create_team(user=user, name=name)
 
 
 def _get_team_info(team, user):

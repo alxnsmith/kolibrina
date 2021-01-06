@@ -171,7 +171,8 @@ function del_teammate (teammate, elem) {
         if (r.status === 'OK'){
             teammate_block.remove()
         }else if (r.status === 'error') {
-            alert(r.error)
+            console.error(r.error)
+            show_modal_notification()
         }
     })
 }
@@ -193,7 +194,7 @@ function del_team (){
 function get_team(){
     let input = document.getElementById('team')
     input.defaultValue = input.defaultValue.trim()
-    return  input.defaultValue
+    return input.defaultValue
 }
 
 function get_current_user(){
@@ -323,6 +324,11 @@ function create_team(team){
             window.location.reload()
         }else {
             console.error(r.error)
+            if (r.error === 'This name of command exists!'){
+                show_modal_notification('Название команды уже занято, попробуйте другое.')
+            } else {
+                show_modal_notification()
+            }
         }
     })
 }

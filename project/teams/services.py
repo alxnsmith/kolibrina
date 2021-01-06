@@ -115,13 +115,17 @@ def join_player_to_team(user: User, team_name: str):
 
 
 def create_team(user, name):
+    result = {'status': 'OK', 'user': user.username, 'name': name}
+    if Team.objects.filter(name=name).exists():
+        result = {'status': 'error', 'error': 'This name of command exists!'}
+        return result
     new_team = Team.objects.create(name=name)
     new_team.save()
     user.team_role = 'COMMANDER'
     user.number_in_the_team = '1'
     user.save()
     new_team.players.add(user)
-    return {'status': 'OK', 'user': user.username, 'name': name}
+    return result
 
 
 def leave_from_team(user):
