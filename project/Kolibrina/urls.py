@@ -6,12 +6,10 @@ from django.urls import path, include
 urlpatterns = [
                   path('admin-db/', admin.site.urls),
                   path('admin/', include('admin_panel.urls')),
-                  path('register/', include('regK.urls')),
                   path('account/', include('userK.urls')),
                   path('auth/', include('authK.urls')),
                   path('media/', include('media.urls')),
                   path('media/', include('media.urls')),
-                  path('accountconfirmation/', include('accountConfirmation.urls')),
                   path('questions/', include('questions.urls')),
                   path('rules/', include('rules.urls')),
                   path('ratings/', include('rating.urls')),
