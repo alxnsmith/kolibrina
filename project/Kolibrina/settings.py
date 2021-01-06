@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'admin_panel',
     'API',
     'teams',
-    'authK',
     'channel_common',
     'chat',
 

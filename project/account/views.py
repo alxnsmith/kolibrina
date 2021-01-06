@@ -1,12 +1,44 @@
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 
+from account.models import User
 from account.services import activate_user
 from .forms import RegistrationForm
 from .services import do_register, create_render_data, write_user_model
+
+
+class Login(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('account')
+        return render(request, 'account/login.html')
+
+    def post(self, request):
+        username = request.POST['username'].lower().strip()
+        password = request.POST['password']
+        valid = authenticate(username=username, password=password) or False
+        user = User.objects.get(username=username) if User.objects.filter(username=username).exists() else None
+        context = {'errors': []}
+        if not valid or user is None:
+            context['errors'].append({'error': 'Неверный логин или пароль'})
+        elif not user.is_active:
+            context['errors'].append({'error': 'Ваш аккаунт не активирован, проверьте почту. После регистрации '
+                                               'вам на почту была выслана ссылка на активацию аккаунта'})
+        if context['errors']:
+            return render(request, 'account/login.html', context)
+
+        login(request, user)
+        next_page = request.GET.get('next') or 'login'
+        return redirect(next_page)
+
+
+class Logout(View):
+    def get(self, request):
+        logout(request)
+        return redirect('login')
 
 
 class Account(View):
