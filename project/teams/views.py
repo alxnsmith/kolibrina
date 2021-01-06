@@ -14,9 +14,9 @@ def team_api(request):
     if request.method == 'GET':
         get = request.GET
         if 'event' in get:
-            event = get['event']
+            event = get.get('event')
             if event == 'get_team_info':
-                return JsonResponse(_get_team_info(get['team'], user))
+                return JsonResponse(_get_team_info(get.get('team'), user))
             elif event == 'set_number_in_the_team':
                 return JsonResponse(_set_team_number_for_player(user, get.number))
             else:
@@ -27,11 +27,11 @@ def team_api(request):
     elif request.method == 'POST':
         post = json.loads(request.body)
         if 'event' in post:
-            event = post['event']
+            event = post.get('event')
             if event == 'add_player_to_invite_list':
-                return _add_player_to_invite_list(post['player_id'], user.team_set.first())
+                return _add_player_to_invite_list(post.get('player_id'), user.team_set.first())
             elif event == 'create_team':
-                return JsonResponse(_create_team(user, post['name']))
+                return JsonResponse(_create_team(user, post.get('name')))
             else:
                 return JsonResponse({'error': 'Error! Unknown event.'})
         else:

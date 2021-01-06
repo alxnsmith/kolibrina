@@ -17,8 +17,8 @@ class Login(View):
         return render(request, 'account/login.html')
 
     def post(self, request):
-        username = request.POST['username'].lower().strip()
-        password = request.POST['password']
+        username = request.POST.get('username').lower().strip()
+        password = request.POST.get('password')
         valid = authenticate(username=username, password=password) or False
         user = User.objects.get(username=username) if User.objects.filter(username=username).exists() else None
         context = {'errors': []}

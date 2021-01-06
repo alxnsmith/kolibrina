@@ -13,14 +13,14 @@ class Purpose:
 
 
 def add_theme_to_category(post):
-    cat = post['cat']
-    theme = post['theme']
+    cat = post.get('cat')
+    theme = post.get('theme')
     Theme.objects.create(category_id=cat, theme=theme)
     return {'status': 'OK'}
 
 
 def add_tournament_week(post, author: User):
-    question_list = post['tournament']
+    question_list = post.get('tournament')
     if len(question_list) != 35:
         return {'status': 'error', 'error': 'Not full tournament'}
     tournament = Tournament.objects.create(author=author, purpose_id=Purpose.TournamentWeek)
@@ -90,7 +90,7 @@ def add_marafon_theme_block(author: User, questions: list):
 
 
 def add_theme_blocks(post, author: User):
-    question_list = post['question_list']
+    question_list = post.get('question_list')
     question_blocks = {1: [], 2: [], 3: [], 4: []}
     block_list = []
 

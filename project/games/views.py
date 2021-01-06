@@ -86,15 +86,15 @@ def tournament_week(request):
 def win_lose(request):
     get = request.GET
     if 'score' in get and 'status' in get:
-        status = get['status']
-        score = get["score"]
+        status = get.get('status')
+        score = get.get("score")
         if status == 'lose':
-            author = f'{get["author"]}'
-            question = f'{get["question"]}'
-            correct_answer = f'{get["correctAnswer"]}'
+            author = f'{get.get("author")}'
+            question = f'{get.get("question")}'
+            correct_answer = f'{get.get("correctAnswer")}'
             score = f'<span>{score} баллов</span>'
-            new_game = f'{get["newGame"]}'
-            quest_id = f'{get["questID"]}'
+            new_game = f'{get.get("newGame")}'
+            quest_id = f'{get.get("questID")}'
             return render(request, 'game/win-lose/wrong.html', {'question': question, 'correctAnswer': correct_answer,
                                                                 'score': score, 'author': author, 'newGame': new_game,
                                                                 'questID': quest_id})
@@ -108,12 +108,12 @@ def win_lose(request):
             del raw_data['status']
             data = raw_data
             data['score'] = score
-            data['attempt'] = True if int(get['attempt']) < 3 else False
-            data['timer'] = get['time']
-            data['correct_answer'] = get['correct_answer']
-            data['tournament_author'] = get['author']
-            data['question_text'] = get['question']
-            data['answer'] = get['answer']
+            data['attempt'] = True if int(get.get('attempt')) < 3 else False
+            data['timer'] = get.get('time')
+            data['correct_answer'] = get.get('correct_answer')
+            data['tournament_author'] = get.get('author')
+            data['question_text'] = get.get('question')
+            data['answer'] = get.get('answer')
             return render(request, 'game/win-lose/tournament-week-wrong.html', data)
     else:
         raise Http404('')
@@ -123,8 +123,8 @@ def win_lose(request):
 def clarify_question(request):
     if request.POST:
         post = request.POST
-        message = f'Пользователь: {post["user"]} \nID вопроса: {post["questID"]}\nВопрос: {post["question"]}' \
-                  f'\nСообщение: {post["message"]}'
+        message = f'Пользователь: {post.get("user")} \nID вопроса: {post.get("questID")}\nВопрос: {post.get("question")}' \
+                  f'\nСообщение: {post.get("message")}'
 
         sendmail('Уточнение по вопросу', message, settings.EMAIL_ADMIN_USERS)
         return redirect('account')
@@ -136,11 +136,11 @@ class RegisterToGame(View):
         user = request.user
         codename = post.get('codename')
         if codename == 'OMWEL_round':
-            event = Game.OMWELRound(post['pk'], user)
+            event = Game.OMWELRound(post.get('pk'), user)
             pay_status = event.register_player(user)
             return JsonResponse({'status': 'OK', 'result': 'round', 'pay_status': pay_status})
         if codename == 'OMWEL_continuous':
-            event = Game.OMWELContinuous(post['pk'], user)
+            event = Game.OMWELContinuous(post.get('pk'), user)
             pay_status = event.register_player(user)
             return JsonResponse({'status': 'OK', 'result': 'continuous', 'pay_status': pay_status})
 

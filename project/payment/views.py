@@ -16,8 +16,8 @@ class PaymentAPI(View):
     @staticmethod
     def get(request):
         user = request.user
-        payment_method = request.GET['payment_method']
-        value = request.GET['value']
+        payment_method = request.GET.get('payment_method')
+        value = request.GET.get('value')
         try:
             args = (str(user), str(user.id), int(value), str(payment_method), settings.DOMAIN)
             confirmation_url = make_payment_and_get_url(*args)

@@ -23,14 +23,14 @@ class QuestionAPI(View):
         if result := self._exists_in(('event',), get):
             return result
 
-        event = get['event']
+        event = get.get('event')
 
         if event == 'get_categories':
             categories = Category.objects.values_list('id', 'category')
             categories = [cat for cat in categories]
             return JsonResponse({'status': 'OK', 'categories': categories})
         elif event == 'get_themes_in_category':
-            cat = Theme.objects.filter(category=get['cat'])
+            cat = Theme.objects.filter(category=get.get('cat'))
             themes = [[str(i), str(i.id)] for i in cat]
             return JsonResponse({'status': 'OK', 'themes': themes})
         else:
@@ -40,7 +40,7 @@ class QuestionAPI(View):
         post = json.loads(request.body)
         if result := self._exists_in(('event',), post):
             return result
-        event = post['event']
+        event = post.get('event')
         if event == 'add_question':
             if result := self._exists_in(('cat', 'theme', 'question'), post):
                 return result
