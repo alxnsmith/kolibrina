@@ -2,10 +2,11 @@ import datetime
 from uuid import uuid4
 
 from django.conf import settings
+from django.urls import reverse
 from django.utils import timezone
 
 # from games.services import get_all_nearest_events           | on 161s. It's need for avoid circular import
-from main.sendmail import sendmail
+from main.sendmail import sendmail, sendmail_admins
 from media import services as media_services
 from userK.models import User, ConfirmKey
 from . import forms
@@ -16,18 +17,25 @@ def do_register(username, birthday, email, password):
     activation_code = str(uuid4())
     ConfirmKey.objects.create(user=user, type=ConfirmKey.TypeChoices.ACCOUNT_CONFIRMATION, code=activation_code)
 
-    confirm_url = 'https://' + settings.DOMAIN + r'/accountconfirmation/account/email?c=' + activation_code
+    confirm_url = f'https://{settings.DOMAIN}{reverse("confirm_account")}?c={activation_code}'
     message_text = f'Ваша ссылка для активации аккаунта: \n {confirm_url}'
     sendmail('Активация аккаунта', message_text, email)
 
 
-def activate_user(key_object):
+def activate_user(code_activation):
+    key_object = ConfirmKey.objects.get(code=code_activation)
     if key_object.type != key_object.TypeChoices.ACCOUNT_CONFIRMATION:
         raise Exception('The wrong type of key!')
     user = key_object.user
     user.is_active = True
     user.save()
     key_object.delete()
+
+    message = 'Новый пользователь прошел активацию!\n' \
+              f'id: {user.id}\n' \
+              f'username: {user.username}\n' \
+              f'email: {user.email}'
+    sendmail_admins('Новая регистрация', message)
 
 
 def write_user_model(username, values):

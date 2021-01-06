@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'rangefilter',
     'celery',
 
-    'accountConfirmation',
     'admin_panel',
     'API',
     'teams',
@@ -47,7 +46,6 @@ INSTALLED_APPS = [
     'payment',
     'questions',
     'rating',
-    # 'regK',
     'rules',
     'stats',
     'userK',
