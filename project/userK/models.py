@@ -1,15 +1,14 @@
+from pathlib import Path
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import MaxValueValidator
 
-from stats.services import init_league
 from .managers import UserManager
-
-from pathlib import Path
 
 
 def avatar_processing(user, filename):
@@ -75,3 +74,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _('Пользователь')
         verbose_name_plural = _('Пользователи')
+
+
+class ConfirmKey(models.Model):
+    class TypeChoices(models.IntegerChoices):
+        ACCOUNT_CONFIRMATION = 0
+
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    type = models.PositiveSmallIntegerField('Тип', choices=TypeChoices.choices, null=True, blank=False)
+    code = models.CharField('Код подтверждения', max_length=36)
+
+    def __str__(self):
+        return f'{self.user} | {self.get_type_display()}: {self.code}'

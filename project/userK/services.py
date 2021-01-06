@@ -10,6 +10,15 @@ from . import forms
 from .phone_validate import phone_validate
 
 
+def activate_user(key_object):
+    if key_object.type != key_object.TypeChoices.ACCOUNT_CONFIRMATION:
+        raise Exception('The wrong type of key!')
+    user = key_object.user
+    user.is_active = True
+    user.save()
+    key_object.delete()
+
+
 def write_user_model(username, values):
     user_model = User.objects.get(username=username)
     fields = ['firstName', 'lastName', 'hide_my_name', 'birthday', 'gender',

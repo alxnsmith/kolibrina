@@ -1,25 +1,30 @@
-from django.shortcuts import HttpResponse, redirect
-from base64 import b64decode
-from userK.models import User as User
+from django.shortcuts import HttpResponse
+from django.urls import reverse
+from django.contrib.auth import logout
+
+from userK.models import ConfirmKey
 from main.sendmail import sendmail_admins
-from django.contrib.auth import logout, login
+from userK.services import activate_user
 
 
 def confirmAccount(request):
     try:
-        encoded_email = b64decode(bytes(request.GET.get('c'), 'utf-8').decode('utf-8'))
-        decoded_email = str(encoded_email.decode('utf-8'))
-        user = User.objects.get(email=decoded_email)
-        if not user.is_active:
-            user.is_active = True
-            user.save()
-            message = 'Новый пользователь прошел активацию!\n' \
-                      f'(id: {user.id}, username: {user.username}, email: {decoded_email})'
-            sendmail_admins('Новая регистрация', message)
-            logout(request)
-            # login(request, user)
-            return redirect('account')
-        else:
-            return HttpResponse('User is active!')
+        get = request.GET
+        key_object = ConfirmKey.objects.get(code=get.get('c'))
+        user = key_object.user
+        activate_user(key_object)
+
+        logout(request)
+        message = 'Новый пользователь прошел активацию!\n'\
+                  f'id: {user.id}\n' \
+                  f'username: {user.username}\n' \
+                  f'email: {user.email}'
+        sendmail_admins('Новая регистрация', message)
+
+        msg = 'Отлично!<br>'\
+              'Вы только что активировали аккаунт!<br>'\
+              f'Теперь вы можете перейти на <a href="{reverse("login")}">страницу авторизации</a> и войти в свой аккаунт'
+        return HttpResponse(msg)
+
     except Exception as exc:
         return HttpResponse(f'Ссылка не действительна! {exc}')

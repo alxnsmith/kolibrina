@@ -30,33 +30,35 @@
 <body>
 
 {% include "main/header.html" %}
-
 <div class="container">
     <div class="row">
         <div class="col-sm-8 col-md-8 col-lg-8">
             <form action="" method="POST" id="reg-form">{% csrf_token %}
+                {% csrf_token %}
                 <div class="input-group">
                     <div class="input-group-text"><i class="fa" aria-hidden="true"></i></div>
-                    <input id="id_username" name="username" type="text" placeholder="Username" class="string"
-                           pattern="[a-zA-Z\d_]*" title='Только латинские символы, цифры и "_"' required>
+                    {{ form.username }}
                     {{ form.username.errors }}
                 </div>
                 <div class="input-group">
+                    <div class="input-group-text"><i class="fa " aria-hidden="true"></i></div>
+                    {{ form.birthday }}
+                    {{ form.birthday.errors }}
+                </div>
+                <div class="input-group">
                     <div class="input-group-text"><i class="fa fa-envelope-o" aria-hidden="true"></i></div>
-                    <input id="id_email" name="email" maxlength="200" type="email" placeholder="Электронный адрес"
-                           class="string" required>
+                    {{ form.email }}
                     {{ form.email.errors }}
                 </div>
                 <div class="input-group">
                     <div class="input-group-text"><i class="fa fa-key" aria-hidden="true"></i></div>
-                    <input id="id_password1" name="password1" type="password" placeholder="Пароль" class="string"
-                           required>
-                    {{ form.password2.errors }}
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
                 </div>
                 <div class="input-group">
                     <div class="input-group-text"><i class="fa fa-key" aria-hidden="true"></i></div>
-                    <input id="id_password2" name="password2" type="password" placeholder="Повторите пароль"
-                           class="string" required>
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
                 </div>
                 <br>
                 <input type="checkbox" id="cbx1" required>
@@ -67,7 +69,7 @@
                 <label for="cbx3"> Согласен с условиями авторского соглашения</label><br>
                 <input type="checkbox" id="cbx4" required>
                 <label for="cbx4"> С правилами игр ознакомлен(а), обязуюсь выполнять</label><br>
-                <button type="button" id="reg">Зарегистрироваться</button>
+                <button type="submit" id="reg">Зарегистрироваться</button>
                 <a href="/auth/login" id="auth">Войти</a>
             </form>
         </div>
@@ -84,53 +86,9 @@
         document.querySelector("header nav a:nth-child(7) > span").classList.add("select");
         document.querySelector(".footer__buttons").innerHTML += '<a href="#">Скачать бланк</a>';
     });
-    validate_input('#id_username')
     validate_password_inputs('#id_password1', '#id_password2')
     let submit = document.getElementById('reg')
     let inputs = document.getElementsByTagName('input')
-    for (let i=0; i<inputs.length; i++){
-        inputs[i].addEventListener('keypress', e=>{
-            if (e.key === 'Enter'){
-                submit.click()
-            }
-        })
-    }
-    submit.addEventListener('click', e => {
-        let form = document.getElementById('reg-form')
-        let method = form.method
-        let request_url = form.action
-
-        let body = {
-            'username': inputs.username.value,
-            'email': inputs.email.value,
-            'password1': inputs.password1.value,
-            'password2': inputs.password2.value
-        }
-        let header_addition = {"X-CSRFToken": inputs.csrfmiddlewaretoken.value};
-        if (form.checkValidity() && body.password1 === body.password2) {
-            sendRequest(method, request_url, body, header_addition).then(e => {
-                let notify_text = []
-                if (e.status === 'error' && e.errors.length > 0) {
-                    e.errors.forEach(e => {
-                        notify_text.push(e.error)
-                        show_modal_notification(notify_text.join('\n'))
-                    })
-                } else if (e.status === 'ok') {
-                    show_modal_notification('Успешная регистрация.\n' +
-                        ' Для активации аккаунта - перейдите по ссылке в письме, отправленном на вaшу электронную почту.')
-                    inputs.email.value = ''
-                    inputs.username.value = ''
-                    inputs.password1.value = ''
-                    inputs.password2.value = ''
-                    inputs.cbx1.checked = false
-                    inputs.cbx2.checked = false
-                    inputs.cbx3.checked = false
-                    inputs.cbx4.checked = false
-                    setTimeout(()=>{document.getElementById('auth').click()}, 6000)
-                }
-            })
-        }
-    })
 </script>
 </body>
 </html>
