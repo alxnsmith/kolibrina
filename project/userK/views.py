@@ -1,6 +1,9 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from . import services
+
+from .forms import RegistrationForm
+from .services import do_register, create_render_data, write_user_model
 
 
 class Account(View):
@@ -10,8 +13,8 @@ class Account(View):
     def post(self, request):
         post = request.POST
         if post.get('type') == 'user_info':
-            data = services.create_render_data(request)
-            result = services.write_user_model(request.user, request.POST)
+            data = create_render_data(request)
+            result = write_user_model(request.user, request.POST)
             if result['status'] == 'OK':
                 return redirect('account')
             elif result['status'] == 'error':
@@ -26,4 +29,23 @@ class Account(View):
 
     @property
     def render_data(self):
-        return services.create_render_data(self.request)
+        return create_render_data(self.request)
+
+
+class Register(View):
+    def get(self, request):
+        if self.request.user.is_authenticated:
+            return redirect('account')
+        form = RegistrationForm()
+        return render(request, 'userK/register.html', {'form': form})
+
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+        if not form.is_valid():
+            return render(request, 'userK/register.html', {'form': form})
+        data = form.cleaned_data
+        do_register(username=data.get('username'), email=data.get('email'), birthday=data.get('birthday'),
+                    password=data.get('password1'))
+
+        return HttpResponse('Успешная регистрация!<br>'
+                            'На указанный адрес электронной почты была отправлена ссылка для подтверждения аккаунта.')

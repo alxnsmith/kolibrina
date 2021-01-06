@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'payment',
     'questions',
     'rating',
-    'regK',
+    # 'regK',
     'rules',
     'stats',
     'userK',
