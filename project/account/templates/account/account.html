@@ -162,6 +162,7 @@
 
 
 
+
                                                    {% if request.user.team_set.exists %}{{ request.user.team_set.first }}{% else %}{% endif %}"
                                            style="min-width: 210px;"
                                            {% if request.user.team_set.exists %}disabled{% endif %}
@@ -369,11 +370,16 @@
     }
 </script>
 <script>
+    function calculate_age(dob) {
+        let diff_ms = Date.now() - dob.getTime();
+        let age_dt = new Date(diff_ms);
+
+        return Math.abs(age_dt.getUTCFullYear() - 1970);
+    }
+
     function initLeagues() {
-        let yearBirthday = document.querySelector('#id_birthday').value.split('-')[0]
-        let date = new Date()
-        let currentYear = date.getFullYear()
-        let age = currentYear - yearBirthday
+        let birthday = new Date(document.querySelector('#id_birthday').value)
+        let age = calculate_age(birthday)
         if (age > 0 && age < 100) {
             if (age > 0 && age < 18) {
             } else if (age < 22) {
