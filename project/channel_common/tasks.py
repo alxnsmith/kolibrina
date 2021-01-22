@@ -13,3 +13,4 @@ def send_online(room):
         room,
         {'type': 'send_online'}
     )
+    return 'online_sended'

@@ -84,7 +84,7 @@
 
 
     const chatSocket = new WebSocket(
-        'wss://'
+        `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://`
         + window.location.host
         + '/ws/chat/'
         + roomName

@@ -1,6 +1,6 @@
 ENV = . ./venv/bin/activate ; cd ./project
 
-CREATE_ENV = python3.9 -m venv ./venv ; \
+CREATE_ENV = python3.9 -m virtualenv venv ; \
 			 $(ENV) ; \
 			 pip install -U pip ; \
 			 pip install -r requirements.txt

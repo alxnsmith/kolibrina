@@ -28,7 +28,7 @@
         }
 
         if (cat !== '') {
-            let requestURL = `{% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
+            let requestURL = `${% url 'questions_api' %}?event=get_themes_in_category&cat=${cat}`
             sendRequest('get', requestURL)
                 .then(result => {
                     let themes = result.themes
@@ -62,7 +62,7 @@
         let add_theme_btn = document.getElementById('add_theme').querySelector('.btn')
 
         function get_categories(category_field) {
-            let request_url = `{% url 'questions_api' %}?event=get_categories`
+            let request_url = `${% url 'questions_api' %}?event=get_categories`
             sendRequest('get', request_url).then((response) => {
                 let categories = response.categories
                 for (let i = 0; i < categories.length; i++) {

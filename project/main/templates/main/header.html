@@ -61,7 +61,7 @@
 {% endif %}
 <script>
     const onlineSocket = new WebSocket(
-        'wss://' + window.location.host + '/ws/online/'
+        `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://`+ window.location.host + '/ws/online/'
     );
     onlineSocket.onmessage = e => {
         let data = JSON.parse(e.data)

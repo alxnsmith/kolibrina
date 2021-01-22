@@ -15,31 +15,28 @@ DEBUG = False
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'kolibrina.ru', 'www.kolibrina.ru', ]
 
 # Application definition
-
-INSTALLED_APPS = [
-    'channels',
-
+DJANGO_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+)
+THIRD_PARTY_APPS = (
     'django_admin_listfilter_dropdown',
     'rangefilter',
     'celery',
-
+    'channels',
+)
+LOCAL_APPS = (
     'admin_panel',
     'API',
     'teams',
     'channel_common',
     'chat',
-
     'games',
     'marathon',
-
-    'Kolibrina',
     'main',
     'media',
     'payment',
@@ -48,7 +45,8 @@ INSTALLED_APPS = [
     'rules',
     'stats',
     'account',
-]
+)
+INSTALLED_APPS = LOCAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -128,12 +126,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static/'
 
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
-
 MEDIA_URL = '/mediacontent/'
 MEDIA_ROOT = BASE_DIR / "mediacontent"
 
@@ -149,7 +141,8 @@ EMAIL_HOST_PASSWORD = 'kghjnvxpqchzckcq'
 EMAIL_USE_SSL = True
 EMAIL_SUBJECT_PREFIX = '[КОЛИБРИНА]'
 EMAIL_ADMIN_USERS = 'kotovvsan@ya.ru'
-ADMINS = [('Nillkizz', 'kotovvsan@ya.ru'), ('Zadorozhny', 'Advokat555@yandex.ru'), ('CenterSirius', '89167271327@yandex.ru')]
+ADMINS = [('Nillkizz', 'kotovvsan@ya.ru'), ('Zadorozhny', 'Advokat555@yandex.ru'),
+          ('CenterSirius', '89167271327@yandex.ru')]
 
 ASGI_APPLICATION = 'Kolibrina.asgi.application'
 
@@ -162,7 +155,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-REDIS_HOST = 'localhost'
+REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
 REDIS_DB = 0
 REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
@@ -181,7 +174,6 @@ QUESTION_SCORE_EQUALS = {'1': 0.1, '2': 0.3, '3': 0.5, '4': 0.7, '5': 0.9,
                          'zamena': 0
                          }
 TIME_SCORE_EQUALS = {'10': 0.007, '20': 0.08, '30': 0.14, '40': 0.2, '50': 0.23}
-
 
 YANDEX_CHECKOUT_CONFIG = {'account_id': '734853',
                           'secret_key': 'live_sXm5J__8xhwtHjZzVWX7Hkog4DKD59yGtDqpd_qzinI'}

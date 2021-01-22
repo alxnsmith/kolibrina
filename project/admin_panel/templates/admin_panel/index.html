@@ -74,7 +74,7 @@
         })
     }
     const AdminSocket = new WebSocket(
-        'wss://' + window.location.host + '/ws/admin_panel/online/'
+        `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://`+ window.location.host + '/ws/admin_panel/online/'
     );
     AdminSocket.onmessage = e => {
         let data = JSON.parse(e.data)

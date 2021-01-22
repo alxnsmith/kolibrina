@@ -1,5 +1,5 @@
 "use strict"
-let marafon_socket = new WebSocket('wss://' + window.location.host + '/ws/marafon-week/');
+let marafon_socket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss' : 'ws'}://`+ window.location.host + '/ws/marafon-week/');
 marafon_socket.onopen = () => {
     let username;
     let role;

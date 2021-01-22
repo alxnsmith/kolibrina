@@ -1,7 +1,7 @@
-from asgiref.sync import async_to_sync
-from channels.generic.websocket import AsyncJsonWebsocketConsumer, WebsocketConsumer
 import redis
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
+
 from .services import OnlineController
 
 

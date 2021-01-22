@@ -6,29 +6,27 @@ from Kolibrina.settings import *
 #     }
 # }
 
-
-ALLOWED_HOSTS.append(['dev.kolibrina.ru', 'www.dev.kolibrina.ru'])
-
+REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [REDIS_URL],
+            "hosts": [REDIS_URL, ],
         },
     },
 }
 
 DEBUG = True
-REDIS_DB = 1
 
-DOMAIN = 'dev.kolibrina.ru'
-del STATIC_ROOT
-STATICFILES_DIRS = [BASE_DIR / 'static/']  # может вызывать ошибку статики в daphne.
+DOMAIN = 'localhost:8000'
 
 ADMINS = [('Nillkizz', 'kotovvsan@ya.ru')]
 YANDEX_CHECKOUT_CONFIG = {'account_id': '742930',
                           'secret_key': 'test_4Yc8ayWUcMtNKy8RlHjKtgP4aDrcnIy9Xyiq_GYkOVI'}
 
-REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
+del STATIC_ROOT
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 CELERY_BROKER_URL = REDIS_URL

@@ -83,7 +83,7 @@
         let question_text
         const tournament_shortname = "ELTW"
         const tournament_socket = new WebSocket(
-            'wss://' + window.location.host + `/ws/tournament-week-${tournament_shortname}/`
+            `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://`+ window.location.host + `/ws/tournament-week-${tournament_shortname}/`
         );
         tournament_socket.onmessage = (event) => {
             let data = JSON.parse(event.data)
