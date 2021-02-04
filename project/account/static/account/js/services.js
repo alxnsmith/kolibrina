@@ -28,7 +28,7 @@ class Services {
             Render.show_pay_status_notification(e.pay_status);
             if (e.pay_status === true){
                 target.classList.add('is_player')
-                update_balance()
+                window.location.reload()
             }
         });
 

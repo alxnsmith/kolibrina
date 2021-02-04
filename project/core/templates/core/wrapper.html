@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>{% block title %}{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static "core/img/favicon/apple-icon-57x57.png" %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static "core/img/favicon/apple-icon-60x60.png" %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static "core/img/favicon/apple-icon-72x72.png" %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static "core/img/favicon/apple-icon-76x76.png" %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static "core/img/favicon/apple-icon-114x114.png" %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static "core/img/favicon/apple-icon-120x120.png" %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static "core/img/favicon/apple-icon-144x144.png" %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static "core/img/favicon/apple-icon-152x152.png" %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "core/img/favicon/apple-icon-180x180.png" %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static "core/img/favicon/android-icon-192x192.png" %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "core/img/favicon/favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static "core/img/favicon/favicon-96x96.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "core/img/favicon/favicon-16x16.png" %}">
+    <link rel="manifest" href="{% static "core/img/favicon/manifest.json" %}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="{% static "core/img/favicon/ms-icon-144x144.png" %}">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static "core/css/header.css" %}">
+    <link rel="stylesheet" href="{% static "core/css/footer.css" %}">
+    <link rel="stylesheet" href="{% static "core/css/bootstrap.css" %}">
+    <link href="{% static 'core/css/wrapper.css' %}" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+
+<body class="{% block body_classes %}{% endblock %}">
+
+{% include 'core/header.html' %}
+
+<div id="modal_notification"></div>
+
+<main class="block_content" {% if vue %}id="app" v-cloak{% endif %}>
+    {% block content %}{% endblock %}
+</main>
+
+{% include 'core/footer.html' %}
+
+<script src="{% static 'core/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'core/js/core.js' %}"></script>
+{% if vue %}
+    <script src="{% static 'core/js/axios.min.js' %}"></script>
+    <script src="{% static 'core/js/vue.global.prod.js' %}"></script>
+{% endif %}
+
+{% block scripts %}{% endblock %}
+
+{% if errors or Success %}
+    <script>
+        window.addEventListener('load', () => {
+            {% if errors %}
+                {% if errors.text %}
+                    show_error('{{ errors.text }}', 'html')
+                {% endif %}
+                {% if errors.fields_id %}
+                    {% for field in errors.fields_id %}
+                        document.getElementById('{{ field }}').classList.add('alert-danger')
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+            {% if Success %}
+                show_success({{ Success }})
+            {% endif %}
+        })
+    </script>
+{% endif %}
+
+</body>
+
+</html>

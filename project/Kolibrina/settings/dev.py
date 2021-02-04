@@ -20,7 +20,7 @@ YANDEX_CHECKOUT_CONFIG = {'account_id': '742930',
 
 # STATIC_ROOT = STATIC_DIR
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    'static',
 ]
 
 CELERY_BROKER_URL = REDIS_URL

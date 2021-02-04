@@ -14,7 +14,7 @@
             <div id="online">ONLINE: <span></span></div>
 
             {% if request.user.is_authenticated %}
-            <div class="header_balance" id="balance">Баланс: <span>{{ request.user.balance }}</span></div>
+                <div class="header_balance" id="balance">Баланс: <span>{{ request.user.balance }}</span></div>
             {% endif %}
         </div>
     </div>

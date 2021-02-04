@@ -1,0 +1,48 @@
+#app {
+    transition: opacity .5s;
+}
+
+[v-cloak] {
+    opacity: 0;
+}
+
+#modal_notification {
+    display: block;
+    box-sizing: content-box;
+    text-align: center;
+    position: fixed;
+    left: 20vw;
+    top: -2vh;
+    overflow-wrap: break-word;
+    opacity: 0;
+    /*background: #fd0e;*/
+    border: 1px solid;
+    padding: 0.5rem;
+    border-radius: 10px;
+    width: 60vw;
+    min-height: 1vh;
+    transition: 0.7s;
+    z-index: 1500;
+}
+
+@supports (scrollbar-width: thin) {
+    html {
+        overflow-y: scroll;
+        scrollbar-color: #555 #0001;
+        scrollbar-width: thin;
+    }
+}
+
+@supports not (scrollbar-width: thin) {
+    body::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    body::-webkit-scrollbar-track {
+        background-color: #0001;
+    }
+
+    body::-webkit-scrollbar-thumb {
+        background-color: #555;
+    }
+}
