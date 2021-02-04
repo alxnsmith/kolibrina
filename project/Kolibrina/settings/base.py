@@ -12,8 +12,6 @@ SECRET_KEY = '0k#pueww6$7pm=8*-(e316$vzd3c=1ijd$^i!3y-g^a!n0v4pc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'kolibrina.ru', 'www.kolibrina.ru', ]
-
 # Application definition
 DJANGO_APPS = (
     'django.contrib.admin',
@@ -124,7 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static/'
+STATIC_DIR = BASE_DIR / 'static/'
 
 MEDIA_URL = '/mediacontent/'
 MEDIA_ROOT = BASE_DIR / "mediacontent"
@@ -179,4 +177,3 @@ YANDEX_CHECKOUT_CONFIG = {'account_id': '734853',
                           'secret_key': 'live_sXm5J__8xhwtHjZzVWX7Hkog4DKD59yGtDqpd_qzinI'}
 
 RESERVED_USERNAME_WORDS = ('admin', 'administrator', 'moderator', 'developer')
-DOMAIN = 'kolibrina.ru'

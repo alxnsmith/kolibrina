@@ -1,10 +1,4 @@
-from Kolibrina.settings import *
-#
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels.layers.InMemoryChannelLayer"
-#     }
-# }
+from Kolibrina.settings.base import *
 
 REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
 CHANNEL_LAYERS = {
@@ -24,7 +18,7 @@ ADMINS = [('Nillkizz', 'kotovvsan@ya.ru')]
 YANDEX_CHECKOUT_CONFIG = {'account_id': '742930',
                           'secret_key': 'test_4Yc8ayWUcMtNKy8RlHjKtgP4aDrcnIy9Xyiq_GYkOVI'}
 
-del STATIC_ROOT
+# STATIC_ROOT = STATIC_DIR
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

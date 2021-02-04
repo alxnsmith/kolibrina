@@ -1,3 +1,6 @@
+SETTINGS_DEV = export DJANGO_SETTINGS_MODULE=Kolibrina.settings.dev
+SETTINGS_PROD = export DJANGO_SETTINGS_MODULE=Kolibrina.settings.prod
+
 ENV = . ./venv/bin/activate ; cd ./project
 
 CREATE_ENV = python3.9 -m virtualenv venv ; \
@@ -13,12 +16,10 @@ MIGRATIONS = python3.9 manage.py makemigrations ; \
 COLLECT_STATIC = $(SETTINGS_PROD) ; \
 				 python3.9 manage.py collectstatic
 
-RUNSERVER_DEV = python3.9 manage.py runserver --settings=Kolibrina.settings_dev 127.0.0.1:8002
+RUNSERVER_DEV = python3.9 manage.py runserver 127.0.0.1:8002
 START_DAPHNE = daphne -p 8001 Kolibrina.asgi\:application
 
 #-----------CELERY----------------------------------------#
-SETTINGS_DEV = export DJANGO_SETTINGS_MODULE=Kolibrina.settings_dev
-SETTINGS_PROD = export DJANGO_SETTINGS_MODULE=Kolibrina.settings
 CELERY_WORKER = python3.9 -m celery -A Kolibrina worker -l info
 CELERY_BEAT = python3.9 -m celery -A Kolibrina beat -l info
 #-----------CELERY----------------------------------------#
@@ -26,6 +27,12 @@ dev:
 	$(ENV) ; \
 	$(SETTINGS_DEV) ; \
 	$(RUNSERVER_DEV)
+
+start_daphne:
+	$(ENV) ; \
+	$(SETTINGS_PROD) ; \
+	$(START_DAPHNE)
+
 init_prod:
 	$(CREATE_ENV) ; \
 	$(MIGRATIONS) ; \
@@ -87,10 +94,6 @@ shell_prod:
 	$(ENV) ; \
 	$(SETTINGS_PROD) ; \
     python3.9 manage.py shell
-start_daphne:
-	$(ENV) ; \
-	$(SETTINGS_PROD) ; \
-	$(START_DAPHNE)
 
 
 clean_all:
