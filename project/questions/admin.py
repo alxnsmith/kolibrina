@@ -1,10 +1,7 @@
 from django.contrib import admin
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter, SimpleDropdownFilter
-from rangefilter.filter import DateTimeRangeFilter
-
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from questions.models import Question, Theme, Category, Purpose, MarathonThemeBlock
-
-# Register your models here.
+from rangefilter.filter import DateTimeRangeFilter
 
 admin.site.register(Theme)
 admin.site.register(Category)
@@ -17,8 +14,7 @@ class DateDropdownFilter(admin.DateFieldListFilter):
 
 
 class DropdownBooleanFieldFilter(admin.BooleanFieldListFilter):
-    # pass
-    template = 'Kolibrina/admin/blocks/dropdown_boolean_filter.html'
+    template = 'core/admin/blocks/dropdown_boolean_filter.html'
 
 
 @admin.register(Question)

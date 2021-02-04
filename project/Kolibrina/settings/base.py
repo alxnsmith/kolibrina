@@ -9,10 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '0k#pueww6$7pm=8*-(e316$vzd3c=1ijd$^i!3y-g^a!n0v4pc'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-# Application definition
 DJANGO_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +39,7 @@ LOCAL_APPS = (
     'rules',
     'stats',
     'account',
+    'core'
 )
 INSTALLED_APPS = LOCAL_APPS + DJANGO_APPS + THIRD_PARTY_APPS
 
